@@ -19,6 +19,7 @@ import WorkPermit from '../models/WorkPermit/WorkPermit.js';
 import { createRequire } from "module";
 import { permission } from '../preHandlers/permission.js';
 import { check_notification } from '../utils/check_notification.js'
+import sanitizeHtml from "sanitize-html";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -68,7 +69,7 @@ const login = async (req, res) => {
 
         if (success == false) {
             var data = await own_login(req.body)
-
+            data = escape(data)
             return res.send(utilSetResponseJson("success", data))
 
         }
@@ -177,9 +178,11 @@ const login = async (req, res) => {
             data_.MessageAlert = 'ไม่พบรหัสพนักงานผู้ควบคุมงานของคุณในระบบ กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
         // res.send(utilSetResponseJson('success', data))
-        res.send(data_)
+        data_ = sanitizeHtml(JSON.stringify(data_))
+        res.send(JSON.parse(data_))
 
     } catch (error) {
+        error = escape(error.toString())
         res.send(utilSetResponseJson('failed', error))
     }
 }
@@ -221,6 +224,7 @@ const loginAd = async (req, res) => {
         if (success == false) {
             var data = await own_login(req.body)
 
+            data = escape(data)
             return res.send(utilSetResponseJson("success", data))
 
         }
@@ -326,10 +330,12 @@ const loginAd = async (req, res) => {
             data_.MessageAlert = 'ไม่พบรหัสพนักงานผู้ควบคุมงานของคุณในระบบ กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
         // res.send(utilSetResponseJson('success', data))
+        data_ = escape(data_)
         res.send(data_)
 
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = escape(error.toString())
+        res.send(utilSetResponseJson('failed', error))
     }
 }
 
@@ -515,6 +521,7 @@ const token = async (req, res) => {
                 token_type: 'Bearer'
             }
 
+            data = escape(data)
             return res.send(utilSetResponseJson('success', data))
 
         }
@@ -555,14 +562,18 @@ const token = async (req, res) => {
                 token_type: 'Bearer'
             }
 
+            data = escape(data)
             return res.send(utilSetResponseJson('success', data))
         } else {
-            return res.send(utilSetResponseJson('failed', 'grant_type not allow'))
+            var msg = escape("grant_type not allow")
+            return res.send(utilSetResponseJson('failed', msg))
 
         }
 
     } catch (error) {
-        // res.send(utilSetResponseJson('failed', error.toString()))
+
+        error = escape(error.toString())
+        res.send(utilSetResponseJson('failed', error))
     }
 }
 const logout = async (req, res) => {
@@ -573,9 +584,11 @@ const logout = async (req, res) => {
             login_status: false
         })
 
-        res.send(utilSetResponseJson('success', 'success'))
+        var msg = escape("success")
+        res.send(utilSetResponseJson('success', msg))
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = escape(error.toString())
+        res.send(utilSetResponseJson('failed', error))
     }
 }
 
@@ -660,10 +673,12 @@ const mydata = async (req, res) => {
         if (group_id.others.id == config.ptt_group_id && !data.others.employeeid) {
             data_.MessageAlert = 'ไม่พบรหัสพนักงานผู้ควบคุมงานของคุณในระบบ กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
+        data_ = escape(data_)
         res.send(data_)
 
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = escape(error.toString())
+        res.send(utilSetResponseJson('failed', error))
     }
 }
 

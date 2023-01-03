@@ -82,8 +82,8 @@ import { permission } from '../preHandlers/permission.js';
 //         return utilSetResponseJson('success', data)
 //     } catch (error) {
 //         if (res)
-//             return res.send(utilSetResponseJson('failed', error.toString()))
-//         return utilSetResponseJson('failed', error.toString())
+//             return res.send(utilSetResponseJson('failed',error)
+//         return utilSetResponseJson('failed',error
 //     }
 // }
 
@@ -192,13 +192,15 @@ const all = async (req, res) => {
 
         }
 
+        data = escape(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
     } catch (error) {
+        error = escape(error.toString())
         if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+            return res.send(utilSetResponseJson('failed', error))
+        return utilSetResponseJson('failed', error)
     }
 }
 const byid = async (req, res) => {
@@ -274,15 +276,18 @@ const byid = async (req, res) => {
                 return result
             }))
         if (!data) {
-            return res.send(utilSetResponseJson("failed", 'data not found'))
+            var msg = escape("data not found")
+            return res.send(utilSetResponseJson("failed", msg))
         }
+        data = escape(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
     } catch (error) {
+        error = escape(error.toString())
         if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+            return res.send(utilSetResponseJson('failed', error))
+        return utilSetResponseJson('failed', error)
     }
 }
 // const byid = async (req, res) => {
@@ -349,8 +354,8 @@ const byid = async (req, res) => {
 //         return utilSetResponseJson('success', data)
 //     } catch (error) {
 //         if (res)
-//             return res.send(utilSetResponseJson('failed', error.toString()))
-//         return utilSetResponseJson('failed', error.toString())
+//             return res.send(utilSetResponseJson('failed',error)
+//         return utilSetResponseJson('failed',error
 //     }
 // }
 const add = async (req, res) => {
@@ -407,13 +412,15 @@ const add = async (req, res) => {
                 })
             }
         }
+        data = escape(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
     } catch (error) {
+        error = escape(error.toString())
         if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+            return res.send(utilSetResponseJson('failed', error))
+        return utilSetResponseJson('failed', error)
     }
 }
 
@@ -483,12 +490,14 @@ const edit = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            return res.send(utilSetResponseJson("failed", 'data not found'))
+            var msg = escape("data not found")
+            return res.send(utilSetResponseJson("failed", msg))
         }
         return res.send(utilSetResponseJson('success', data))
 
     } catch (error) {
-        return res.send(utilSetResponseJson('failed', error.toString()))
+        error = escape(error.toString())
+        return res.send(utilSetResponseJson('failed', error))
     }
 
 }
@@ -509,10 +518,12 @@ const destroy = async (req, res) => {
 
         await Role.deleteMany({ application_id: req.params._id })
 
-        return res.send(utilSetResponseJson('success', 'success'))
+        var msg = escape("success")
+        return res.send(utilSetResponseJson('success', msg))
 
     } catch (error) {
-        return res.send(utilSetResponseJson('failed', error.toString()))
+        error = escape(error.toString())
+        return res.send(utilSetResponseJson('failed', error))
     }
 }
 
