@@ -1,0 +1,151 @@
+
+import express from 'express'
+import bodyParser from 'body-parser'
+import { queryParser } from 'express-query-parser'
+import cors from 'cors'
+import { Server } from 'socket.io';
+import config from './src/utils/config.js'
+import socket_io from "./src/utils/socket_io.js";
+import swaggerUi from 'swagger-ui-express';
+import methodOverride from 'method-override'
+import mongoose_connect from './src/utils/db.js';
+import utilSetResponseJson from './src/utils/util.SetResponseJson.js';
+import { createRequire } from "module";
+import { authRouters, authshema } from './src/routers/auth.js';
+import { webHookRouters, webHookSchema } from './src/routers/webhook.js'
+import { scaffoldingRouters, scaffoldingSchema } from './src/routers/scaffolding.js';
+import { workPermitRouters, workPermitSchema } from './src/routers/workpermit.js';
+import { vehicleTypeRouters, vehicleTypeSchema } from './src/routers/master.vehicletype.js';
+import { scaffoldingTypeRouters, scaffoldingTypeSchema } from './src/routers/master.scaffoldingtype.js';
+import { locationRouters, locationSchema } from './src/routers/master.location.js';
+import { Validator, ValidationError } from "express-json-validator-middleware";
+
+import { check_jwt } from './src/preHandlers/jwt_auth.js';
+import basicAuth from 'express-basic-auth'
+const require = createRequire(import.meta.url);
+var swaggerDocument = require("./src/utils/swagger.json")
+
+import fs from 'fs'
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import jwt from 'jsonwebtoken'
+import { groupRouters, groupSchema } from './src/routers/group.js';
+import { applicationRouters, applicationSchema } from './src/routers/application.js';
+import { userRouters, userSchema } from './src/routers/user.js';
+import { workpermitTypeRouters, workpermitTypeSchema } from './src/routers/master.workpermittype.js';
+import { workpermitStatusRouters, workpermitStatusSchema } from './src/routers/master.workpermitstatus.js';
+import { accessControlRouters, accessControlSchema } from './src/routers/accesscontrol.js';
+import { equipmentRouters, equipmentSchema } from './src/routers/equipment.js';
+import { oauthRouters } from './src/routers/oauth.js';
+import { check_row_expire, get_workpermit_from_acc, get_acc_from_acc, get_acc_device_from_acc, get_workpermit_from_rabbitmq } from './src/utils/schedule_func.js';
+import { peopleRouters, peopleSchema } from './src/routers/people.js';
+import { vehicleRouters, vehicleSchema } from './src/routers/vehicle.js';
+
+import { integrateSchema, integrateRouters } from './src/routers/integrate.js';
+import { check_notification_loop } from './src/utils/check_notification.js';
+import { logsRouters, logsSchema } from './src/routers/logs.js';
+import { masterRouters, schema } from './src/routers/master.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const server = express()
+server.use(methodOverride())
+server.use(cors())
+server.use(bodyParser.urlencoded({
+    extended: false
+}))
+server.use(bodyParser.json({ limit: '50mb' }))
+server.use(
+    queryParser({
+        parseNull: true,
+        parseUndefined: true,
+        parseBoolean: true,
+        parseNumber: true
+    })
+)
+
+//mongo connection
+mongoose_connect()
+
+//serer run
+const app = server.listen(config.server_port, function (err, result) { })
+const io = new Server(app, { cors: { origin: '*' }, path: '/api/socket/' });
+
+//socket.io set up
+io.use(async (socket, next) => {
+    const header = socket.handshake.headers['authorization'];
+    socket.headers = {}
+    socket.headers['authorization'] = header
+    await check_jwt(socket, '', next)
+});
+socket_io.socketConnection(io)
+
+//routing
+swaggerDocument.paths = {
+    ...swaggerDocument.paths, ...authshema,
+
+    ...webHookSchema,
+    ...integrateSchema,
+    ...workPermitSchema,
+    ...scaffoldingSchema,
+    ...accessControlSchema,
+    ...equipmentSchema,
+    ...peopleSchema,
+    ...vehicleSchema,
+
+    ...schema,
+    ...workpermitTypeSchema,
+    ...workpermitStatusSchema,
+    ...vehicleTypeSchema,
+    ...scaffoldingTypeSchema, ...locationSchema,
+    ...userSchema,
+    ...groupSchema, ...applicationSchema,
+    ...logsSchema
+}
+server.use('/api-docs', basicAuth({
+    users: { [config.swagger_user]: config.swagger_pass },
+    challenge: true,
+}), swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+server.use('/api/auth', authRouters);
+server.use('/api/oauth', oauthRouters)
+server.use('/api/admin/user', userRouters)
+server.use('/api/admin/group', groupRouters)
+server.use('/api/admin/application', applicationRouters)
+server.use('/api/admin/logs', logsRouters)
+server.use('/api/webhook', webHookRouters);
+server.use('/api/integrate', integrateRouters);
+server.use('/api/scaffolding', scaffoldingRouters);
+server.use('/api/workpermit', workPermitRouters);
+server.use('/api/accesscontrol', accessControlRouters);
+server.use('/api/equipment', equipmentRouters)
+server.use('/api/people', peopleRouters)
+server.use('/api/vehicle', vehicleRouters)
+server.use('/api/master', masterRouters)
+server.use('/api/master/workpermittype', workpermitTypeRouters)
+server.use('/api/master/workpermitStatus', workpermitStatusRouters)
+server.use('/api/master/vehicletype', vehicleTypeRouters)
+server.use('/api/master/scaffoldingtype', scaffoldingTypeRouters)
+server.use('/api/master/location', locationRouters)
+
+server.get('/', (req, res) => {
+    res.status(200).send(utilSetResponseJson('success', escape('65B_SHIP.DASHBOARD_BACKEND')))
+})
+
+server.use((error, request, response, next) => {
+    if (error instanceof ValidationError) {
+        response.status(400).send(utilSetResponseJson('failed', error.validationErrors));
+        next();
+    } else {
+        response.status(200).send(utilSetResponseJson('failed', error.toString()))
+    }
+});
+
+check_row_expire()
+get_acc_from_acc()
+get_acc_device_from_acc()
+get_workpermit_from_acc()
+get_workpermit_from_rabbitmq()
+check_notification_loop()
+
+export default server
+
