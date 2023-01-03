@@ -82,7 +82,6 @@ const all = async (req, res) => {
 
         }
 
-        var data = escape(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)

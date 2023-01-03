@@ -461,7 +461,7 @@ const schema = ({
                                     "default": "W07",
                                     "description": "รหัสสถานะใบงาน"
                                 },
-                                "workpermitStatusId": {
+                                "workpermitStatus": {
                                     "type": "string",
                                     "default": "Waiting for Close (Allower)",
                                     "description": "สถานะใบงาน"

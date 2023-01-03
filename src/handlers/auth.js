@@ -69,8 +69,8 @@ const login = async (req, res) => {
 
         if (success == false) {
             var data = await own_login(req.body)
-            data = escape(data)
-            return res.send(utilSetResponseJson("success", data))
+            data = sanitizeHtml(JSON.stringify(data))
+            return res.send(utilSetResponseJson("success", JSON.parse(data)))
 
         }
 
@@ -177,12 +177,11 @@ const login = async (req, res) => {
         if (group_id.others.id == config.ptt_group_id && !login.user.data.employeeid) {
             data_.MessageAlert = 'ไม่พบรหัสพนักงานผู้ควบคุมงานของคุณในระบบ กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
-        // res.send(utilSetResponseJson('success', data))
         data_ = sanitizeHtml(JSON.stringify(data_))
         res.send(JSON.parse(data_))
 
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         res.send(utilSetResponseJson('failed', error))
     }
 }
@@ -223,9 +222,8 @@ const loginAd = async (req, res) => {
 
         if (success == false) {
             var data = await own_login(req.body)
-
-            data = escape(data)
-            return res.send(utilSetResponseJson("success", data))
+            data = sanitizeHtml(JSON.stringify(data))
+            return res.send(utilSetResponseJson("success", JSON.parse(data)))
 
         }
 
@@ -330,11 +328,11 @@ const loginAd = async (req, res) => {
             data_.MessageAlert = 'ไม่พบรหัสพนักงานผู้ควบคุมงานของคุณในระบบ กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
         // res.send(utilSetResponseJson('success', data))
-        data_ = escape(data_)
-        res.send(data_)
+        data_ = sanitizeHtml(JSON.stringify(data_))
+        res.send(JSON.parse(data_))
 
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         res.send(utilSetResponseJson('failed', error))
     }
 }
@@ -436,143 +434,141 @@ const token = async (req, res) => {
         return await login(req, res)
 
 
-        if (grant_type == 'client_credentials') {
+        // if (grant_type == 'client_credentials') {
 
-            if (!client_id) {
-                return res.send(utilSetResponseJson('failed',
-                    {
-                        "query": [
-                            {
-                                "instancePath": "",
-                                "schemaPath": "#/required",
-                                "keyword": "required",
-                                "params": {
-                                    "missingProperty": "client_id"
-                                },
-                                "message": "must have required property 'client_id'"
-                            }
-                        ]
-                    }))
-            }
-            if (!client_secret) {
-                return res.send(utilSetResponseJson('failed',
-                    {
-                        "query": [
-                            {
-                                "instancePath": "",
-                                "schemaPath": "#/required",
-                                "keyword": "required",
-                                "params": {
-                                    "missingProperty": "client_secret"
-                                },
-                                "message": "must have required property 'client_secret'"
-                            }
-                        ]
-                    }))
-            }
-
-
-
-            var check = await User.findOne().where({ 'others.client_id': client_id, 'others.client_secret': client_secret })
-            if (!check) {
-                res.send(utilSetResponseJson('failed', 'Unauthorized'))
-            }
-
-            var xCurrentTime = Math.floor(Date.now() / 1000)
-            const issuedAt = xCurrentTime
-            const expirationTime = xCurrentTime + (config.config_access_oauth_token_expiration_time);
-
-            const payload = {
-                _id: check._id,
-                username: check.username,
-                iat: issuedAt,
-                exp: expirationTime,
-            }
-            const token = jwt.sign(payload, privateKey);
-
-            delete check._doc.password
-
-            var refresh_token = uuid.v4()
-            var exp = Date.now() + (config.config_refresh_oauth_token_expiration_time_oauth * 1000)
-            var before_update = await User.findOne({
-                _id: check._id
-            })
+        //     if (!client_id) {
+        //         return res.send(utilSetResponseJson('failed',
+        //             {
+        //                 "query": [
+        //                     {
+        //                         "instancePath": "",
+        //                         "schemaPath": "#/required",
+        //                         "keyword": "required",
+        //                         "params": {
+        //                             "missingProperty": "client_id"
+        //                         },
+        //                         "message": "must have required property 'client_id'"
+        //                     }
+        //                 ]
+        //             }))
+        //     }
+        //     if (!client_secret) {
+        //         return res.send(utilSetResponseJson('failed',
+        //             {
+        //                 "query": [
+        //                     {
+        //                         "instancePath": "",
+        //                         "schemaPath": "#/required",
+        //                         "keyword": "required",
+        //                         "params": {
+        //                             "missingProperty": "client_secret"
+        //                         },
+        //                         "message": "must have required property 'client_secret'"
+        //                     }
+        //                 ]
+        //             }))
+        //     }
 
 
-            await User.findOneAndUpdate({ _id: check._id }, {
-                login_status: true,
-                others: {
-                    ...before_update.others,
-                    ...{
-                        token_set: {
-                            refresh_token: refresh_token,
-                            exp: exp
-                        }
-                    }
-                }
-            })
 
-            var data = {
-                username: check.username,
-                access_token: token,
-                expires_at: expirationTime,
-                expires_in: config.config_access_token_expiration_time,
-                refresh_token: refresh_token,
-                token_type: 'Bearer'
-            }
+        //     var check = await User.findOne().where({ 'others.client_id': client_id, 'others.client_secret': client_secret })
+        //     if (!check) {
+        //         res.send(utilSetResponseJson('failed', 'Unauthorized'))
+        //     }
 
-            data = escape(data)
-            return res.send(utilSetResponseJson('success', data))
+        //     var xCurrentTime = Math.floor(Date.now() / 1000)
+        //     const issuedAt = xCurrentTime
+        //     const expirationTime = xCurrentTime + (config.config_access_oauth_token_expiration_time);
 
-        }
+        //     const payload = {
+        //         _id: check._id,
+        //         username: check.username,
+        //         iat: issuedAt,
+        //         exp: expirationTime,
+        //     }
+        //     const token = jwt.sign(payload, privateKey);
 
-        else if (grant_type == 'refresh_token') {
+        //     delete check._doc.password
 
-            var check = await User.findOne({
-                'others.token_set.refresh_token': refresh_token
-            })
+        //     var refresh_token = uuid.v4()
+        //     var exp = Date.now() + (config.config_refresh_oauth_token_expiration_time_oauth * 1000)
+        //     var before_update = await User.findOne({
+        //         _id: check._id
+        //     })
 
-            if (!check) {
-                return res.send(utilSetResponseJson('failed', 'refresh_token not found'))
-            }
 
-            if (check.others.token_set.exp < new Date()) {
-                return res.send(utilSetResponseJson('failed', 'refresh_token expired'))
-            }
+        //     await User.findOneAndUpdate({ _id: check._id }, {
+        //         login_status: true,
+        //         others: {
+        //             ...before_update.others,
+        //             ...{
+        //                 token_set: {
+        //                     refresh_token: refresh_token,
+        //                     exp: exp
+        //                 }
+        //             }
+        //         }
+        //     })
 
-            var xCurrentTime = Math.floor(Date.now() / 1000)
-            const issuedAt = xCurrentTime
-            const expirationTime = xCurrentTime + (config.config_access_oauth_token_expiration_time);
+        //     var data = {
+        //         username: check.username,
+        //         access_token: token,
+        //         expires_at: expirationTime,
+        //         expires_in: config.config_access_token_expiration_time,
+        //         refresh_token: refresh_token,
+        //         token_type: 'Bearer'
+        //     }
 
-            const payload = {
-                _id: check._id,
-                username: check.username,
-                iat: issuedAt,
-                exp: expirationTime,
-            }
-            const token = jwt.sign(payload, privateKey);
+        //     data = sanitizeHtml(JSON.stringify(data))
+        //     return res.send(utilSetResponseJson('success', JSON.parse(data)))
 
-            delete check._doc.password
+        // }
 
-            var data = {
-                username: check.username,
-                access_token: token,
-                expires_at: expirationTime,
-                expires_in: config.config_access_token_expiration_time,
-                token_type: 'Bearer'
-            }
+        // else if (grant_type == 'refresh_token') {
 
-            data = escape(data)
-            return res.send(utilSetResponseJson('success', data))
-        } else {
-            var msg = escape("grant_type not allow")
-            return res.send(utilSetResponseJson('failed', msg))
+        //     var check = await User.findOne({
+        //         'others.token_set.refresh_token': refresh_token
+        //     })
 
-        }
+        //     if (!check) {
+        //         return res.send(utilSetResponseJson('failed', 'refresh_token not found'))
+        //     }
+
+        //     if (check.others.token_set.exp < new Date()) {
+        //         return res.send(utilSetResponseJson('failed', 'refresh_token expired'))
+        //     }
+
+        //     var xCurrentTime = Math.floor(Date.now() / 1000)
+        //     const issuedAt = xCurrentTime
+        //     const expirationTime = xCurrentTime + (config.config_access_oauth_token_expiration_time);
+
+        //     const payload = {
+        //         _id: check._id,
+        //         username: check.username,
+        //         iat: issuedAt,
+        //         exp: expirationTime,
+        //     }
+        //     const token = jwt.sign(payload, privateKey);
+
+        //     delete check._doc.password
+
+        //     var data = {
+        //         username: check.username,
+        //         access_token: token,
+        //         expires_at: expirationTime,
+        //         expires_in: config.config_access_token_expiration_time,
+        //         token_type: 'Bearer'
+        //     }
+
+        //     data = sanitizeHtml(JSON.stringify(data))
+        //     return res.send(utilSetResponseJson('success', JSON.parse(data)))
+        // } else {
+        //     return res.send(utilSetResponseJson('failed', "grant_type not allow"))
+
+        // }
 
     } catch (error) {
-
-        error = escape(error.toString())
+        error = error.toString()
         res.send(utilSetResponseJson('failed', error))
     }
 }
@@ -584,10 +580,9 @@ const logout = async (req, res) => {
             login_status: false
         })
 
-        var msg = escape("success")
-        res.send(utilSetResponseJson('success', msg))
+        res.send(utilSetResponseJson('success', "success"))
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         res.send(utilSetResponseJson('failed', error))
     }
 }
@@ -673,11 +668,11 @@ const mydata = async (req, res) => {
         if (group_id.others.id == config.ptt_group_id && !data.others.employeeid) {
             data_.MessageAlert = 'ไม่พบรหัสพนักงานผู้ควบคุมงานของคุณในระบบ กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
-        data_ = escape(data_)
-        res.send(data_)
+        data_ = sanitizeHtml(JSON.stringify(data_))
+        res.send(JSON.parse(data_))
 
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         res.send(utilSetResponseJson('failed', error))
     }
 }
