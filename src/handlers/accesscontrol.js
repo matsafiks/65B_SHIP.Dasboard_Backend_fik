@@ -127,17 +127,10 @@ const all = async (req, res) => {
 
         let check_user = await User.findOne().where({ _id: req._id })
 
-        let now = new Date
-        let day_7 = new Date().setDate(new Date().getDate() + 7);
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
-            // if (Object.keys(req.query).length === 0) {
-            //     let location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
-            //     let test = await WorkPermit.find({ location: { $in: location1.map(el => { return el.location }) } })
-            //     where_permission = { WorkPermitID: { $in: test.map(el => { return el.workPermitID }) } }
 
-            // }
         }
         //ผู้ควบคุมงาน ปตท.
         else if (check_user.group_id == "62a4cb17e0a99b4456aaf51e") {
@@ -146,17 +139,17 @@ const all = async (req, res) => {
             }
         }
         //เจ้าหน้าที่รักษาความปลอดภัย
-        else if (check_user.group_id == "62a4cb26e0a99b4456aaf522") {
+        // else if (check_user.group_id == "62a4cb26e0a99b4456aaf522") {
 
-        }
-        //หน่วยงาน ปภ.ผยก.
-        else if (check_user.group_id == "62a4cb5896deebf8a1f8abbe") {
-        }
+        // }
+        // //หน่วยงาน ปภ.ผยก.
+        // else if (check_user.group_id == "62a4cb5896deebf8a1f8abbe") {
+        // }
 
-        //ผู้ดูแลระบบ
-        else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
+        // //ผู้ดูแลระบบ
+        // else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
 
-        }
+        // }
 
 
         let role = await Role.find().where({ group_id: check_user.group_id })
@@ -187,76 +180,81 @@ const all = async (req, res) => {
             //     where_permission
             // ]
         }).then((result) => {
-            for (let index = 0; index < result.length; index++) {
-                const element = result[index]._doc;
+            for (let element of result) {
+                if (!element) {
+                    break;
+                } else {
+                    element = element._doc;
 
-                if (filter.AgencyName.some(e => e.AgencyName === element.AgencyName) == false) {
-                    filter.AgencyName.push({ AgencyName: element.AgencyName })
-                }
-                if (req.query.AgencyName) {
-                    if (req.query.AgencyName.toString().includes(element.AgencyName) || req.query.AgencyName.toString().includes('ทั้งหมด')) {
+                    if (filter.AgencyName.some(e => e.AgencyName === element.AgencyName) == false) {
+                        filter.AgencyName.push({ AgencyName: element.AgencyName })
+                    }
+                    if (req.query.AgencyName) {
+                        if (req.query.AgencyName.toString().includes(element.AgencyName) || req.query.AgencyName.toString().includes('ทั้งหมด')) {
+                            if (filter.PTTStaffCode.some(e => e.PTTStaffCode === element.PTTStaffCode) == false) {
+                                filter.PTTStaffCode.push({ PTTStaffCode: element.PTTStaffCode, PTTStaff: element.PTTStaffFirstName + ' ' + element.PTTStaffLastName })
+                            }
+                        }
+                    } else {
                         if (filter.PTTStaffCode.some(e => e.PTTStaffCode === element.PTTStaffCode) == false) {
                             filter.PTTStaffCode.push({ PTTStaffCode: element.PTTStaffCode, PTTStaff: element.PTTStaffFirstName + ' ' + element.PTTStaffLastName })
                         }
                     }
-                } else {
-                    if (filter.PTTStaffCode.some(e => e.PTTStaffCode === element.PTTStaffCode) == false) {
-                        filter.PTTStaffCode.push({ PTTStaffCode: element.PTTStaffCode, PTTStaff: element.PTTStaffFirstName + ' ' + element.PTTStaffLastName })
+
+                    let join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
+
+                    if (join_access_control_device.length > 0) {
+                        element.AccDevice = join_access_control_device[0]
+                    } else {
+                        element.AccDevice = null
                     }
-                }
 
-                let join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
+                    if (element.ACC_ID && element.AccDevice) {
 
-                if (join_access_control_device.length > 0) {
-                    element.AccDevice = join_access_control_device[0]
-                } else {
-                    element.AccDevice = null
-                }
+                        element.AreaName = element.AccDevice.AreaName
+                        element.SubAreaName = element.AccDevice.SubAreaName
 
-                if (element.ACC_ID && element.AccDevice) {
-
-                    element.AreaName = element.AccDevice.AreaName
-                    element.SubAreaName = element.AccDevice.SubAreaName
-
-                    if (filter.AreaName.some(e => e.AreaName === element.AreaName) == false) {
-                        filter.AreaName.push({
-                            ...(AreaName_master.filter(el => { return el.Location_Name == element.AreaName })[0]) ?
-                                AreaName_master.filter(el => { return el.Location_Name == element.AreaName })[0]._doc : {},
-                            AreaName: element.AreaName
-                        })
+                        if (filter.AreaName.some(e => e.AreaName === element.AreaName) == false) {
+                            filter.AreaName.push({
+                                ...(AreaName_master.filter(el => { return el.Location_Name == element.AreaName })[0]) ?
+                                    AreaName_master.filter(el => { return el.Location_Name == element.AreaName })[0]._doc : {},
+                                AreaName: element.AreaName
+                            })
+                        }
                     }
-                }
 
 
-                if (req.query.AreaName) {
-                    if (req.query.AreaName.toString().includes(element.AreaName) || req.query.AreaName.toString().includes('ทั้งหมด')) {
+                    if (req.query.AreaName) {
+                        if (req.query.AreaName.toString().includes(element.AreaName) || req.query.AreaName.toString().includes('ทั้งหมด')) {
+                            if (filter.SubAreaName.some(e => e.SubAreaName === element.SubAreaName) == false) {
+                                filter.SubAreaName.push({
+                                    SubAreaName: element.SubAreaName
+                                })
+                            }
+                        }
+                    } else {
                         if (filter.SubAreaName.some(e => e.SubAreaName === element.SubAreaName) == false) {
                             filter.SubAreaName.push({
                                 SubAreaName: element.SubAreaName
                             })
                         }
                     }
-                } else {
-                    if (filter.SubAreaName.some(e => e.SubAreaName === element.SubAreaName) == false) {
-                        filter.SubAreaName.push({
-                            SubAreaName: element.SubAreaName
+
+
+
+                    if (filter.PersonalTypeName.some(e => e.PersonalTypeID === element.PersonalTypeID) == false) {
+                        let check_in_master = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
+                        filter.PersonalTypeName.push({
+                            ...(check_in_master[0]) ? check_in_master[0] : {}, PersonalTypeID: element.PersonalTypeID
                         })
+                    }
+
+
+                    if (filter.CompanyName.some(e => e.CompanyName === element.CompanyName) == false) {
+                        filter.CompanyName.push({ CompanyName: element.CompanyName })
                     }
                 }
 
-
-
-                if (filter.PersonalTypeName.some(e => e.PersonalTypeID === element.PersonalTypeID) == false) {
-                    let check_in_master = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
-                    filter.PersonalTypeName.push({
-                        ...(check_in_master[0]) ? check_in_master[0] : {}, PersonalTypeID: element.PersonalTypeID
-                    })
-                }
-
-
-                if (filter.CompanyName.some(e => e.CompanyName === element.CompanyName) == false) {
-                    filter.CompanyName.push({ CompanyName: element.CompanyName })
-                }
 
 
             }
@@ -271,12 +269,6 @@ const all = async (req, res) => {
         }
 
 
-        // if (typeof req.query.AreaName == 'string') {
-        //     req.query.AreaName = [req.query.AreaName]
-        // }
-        // if (typeof req.query.SubAreaName == 'string') {
-        //     req.query.SubAreaName = [req.query.SubAreaName]
-        // }
 
         await AccessControl.find({
             $and: [
@@ -290,105 +282,110 @@ const all = async (req, res) => {
                 PersonalTypeName
             ]
         }).then((result) => {
-            for (let index = 0; index < result.length; index++) {
-                const element = result[index]._doc;
-                element.notification = {}
-
-                let join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
-
-                if (join_access_control_device.length > 0) {
-                    element.AccDevice = join_access_control_device[0]
+            for (let element of result) {
+                if (!element) {
+                    break;
                 } else {
-                    element.AccDevice = null
-                }
+                    element = element._doc;
+                    element.notification = {}
 
-                let join_personal_type = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
-                element.PersonalTypeName = (join_personal_type.length > 0) ? join_personal_type[0] : null
+                    let join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
 
-                if (element.ACC_ID && element.AccDevice) {
-                    element.AreaName = element.AccDevice.AreaName
-                    element.SubAreaName = element.AccDevice.SubAreaName
-
-                }
-
-
-                if (req.query.AreaName && !req.query.AreaName.includes(element.AreaName)) {
-                    continue
-                }
-                if (req.query.SubAreaName && !req.query.SubAreaName.includes(element.SubAreaName)) {
-                    continue
-                }
-
-
-                let CardTypeName = CardType_master.filter(el => { return el.CardTypeID == element.CardTypeID })
-                element.others.CardTypeName = (CardTypeName.length > 0) ? CardTypeName[0].CardTypeName : null
-
-
-                let PersonalTypeName = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
-
-                if (PersonalTypeName.length > 0) {
-                    element.others.PersonalTypeName = PersonalTypeName[0].PersonalTypeName
-                } else {
-                    element.others.PersonalTypeName = null
-                }
-
-                const today = moment().startOf('day')
-
-                if (element.ScanStatus == '0') {
-                    element.others.ScanStatus_Name = 'ยังไม่ผ่านการสแกน'
-                }
-                else if (element.ScanStatus == '1') {
-                    if (element.others.ScanDateTime1 >= today.toDate() && element.others.ScanDateTime1 <= moment(today).endOf('day').toDate()) {
-                        In = In + 1
+                    if (join_access_control_device.length > 0) {
+                        element.AccDevice = join_access_control_device[0]
+                    } else {
+                        element.AccDevice = null
                     }
-                    element.others.ScanStatus_Name = 'สแกนเข้า'
-                }
-                else if (element.ScanStatus == '2') {
-                    if (element.others.ScanDateTime2 >= today.toDate() && element.others.ScanDateTime2 <= moment(today).endOf('day').toDate()) {
-                        Out = Out + 1
-                    }
-                    element.others.ScanStatus_Name = 'สแกนออก'
-                }
 
-                if (element.OnPlant == true && element.AccDevice && element.AccDevice.AreaID != 0) {
-                    on_plant = on_plant + 1
-                    element.others.show_in_map = true
-                    element.others.on_plant = true
-                } else {
-                    element.others.show_in_map = false
-                    element.others.on_plant = false
-                }
+                    let join_personal_type = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
+                    element.PersonalTypeName = (join_personal_type.length > 0) ? join_personal_type[0] : null
 
-                // if (exchange_card_in_out_check.length > 0) {
-                if (element.ExchangeCardStatus == '1') {
-                    if (element.others.ExchangeCardDateTime1 >= today.toDate() && element.others.ExchangeCardDateTime1 <= moment(today).endOf('day').toDate()) {
-                        // exchange_card_in = exchange_card_in + 1
+                    if (element.ACC_ID && element.AccDevice) {
+                        element.AreaName = element.AccDevice.AreaName
+                        element.SubAreaName = element.AccDevice.SubAreaName
+
                     }
-                    element.others.ExchangeCard_Status_Name = 'แลกบัตรเข้า'
-                }
-                else if (element.ExchangeCardStatus == '2') {
-                    if (element.others.ExchangeCardDateTime2 >= today.toDate() && element.others.ExchangeCardDateTime2 <= moment(today).endOf('day').toDate()) {
+
+
+                    if (req.query.AreaName && !req.query.AreaName.includes(element.AreaName)) {
+                        continue
+                    }
+                    if (req.query.SubAreaName && !req.query.SubAreaName.includes(element.SubAreaName)) {
+                        continue
+                    }
+
+
+                    let CardTypeName = CardType_master.filter(el => { return el.CardTypeID == element.CardTypeID })
+                    element.others.CardTypeName = (CardTypeName.length > 0) ? CardTypeName[0].CardTypeName : null
+
+
+                    let PersonalTypeName = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
+
+                    if (PersonalTypeName.length > 0) {
+                        element.others.PersonalTypeName = PersonalTypeName[0].PersonalTypeName
+                    } else {
+                        element.others.PersonalTypeName = null
+                    }
+
+                    const today = moment().startOf('day')
+
+                    if (element.ScanStatus == '0') {
+                        element.others.ScanStatus_Name = 'ยังไม่ผ่านการสแกน'
+                    }
+                    else if (element.ScanStatus == '1') {
+                        if (element.others.ScanDateTime1 >= today.toDate() && element.others.ScanDateTime1 <= moment(today).endOf('day').toDate()) {
+                            In = In + 1
+                        }
+                        element.others.ScanStatus_Name = 'สแกนเข้า'
+                    }
+                    else if (element.ScanStatus == '2') {
+                        if (element.others.ScanDateTime2 >= today.toDate() && element.others.ScanDateTime2 <= moment(today).endOf('day').toDate()) {
+                            Out = Out + 1
+                        }
+                        element.others.ScanStatus_Name = 'สแกนออก'
+                    }
+
+                    if (element.OnPlant == true && element.AccDevice && element.AccDevice.AreaID != 0) {
+                        on_plant = on_plant + 1
+                        element.others.show_in_map = true
+                        element.others.on_plant = true
+                    } else {
+                        element.others.show_in_map = false
+                        element.others.on_plant = false
+                    }
+
+                    // if (exchange_card_in_out_check.length > 0) {
+                    if (element.ExchangeCardStatus == '1') {
+                        if (element.others.ExchangeCardDateTime1 >= today.toDate() && element.others.ExchangeCardDateTime1 <= moment(today).endOf('day').toDate()) {
+                            // exchange_card_in = exchange_card_in + 1
+                        }
+                        element.others.ExchangeCard_Status_Name = 'แลกบัตรเข้า'
+                    }
+                    else if (element.ExchangeCardStatus == '2') {
+                        if (element.others.ExchangeCardDateTime2 >= today.toDate() && element.others.ExchangeCardDateTime2 <= moment(today).endOf('day').toDate()) {
+                            // exchange_card_out = exchange_card_out + 1
+                        }
+                        element.others.ExchangeCard_Status_Name = 'แลกบัตรออก'
+                    }
+                    else if (element.ExchangeCardStatus == '3') {
                         // exchange_card_out = exchange_card_out + 1
+                        element.others.ExchangeCard_Status_Name = 'De-Activate'
                     }
-                    element.others.ExchangeCard_Status_Name = 'แลกบัตรออก'
-                }
-                else if (element.ExchangeCardStatus == '3') {
-                    // exchange_card_out = exchange_card_out + 1
-                    element.others.ExchangeCard_Status_Name = 'De-Activate'
-                }
-                else if (element.ExchangeCardStatus == '4') {
-                    // exchange_card_out = exchange_card_out + 1
-                    element.others.ExchangeCard_Status_Name = 'Activate'
-                }
-                // }
-                // delete element._id
-                // delete element.__v
+                    else if (element.ExchangeCardStatus == '4') {
+                        // exchange_card_out = exchange_card_out + 1
+                        element.others.ExchangeCard_Status_Name = 'Activate'
+                    }
+                    // }
+                    // delete element._id
+                    // delete element.__v
 
-                element.others.on_table = true
+                    element.others.on_table = true
 
-                all = all + 1
-                data_arr.push(element)
+                    all = all + 1
+                    data_arr.push(element)
 
+
+                }
 
             }
         })
@@ -426,34 +423,39 @@ const all = async (req, res) => {
         })
 
 
-        for (let index = 0; index < data_device.length; index++) {
-            const element = data_device[index]._doc;
-            element.notification = {}
+        for (let element of data_device) {
+            if (!element) {
+                break;
+            } else {
+                element = element._doc;
+                element.notification = {}
 
-            element.others.show_in_map = true
-            element.others.on_table = false
+                element.others.show_in_map = true
+                element.others.on_table = false
 
 
-            let notification = {
-                offline: false
+                let notification = {
+                    offline: false
+                }
+
+                if (element.AccDeviceStatus == '0') {
+                    offline = offline + 1
+                    notification.offline = true
+                    element.others.AccDeviceStatus = 'offline'
+
+                } else if (element.AccDeviceStatus == '1') {
+                    online = online + 1
+                    element.others.AccDeviceStatus = 'online'
+                }
+
+                if (online_offline_check.length > 0) {
+                    element.notification.offline = notification.offline
+
+                }
+
+                data_arr.push(element)
             }
 
-            if (element.AccDeviceStatus == '0') {
-                offline = offline + 1
-                notification.offline = true
-                element.others.AccDeviceStatus = 'offline'
-
-            } else if (element.AccDeviceStatus == '1') {
-                online = online + 1
-                element.others.AccDeviceStatus = 'online'
-            }
-
-            if (online_offline_check.length > 0) {
-                element.notification.offline = notification.offline
-
-            }
-
-            data_arr.push(element)
 
         }
 
