@@ -23,7 +23,7 @@ import { Validator, ValidationError } from "express-json-validator-middleware";
 import { check_jwt } from './src/preHandlers/jwt_auth.js';
 import basicAuth from 'express-basic-auth'
 const require = createRequire(import.meta.url);
-var swaggerDocument = require("./src/utils/swagger.json")
+let swaggerDocument = require("./src/utils/swagger.json")
 
 import fs from 'fs'
 import { fileURLToPath } from 'url';
@@ -47,8 +47,11 @@ import { logsRouters, logsSchema } from './src/routers/logs.js';
 import { masterRouters, schema } from './src/routers/master.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+let helmet = require("helmet");
 
-const server = express()
+let server = express(); // Compliant
+server.use(helmet.hidePoweredBy());
+
 server.use(methodOverride())
 server.use(cors())
 server.use(bodyParser.urlencoded({
