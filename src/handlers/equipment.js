@@ -356,7 +356,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
     if (Notification.includes('near_expire')) {
         Notification_.$or.push({
             $or: [
-                { Inspect_Status: 0, DateTime_In: { $lte: new Date(new Date().getTime() - (11 * 60 * 60 * 1000)) }, DateTime_In: { $gt: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)) } },
+                { Inspect_Status: 0, DateTime_In: { $lte: new Date(new Date().getTime() - (11 * 60 * 60 * 1000)), $gt: new Date(new Date().getTime() - (12 * 60 * 60 * 1000)) } },
                 { Inspect_Status: 1, WarningStatus: 'ใกล้หมดอายุ' }
             ]
         })
