@@ -2,8 +2,8 @@
 import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import VehicleType from "../models/Master/VehicleType/VehicleType.js";
 import _ from 'lodash'
-import moment from 'moment-timezone';
 import User from '../models/User/User.js';
+import sanitizeHtml from "sanitize-html";
 
 const all = async (req, res) => {
 
@@ -57,6 +57,10 @@ const all = async (req, res) => {
 
         }
 
+
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
+
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
@@ -89,6 +93,10 @@ const byid = async (req, res) => {
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
+
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
+
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
@@ -115,6 +123,9 @@ const add = async (req, res) => {
                 created_by: req._id,
                 created_date: new Date()
             })
+
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
@@ -142,6 +153,9 @@ const edit = async (req, res) => {
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
+
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         return res.send(utilSetResponseJson('success', data))
 
     } catch (error) {

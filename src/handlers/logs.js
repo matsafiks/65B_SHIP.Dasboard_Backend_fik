@@ -1,20 +1,12 @@
 
 import utilSetResponseJson from '../utils/util.SetResponseJson.js';
-import Group from "../models/Group/Group.js";
 import _ from 'lodash'
-import moment from 'moment-timezone';
-import { generateHashPassword } from '../utils/function.js';
-import { permission } from '../preHandlers/permission.js';
-import config from '../utils/config.js';
-import axios from 'axios';
 import Logs from '../models/Logs/Logs.js';
+import sanitizeHtml from "sanitize-html";
 
 const all = async (req, res) => {
 
     try {
-
-        // await permission('62a594d7bb8946576769c6a7', req)
-
 
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
@@ -69,6 +61,8 @@ const all = async (req, res) => {
 
         }
 
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)

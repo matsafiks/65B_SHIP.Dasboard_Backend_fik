@@ -2,11 +2,11 @@
 import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Group from "../models/Group/Group.js";
 import _ from 'lodash'
-import moment from 'moment-timezone';
 import User from '../models/User/User.js';
 import { permission } from '../preHandlers/permission.js';
 import config from '../utils/config.js';
 import axios from 'axios';
+import sanitizeHtml from "sanitize-html";
 
 const all = async (req, res) => {
 
@@ -82,6 +82,8 @@ const all = async (req, res) => {
 
         }
 
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
@@ -113,6 +115,8 @@ const byid = async (req, res) => {
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
@@ -166,6 +170,8 @@ const add = async (req, res) => {
                 created_by: req._id,
                 created_date: new Date()
             })
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
@@ -201,7 +207,7 @@ const edit = async (req, res) => {
         delete req.body.created_date
 
         await Group.updateOne(
-            { _id: req.params._id },
+            { _id: req.params._id.toString() },
             {
                 ...req.body,
                 updated_by: req._id,
@@ -209,10 +215,12 @@ const edit = async (req, res) => {
             })
 
         let data = await Group.findOne()
-            .where({ _id: req.params._id })
+            .where({ _id: req.params._id.toString() })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         return res.send(utilSetResponseJson('success', data))
 
     } catch (error) {

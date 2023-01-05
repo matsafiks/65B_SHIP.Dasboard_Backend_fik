@@ -4,6 +4,7 @@ import Location from "../models/Master/Location/Location.js";
 import _ from 'lodash'
 import moment from 'moment-timezone';
 import User from '../models/User/User.js';
+import sanitizeHtml from "sanitize-html";
 
 const all = async (req, res) => {
 
@@ -55,14 +56,16 @@ const all = async (req, res) => {
             data: data
 
         }
-
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
-            return res.send(utilSetResponseJson(escape('success'), data))
-        return utilSetResponseJson(escape('success'), data)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
+        error = error.toString()
         if (res)
-            return res.send(utilSetResponseJson(escape('failed'), escape(error.toString())))
-        return utilSetResponseJson(escape('failed'), escape(error.toString()))
+            return res.send(utilSetResponseJson('failed', error))
+        return utilSetResponseJson('failed', error)
     }
 }
 const byid = async (req, res) => {
@@ -86,15 +89,17 @@ const byid = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            return res.send(utilSetResponseJson(escape('failed'), escape('data not found')))
+            return res.send(utilSetResponseJson('failed', 'data not found'))
         }
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
-            return res.send(utilSetResponseJson(escape('success'), data))
-        return utilSetResponseJson(escape('success'), data)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
         if (res)
-            return res.send(utilSetResponseJson(escape('failed'), error.toString()))
-        return utilSetResponseJson(escape('failed'), error.toString())
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 const add = async (req, res) => {
@@ -118,13 +123,16 @@ const add = async (req, res) => {
                 created_by: req._id,
                 created_date: new Date()
             })
+
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
-            return res.send(utilSetResponseJson(escape('success'), data))
-        return utilSetResponseJson(escape('success'), data)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
         if (res)
-            return res.send(utilSetResponseJson(escape('failed'), error.toString()))
-        return utilSetResponseJson(escape('failed'), error.toString())
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 
@@ -143,12 +151,15 @@ const edit = async (req, res) => {
         let data = await Location.findOne()
             .where({ _id: req.params._id })
         if (!data) {
-            return res.send(utilSetResponseJson(escape('failed'), 'data not found'))
+            return res.send(utilSetResponseJson('failed', 'data not found'))
         }
-        return res.send(utilSetResponseJson(escape('success'), data))
+
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
+        return res.send(utilSetResponseJson('success', data))
 
     } catch (error) {
-        return res.send(utilSetResponseJson(escape('failed'), error.toString()))
+        return res.send(utilSetResponseJson('failed', error.toString()))
     }
 
 }
@@ -158,15 +169,15 @@ const destroy = async (req, res) => {
         let data = await Location.findOne()
             .where({ _id: req.params._id })
         if (!data) {
-            return res.send(utilSetResponseJson(escape('failed'), 'data not found'))
+            return res.send(utilSetResponseJson('failed', 'data not found'))
         }
         await Location.deleteOne(
             { _id: req.params._id })
 
-        return res.send(utilSetResponseJson(escape('success'), escape('success')))
+        return res.send(utilSetResponseJson('success', 'success'))
 
     } catch (error) {
-        return res.send(utilSetResponseJson(escape('failed'), error.toString()))
+        return res.send(utilSetResponseJson('failed', error.toString()))
     }
 }
 
