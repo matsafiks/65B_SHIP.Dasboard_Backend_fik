@@ -38,57 +38,61 @@ const all = async (req, res) => {
             .sort((order == 'desc') ? '-' + sort : sort)
             .then((async (result) => {
                 for (let element of result) {
-                    element = element._doc;
-                    element.role = []
-                    element.child = []
-                    element.role = role_all.filter((el) => {
-                        if (el.application_id == element._id) {
-                            el._doc.group_name = group_all.filter((el1) => {
-                                if (el1._id == el.group_id) {
-                                    return el1
-                                }
-                            })
-                            el._doc.group_name = el._doc.group_name[0].group_name
-                            return el
-                        }
-                    })
+                    if (!element) {
+                        break;                                 // Compliant
+                    } else {
+                        element = element._doc;
+                        element.role = []
+                        element.child = []
+                        element.role = role_all.filter((el) => {
+                            if (el.application_id == element._id) {
+                                el._doc.group_name = group_all.filter((el1) => {
+                                    if (el1._id == el.group_id) {
+                                        return el1
+                                    }
+                                })
+                                el._doc.group_name = el._doc.group_name[0].group_name
+                                return el
+                            }
+                        })
 
-                    element.child = application_all.filter((el) => {
-                        if (el.parent_id == element._id) {
-                            el._doc.role = []
-                            el._doc.child = []
-                            el._doc.role = role_all.filter((el1) => {
-                                if (el1.application_id == el._id) {
-                                    el1._doc.group_name = group_all.filter((el2) => {
-                                        if (el2._id == el1.group_id) {
-                                            return el2
-                                        }
-                                    })
-                                    el1._doc.group_name = el1._doc.group_name[0].group_name
-                                    return el1
-                                }
-                            })
-                            el._doc.child = application_all.filter((el1) => {
-                                if (el1.parent_id == el._id) {
-                                    el1._doc.role = []
-                                    el1._doc.child = []
-                                    el1._doc.role = role_all.filter((el2) => {
-                                        if (el2.application_id == el1._id) {
-                                            el2._doc.group_name = group_all.filter((el3) => {
-                                                if (el3._id == el2.group_id) {
-                                                    return el3
-                                                }
-                                            })
-                                            el2._doc.group_name = el2._doc.group_name[0].group_name
-                                            return el2
-                                        }
-                                    })
-                                    return el1
-                                }
-                            })
-                            return el
-                        }
-                    })
+                        element.child = application_all.filter((el) => {
+                            if (el.parent_id == element._id) {
+                                el._doc.role = []
+                                el._doc.child = []
+                                el._doc.role = role_all.filter((el1) => {
+                                    if (el1.application_id == el._id) {
+                                        el1._doc.group_name = group_all.filter((el2) => {
+                                            if (el2._id == el1.group_id) {
+                                                return el2
+                                            }
+                                        })
+                                        el1._doc.group_name = el1._doc.group_name[0].group_name
+                                        return el1
+                                    }
+                                })
+                                el._doc.child = application_all.filter((el1) => {
+                                    if (el1.parent_id == el._id) {
+                                        el1._doc.role = []
+                                        el1._doc.child = []
+                                        el1._doc.role = role_all.filter((el2) => {
+                                            if (el2.application_id == el1._id) {
+                                                el2._doc.group_name = group_all.filter((el3) => {
+                                                    if (el3._id == el2.group_id) {
+                                                        return el3
+                                                    }
+                                                })
+                                                el2._doc.group_name = el2._doc.group_name[0].group_name
+                                                return el2
+                                            }
+                                        })
+                                        return el1
+                                    }
+                                })
+                                return el
+                            }
+                        })
+                    }
 
                 }
                 return result
@@ -133,56 +137,61 @@ const byid = async (req, res) => {
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let element of result) {
-                    element = element._doc;
-                    element.role = []
-                    element.child = []
-                    element.role = role_all.filter((el, index) => {
-                        if (el.application_id == element._id) {
-                            el._doc.group_name = group_all.filter((el1) => {
-                                if (el1._id == el.group_id) {
-                                    return el1
-                                }
-                            })
-                            el._doc.group_name = el._doc.group_name[0].group_name
-                            return el
-                        }
-                    })
-                    element.child = application_all.filter((el) => {
-                        if (el.parent_id == element._id) {
-                            el._doc.role = []
-                            el._doc.child = []
-                            el._doc.role = role_all.filter((el1) => {
-                                if (el1.application_id == el._id) {
-                                    el1._doc.group_name = group_all.filter((el2) => {
-                                        if (el2._id == el1.group_id) {
-                                            return el2
-                                        }
-                                    })
-                                    el1._doc.group_name = el1._doc.group_name[0].group_name
-                                    return el1
-                                }
-                            })
-                            el._doc.child = application_all.filter((el1) => {
-                                if (el1.parent_id == el._id) {
-                                    el1._doc.role = []
-                                    el1._doc.child = []
-                                    el1._doc.role = role_all.filter((el2) => {
-                                        if (el2.application_id == el1._id) {
-                                            el2._doc.group_name = group_all.filter((el3) => {
-                                                if (el3._id == el2.group_id) {
-                                                    return el3
-                                                }
-                                            })
-                                            el2._doc.group_name = el2._doc.group_name[0].group_name
-                                            return el2
-                                        }
-                                    })
-                                    return el1
-                                }
-                            })
-                            return el
-                        }
-                    })
+                    if (!element) {
+                        break;                                 // Compliant
+                    } else {
+                        element = element._doc;
+                        element.role = []
+                        element.child = []
+                        element.role = role_all.filter((el, index) => {
+                            if (el.application_id == element._id) {
+                                el._doc.group_name = group_all.filter((el1) => {
+                                    if (el1._id == el.group_id) {
+                                        return el1
+                                    }
+                                })
+                                el._doc.group_name = el._doc.group_name[0].group_name
+                                return el
+                            }
+                        })
+                        element.child = application_all.filter((el) => {
+                            if (el.parent_id == element._id) {
+                                el._doc.role = []
+                                el._doc.child = []
+                                el._doc.role = role_all.filter((el1) => {
+                                    if (el1.application_id == el._id) {
+                                        el1._doc.group_name = group_all.filter((el2) => {
+                                            if (el2._id == el1.group_id) {
+                                                return el2
+                                            }
+                                        })
+                                        el1._doc.group_name = el1._doc.group_name[0].group_name
+                                        return el1
+                                    }
+                                })
+                                el._doc.child = application_all.filter((el1) => {
+                                    if (el1.parent_id == el._id) {
+                                        el1._doc.role = []
+                                        el1._doc.child = []
+                                        el1._doc.role = role_all.filter((el2) => {
+                                            if (el2.application_id == el1._id) {
+                                                el2._doc.group_name = group_all.filter((el3) => {
+                                                    if (el3._id == el2.group_id) {
+                                                        return el3
+                                                    }
+                                                })
+                                                el2._doc.group_name = el2._doc.group_name[0].group_name
+                                                return el2
+                                            }
+                                        })
+                                        return el1
+                                    }
+                                })
+                                return el
+                            }
+                        })
+                    }
+
                 }
                 return result
             }))
@@ -207,13 +216,17 @@ const add = async (req, res) => {
 
         await permission('62a5f0a4f06755a7772347e1', req)
 
-
         if (req.body.role && req.body.role.length > 0) {
             for (let element of req.body.role) {
-                let check = await Group.findOne().where({ _id: element.group_id.toString() })
-                if (!check) {
-                    throw new Error("group not found")
+                if (!element) {
+                    break;                                 // Compliant
+                } else {
+                    let check = await Group.findOne().where({ _id: element.group_id.toString() })
+                    if (!check) {
+                        throw new Error("group not found")
+                    }
                 }
+
             }
         }
         if (!req.body.url) {
@@ -240,19 +253,22 @@ const add = async (req, res) => {
 
             await Role.deleteMany({ application_id: req.params._id })
 
-            for (let index = 0; index < req.body.role.length; index++) {
-                const element = req.body.role[index];
+            for (let element of req.body.role) {
+                if (!element) {
+                    break;                                 // Compliant
+                } else {
+                    await Role.create({
+                        // ...element,
+                        application_id: data._id.toString(),
+                        group_id: element.group_id.toString(),
+                        get: element.get,
+                        put: element.put,
+                        post: element.post,
+                        delete: element.delete
 
-                await Role.create({
-                    // ...element,
-                    application_id: data._id.toString(),
-                    group_id: element.group_id.toString(),
-                    get: element.get,
-                    put: element.put,
-                    post: element.post,
-                    delete: element.delete
+                    })
+                }
 
-                })
             }
         }
         data = sanitizeHtml(JSON.stringify(data))
@@ -286,10 +302,15 @@ const edit = async (req, res) => {
 
         if (req.body.role && req.body.role.length > 0) {
             for (let element of req.body.role) {
-                let check = await Group.findOne().where({ _id: element.group_id })
-                if (!check) {
-                    throw new Error("group not found")
+                if (!element) {
+                    break;                                 // Compliant
+                } else {
+                    let check = await Group.findOne().where({ _id: element.group_id })
+                    if (!check) {
+                        throw new Error("group not found")
+                    }
                 }
+
             }
         }
 
@@ -304,19 +325,22 @@ const edit = async (req, res) => {
 
             await Role.deleteMany({ application_id: req.params._id })
 
-            for (let index = 0; index < req.body.role.length; index++) {
-                const element = req.body.role[index];
+            for (let element of req.body.role) {
+                if (!element) {
+                    break;                                 // Compliant
+                } else {
+                    await Role.create({
+                        // ...element,
+                        application_id: req.params._id.toString(),
+                        group_id: element.group_id.toString(),
+                        get: element.get,
+                        put: element.put,
+                        post: element.post,
+                        delete: element.delete
 
-                await Role.create({
-                    // ...element,
-                    application_id: req.params._id.toString(),
-                    group_id: element.group_id.toString(),
-                    get: element.get,
-                    put: element.put,
-                    post: element.post,
-                    delete: element.delete
+                    })
+                }
 
-                })
             }
         } else if (req.body.role && req.body.role.length == 0) {
             await Role.deleteMany({ application_id: req.params._id.toString() })
@@ -326,9 +350,14 @@ const edit = async (req, res) => {
             .where({ _id: req.params._id.toString() })
             .then((async (result) => {
                 for (let element of result.length) {
-                    element = element._doc;
-                    let role = await Role.find().where({ application_id: element._id.toString() })
-                    element.role = role
+                    if (!element) {
+                        break;                                 // Compliant
+                    } else {
+                        element = element._doc;
+                        let role = await Role.find().where({ application_id: element._id.toString() })
+                        element.role = role
+                    }
+
 
                 }
                 return result[0]
