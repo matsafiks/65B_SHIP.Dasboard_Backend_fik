@@ -152,9 +152,10 @@ const add = async (req, res) => {
             return res.data
         }).catch(err => {
             if (err.response.data.fieldErrors['role.name'][0].code == '[duplicate]role.name') {
-                throw 'others.name duplicate'
+                throw new Error("others.name duplicate")
+
             }
-            throw err.toString()
+            throw new Error(err.toString())
         })
 
         let data = await Group.create(
@@ -192,7 +193,7 @@ const edit = async (req, res) => {
                     }
                 }
             ).catch(err => {
-                throw err.toString()
+                throw new Error(err.toString())
             })
         }
 
@@ -236,7 +237,7 @@ const destroy = async (req, res) => {
                 }
             }
         ).catch(err => {
-            throw err.toString()
+            throw new Error(err.toString())
         })
 
         await Group.deleteOne(

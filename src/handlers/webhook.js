@@ -164,7 +164,7 @@ const scaffolding = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook scaffolding', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
 
             })
         }
@@ -178,7 +178,7 @@ const scaffolding = async (req, res) => {
 
                     }).catch(error_str => {
                         insert_log(req, 'webhook scaffolding', error_str.toString())
-                        throw error_str
+                        throw new Error(error_str)
 
                     })
             }
@@ -311,7 +311,7 @@ const workPermit = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook workpermit', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         if (data_update.length > 0) {
@@ -324,7 +324,7 @@ const workPermit = async (req, res) => {
 
                     }).catch(error_str => {
                         insert_log(req, 'webhook workpermit', error_str.toString())
-                        throw error_str
+                        throw new Error(error_str)
                     })
 
             }
@@ -505,7 +505,7 @@ const accessControl = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook accesscontrol', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         if (data_update.length > 0) {
@@ -518,7 +518,7 @@ const accessControl = async (req, res) => {
 
                     }).catch(error_str => {
                         insert_log(req, 'webhook accesscontrol', error_str.toString())
-                        throw error_str
+                        throw new Error(error_str)
                     })
             }
         }
@@ -725,7 +725,7 @@ const accessControlDevice = async (req, res) => {
 
         }).catch(error_str => {
             insert_log(req, 'webhook accesscontroldevice', error_str.toString())
-            throw error_str
+            throw new Error(error_str)
         })
 
         io.sockets.emit('accesscontroldevice', 'new')
@@ -774,7 +774,7 @@ const accessControlExchangeCard = async (req, res) => {
 
         }).catch(error_str => {
             insert_log(req, 'webhook accesscontrolexchangecard', error_str.toString())
-            throw error_str
+            throw new Error(error_str)
         })
 
         io.sockets.emit('accesscontrol', 'new')
@@ -895,7 +895,7 @@ const equipment = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook equipment', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         if (data_update.length > 0) {
@@ -908,7 +908,7 @@ const equipment = async (req, res) => {
 
                     }).catch(error_str => {
                         insert_log(req, 'webhook equipment', error_str.toString())
-                        throw error_str
+                        throw new Error(error_str)
                     })
             }
         }
@@ -1002,7 +1002,7 @@ const equipmentVehicle = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook equipmentvehicle', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         if (data_update.length > 0) {
@@ -1015,7 +1015,7 @@ const equipmentVehicle = async (req, res) => {
 
                     }).catch(error_str => {
                         insert_log(req, 'webhook equipmentvehicle', error_str.toString())
-                        throw error_str
+                        throw new Error(error_str)
                     })
             }
         }
@@ -1137,7 +1137,7 @@ const vehicle = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook vehicle', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         if (data_update.length > 0) {
@@ -1150,7 +1150,7 @@ const vehicle = async (req, res) => {
 
                     }).catch(error_str => {
                         insert_log(req, 'webhook vehicle', error_str.toString())
-                        throw error_str
+                        throw new Error(error_str)
                     })
             }
         }
@@ -1245,7 +1245,7 @@ const vehicle2 = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook vehicle2', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         if (data_update.length > 0) {
@@ -1258,7 +1258,7 @@ const vehicle2 = async (req, res) => {
 
                     }).catch(error_str => {
                         insert_log(req, 'webhook vehicle2', error_str.toString())
-                        throw error_str
+                        throw new Error(error_str)
                     })
             }
         }
@@ -1341,7 +1341,7 @@ const vehicle5 = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook vehicle5', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         // if (data_update.length > 0) {
@@ -1391,7 +1391,7 @@ const vehicle6 = async (req, res) => {
 
         }).catch(error_str => {
             insert_log(req, 'webhook vehicle6', error_str.toString())
-            throw error_str
+            throw new Error(error_str)
         })
 
         let data = await Vehicle6.findOne()
@@ -1515,7 +1515,7 @@ const people = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook people', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
 
             })
         }
@@ -1609,7 +1609,7 @@ const peopleRestrict = async (req, res) => {
 
             }).catch(error_str => {
                 insert_log(req, 'webhook peoplerestrict', error_str.toString())
-                throw error_str
+                throw new Error(error_str)
             })
         }
         // if (data_update.length > 0) {

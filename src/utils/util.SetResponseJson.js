@@ -18,7 +18,7 @@ const allowedStatusNames = [
  */
 const utilSetResponseJson = (status, data) => {
     if (!_.isString(status) || !allowedStatusNames.includes(status)) {
-        throw Error(`Render response data has failed, due parameter "status" must be only one of [${allowedStatusNames}]`);
+        throw new Error(`Render response data has failed, due parameter "status" must be only one of [${allowedStatusNames}]`);
     }
     else {
         return { Status: status, Message: data };

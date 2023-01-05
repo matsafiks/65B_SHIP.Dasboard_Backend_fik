@@ -134,7 +134,7 @@ const add = async (req, res) => {
         if (req.body.group_id) {
             let check = await Group.findOne().where({ _id: req.body.group_id })
             if (!check) {
-                throw 'group_id not found'
+                throw new Error('group_id not found')
             }
         }
         let status = (req.body.status != undefined) ? req.body.status : 1
@@ -161,7 +161,7 @@ const add = async (req, res) => {
         ).then(res => {
             return res.data
         }).catch(err => {
-            throw err.response.data
+            throw new Error(err.response.data)
         })
 
         if (req.body.group_id) {
@@ -196,7 +196,7 @@ const add = async (req, res) => {
             ).then(res => {
                 return res.data
             }).catch(err => {
-                throw err.response.data
+                throw new Error(err.response.data)
             })
 
         } else {
@@ -235,7 +235,7 @@ const edit = async (req, res) => {
         if (req.body.group_id) {
             let check = await Group.findOne().where({ _id: req.body.group_id })
             if (!check) {
-                throw 'group_id not found'
+                throw new Error('group_id not found')
             }
         }
 
@@ -258,7 +258,7 @@ const edit = async (req, res) => {
             ).then(res => {
                 return res.data
             }).catch(err => {
-                throw err.response.data
+                throw new Error(err.response.data)
             })
 
             put_user.others = put_user_.user.data
@@ -295,7 +295,7 @@ const edit = async (req, res) => {
             ).then(res => {
                 return res.data
             }).catch(err => {
-                throw err.response.data
+                throw new Error(err.response.data)
             })
 
         }
@@ -338,7 +338,7 @@ const destroy = async (req, res) => {
         ).then(res => {
             return res.data
         }).catch(err => {
-            throw err.response.data
+            throw new Error(err.response.data)
         })
 
         await User.deleteOne(

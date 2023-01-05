@@ -1,12 +1,10 @@
 
 import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Application from "../models/Application/Application.js";
-import _ from 'lodash'
-import moment from 'moment-timezone';
-import User from '../models/User/User.js';
 import Group from '../models/Group/Group.js';
 import Role from '../models/Role/Role.js';
 import { permission } from '../preHandlers/permission.js';
+import sanitizeHtml from "sanitize-html";
 
 // const all = async (req, res) => {
 
@@ -119,11 +117,6 @@ const all = async (req, res) => {
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
-                    // if (element.created_by) {
-                    //     let created_by = await User.findOne().where({ _id: element.created_by })
-                    //     if (created_by)
-                    //         element.created_by = created_by._doc.username
-                    // }
                     element.role = []
                     element.child = []
                     element.role = role_all.filter((el) => {
@@ -192,12 +185,13 @@ const all = async (req, res) => {
 
         }
 
-        data = escape(data)
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         if (res)
             return res.send(utilSetResponseJson('failed', error))
         return utilSetResponseJson('failed', error)
@@ -276,15 +270,15 @@ const byid = async (req, res) => {
                 return result
             }))
         if (!data) {
-            let msg = escape("data not found")
-            return res.send(utilSetResponseJson("failed", msg))
+            return res.send(utilSetResponseJson("failed", "data not found"))
         }
-        data = escape(data)
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         if (res)
             return res.send(utilSetResponseJson('failed', error))
         return utilSetResponseJson('failed', error)
@@ -367,9 +361,9 @@ const add = async (req, res) => {
         if (req.body.role && req.body.role.length > 0) {
             for (let index = 0; index < req.body.role.length; index++) {
                 const element = req.body.role[index];
-                let check = await Group.findOne().where({ _id: element.group_id })
+                let check = await Group.findOne().where({ _id: element.group_id.toString() })
                 if (!check) {
-                    throw 'group not found'
+                    throw new Error("group not found")
                 }
             }
         }
@@ -412,12 +406,13 @@ const add = async (req, res) => {
                 })
             }
         }
-        data = escape(data)
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
         if (res)
             return res.send(utilSetResponseJson('success', data))
         return utilSetResponseJson('success', data)
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         if (res)
             return res.send(utilSetResponseJson('failed', error))
         return utilSetResponseJson('failed', error)
@@ -434,7 +429,8 @@ const edit = async (req, res) => {
         if (req.body.parent_id) {
             let check = await Application.findOne().where({ _id: req.body.parent_id })
             if (!check) {
-                throw 'parent_id not found'
+                throw new Error("parent_id not found")
+
             }
 
         }
@@ -444,7 +440,7 @@ const edit = async (req, res) => {
                 const element = req.body.role[index];
                 let check = await Group.findOne().where({ _id: element.group_id })
                 if (!check) {
-                    throw 'group not found'
+                    throw new Error("group not found")
                 }
             }
         }
@@ -490,13 +486,15 @@ const edit = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            let msg = escape("data not found")
-            return res.send(utilSetResponseJson("failed", msg))
+            return res.send(utilSetResponseJson("failed", "data not found"))
         }
+        data = sanitizeHtml(JSON.stringify(data))
+        data = JSON.parse(data)
+
         return res.send(utilSetResponseJson('success', data))
 
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         return res.send(utilSetResponseJson('failed', error))
     }
 
@@ -518,11 +516,10 @@ const destroy = async (req, res) => {
 
         await Role.deleteMany({ application_id: req.params._id })
 
-        let msg = escape("success")
-        return res.send(utilSetResponseJson('success', msg))
+        return res.send(utilSetResponseJson('success', "success"))
 
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         return res.send(utilSetResponseJson('failed', error))
     }
 }

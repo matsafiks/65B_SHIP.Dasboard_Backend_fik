@@ -13,7 +13,7 @@ const permission = (async (application_id, req) => {
 
     let check_permission = await Role.find().where({ application_id: application_id, group_id: check_user.group_id })
     if (check_permission.length == 0) {
-        throw 'Forbidden'
+        throw new Error('Forbidden')
     }
 
 })

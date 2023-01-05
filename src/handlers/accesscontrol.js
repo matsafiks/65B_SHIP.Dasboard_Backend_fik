@@ -8,6 +8,7 @@ import moment from 'moment'
 import Role from '../models/Role/Role.js';
 import Location from "../models/Master/Location/Location.js";
 import AccessControlExchangeCard from "../models/AccessControlExchangeCard/AccessControlExchangeCard.js";
+import sanitizeHtml from "sanitize-html";
 
 const all = async (req, res) => {
     try {
@@ -37,7 +38,6 @@ const all = async (req, res) => {
         let online = 0
         let offline = 0
         let data_arr = []
-        let main_plant = 0
 
 
         // let check_run_no = await AccessControlDevice.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
@@ -73,56 +73,57 @@ const all = async (req, res) => {
             { PersonalTypeID: '8', PersonalTypeName: 'ผู้มาติดต่อ' }
         ]
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: req.query.AgencyName } }
+        }
 
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { PTTStaffCode: { $in: req.query.PTTStaffCode } }
+        }
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: req.query.AreaName } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: req.query.SubAreaName } }
+        }
+
 
         let Scan_Date_Time_Start = (req) ? req.query.Scan_Date_Time_Start : undefined
-        Scan_Date_Time_Start = (Scan_Date_Time_Start) ? { 'others.scan_date_time': { $gte: Scan_Date_Time_Start } } : {}
+        Scan_Date_Time_Start = (Scan_Date_Time_Start) ? { 'others.scan_date_time': { $gte: Scan_Date_Time_Start.toString() } } : {}
 
 
         let Scan_Date_Time_End = (req) ? req.query.Scan_Date_Time_End : undefined
-        Scan_Date_Time_End = (Scan_Date_Time_End) ? { 'others.scan_date_time': { $lte: Scan_Date_Time_End } } : {}
+        Scan_Date_Time_End = (Scan_Date_Time_End) ? { 'others.scan_date_time': { $lte: Scan_Date_Time_End.toString() } } : {}
 
-        let AccDeviceName = (req) ? (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) ? req.query.AccDeviceName : undefined : undefined
-        if (AccDeviceName) {
-            AccDeviceName = AccDeviceName_master.filter(el => { return AccDeviceName.includes(el.AccDeviceName) })
-            if (AccDeviceName.length == 0) {
-                if (res)
-                    return res.send(utilSetResponseJson('failed', 'AccDeviceName not found'))
-                return utilSetResponseJson('failed', 'AccDeviceName not found')
-            }
-            AccDeviceName = AccDeviceName[0].AccDeviceID
+        let AccDeviceName = {}
+        if (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) {
+            AccDeviceName = { ACC_ID: req.query.AccDeviceName.toString() }
+
         }
-        AccDeviceName = (AccDeviceName) ? { ACC_ID: AccDeviceName } : {}
 
+        let PersonalTypeName = {}
+        if (req.query.PersonalTypeName && !req.query.PersonalTypeName.toString().includes('ทั้งหมด')) {
+            PersonalTypeName = { PersonalTypeID: { $in: req.query.PersonalTypeName } }
 
-        let PersonalTypeName = (req) ? (req.query.PersonalTypeName && !req.query.PersonalTypeName.toString().includes('ทั้งหมด')) ? req.query.PersonalTypeName : undefined : undefined
-        if (PersonalTypeName) {
-            PersonalTypeName = PersonalType_master.filter(el => { return PersonalTypeName.includes(el.PersonalTypeName) })
-            if (PersonalTypeName.length == 0) {
-                if (res)
-                    return res.send(utilSetResponseJson('failed', 'PersonalTypeName not found'))
-                return utilSetResponseJson('failed', 'AccDeviceName not found')
-            }
-
-            PersonalTypeName = PersonalTypeName.map(el => { return el.PersonalTypeID })
         }
-        PersonalTypeName = (PersonalTypeName) ? { PersonalTypeID: { $in: PersonalTypeName } } : {}
 
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { CompanyName: { $in: req.query.CompanyName } }
+        }
 
-        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let Notification = []
+        if (req.query.Notification && !req.query.Notification.toString().includes('ทั้งหมด')) {
+            Notification = req.query.notification
+        }
+
 
         let check_user = await User.findOne().where({ _id: req._id })
 
@@ -501,13 +502,11 @@ const all = async (req, res) => {
             data_.MessageAlert = 'ไม่พบข้อมูลใบงานที่คุณเป็นผู้ควบคุมงาน กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
 
-        data_ = escape(data_)
-        res.send(data_)
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
+        data_ = sanitizeHtml(JSON.stringify(data_))
+        res.send(JSON.parse(data_))
+
     } catch (error) {
-        error = escape(error.toString())
+        error = error.toString()
         if (res)
             return res.send(utilSetResponseJson('failed', error))
         return utilSetResponseJson('failed', error)

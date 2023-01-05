@@ -76,20 +76,20 @@ const utilConvertStringToNumberSeconds = (inputString = "") => {
 
         const regexSelect2 = /^(d|D|m|M|y|Y|h|H|m|M|s|S){1}$/g;
 
-        if (!regexMatchFormat.test(inputString)) { throw Error("Parameter @inputString wrong format"); }
+        if (!regexMatchFormat.test(inputString)) { throw new Error("Parameter @inputString wrong format"); }
         else {
             const splitData = inputString.split(regexMatchFormat).filter(where => where !== "");
-            if (splitData.length !== 2) { throw Error("Parameter @inputString wrong format, due failed to split data"); }
+            if (splitData.length !== 2) { throw new Error("Parameter @inputString wrong format, due failed to split data"); }
             else {
                 const valueData = splitData[0];
-                if (valueData.replace(regexSelect1, "").length !== 0) { throw Error("Parameter @inputString wrong format, due wrong format in selection 1"); }
-                else if (!Number.isSafeInteger(Number(valueData))) { throw Error("Parameter @inputString wrong format, due wrong format in selection 1"); }
+                if (valueData.replace(regexSelect1, "").length !== 0) { throw new Error("Parameter @inputString wrong format, due wrong format in selection 1"); }
+                else if (!Number.isSafeInteger(Number(valueData))) { throw new Error("Parameter @inputString wrong format, due wrong format in selection 1"); }
                 else {
                     const modifierData = splitData[1];
-                    if (modifierData.replace(regexSelect2, "").length !== 0) { throw Error("Parameter @inputString wrong format, due wording format in selection 2"); }
+                    if (modifierData.replace(regexSelect2, "").length !== 0) { throw new Error("Parameter @inputString wrong format, due wording format in selection 2"); }
                     else {
                         const getContentModifier = enumModifier.filter(where => where.modifier === modifierData.toLowerCase());
-                        if (getContentModifier.length !== 1) { throw Error("Parameter @inputString wrong format, due no modifier matched in selection 2"); }
+                        if (getContentModifier.length !== 1) { throw new Error("Parameter @inputString wrong format, due no modifier matched in selection 2"); }
                         else {
                             return (+valueData) * getContentModifier[0].multiplexer;
                         }
