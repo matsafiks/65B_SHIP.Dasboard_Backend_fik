@@ -107,13 +107,13 @@ const dateStrToDdmmyyy = (str) => {
     // })
 
     //"23/10/2015"; // Oct 23
-    var date = str.split(" ");
-    var dateParts = date[0].split("/");
-    // var dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
+    let date = str.split(" ");
+    let dateParts = date[0].split("/");
+    // let dateObject = new Date(+dateParts[2], dateParts[1] - 1, +dateParts[0]);
     dateParts = dateParts[1] + '-' + dateParts[0] + '-' + dateParts[2]
     if (date[1] != null)
         dateParts = dateParts + ' ' + date[1]
-    var dateObject = new Date(dateParts);
+    let dateObject = new Date(dateParts);
     return dateObject
 }
 

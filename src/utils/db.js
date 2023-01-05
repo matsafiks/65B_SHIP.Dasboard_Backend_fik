@@ -3,10 +3,10 @@ import fs from "fs";
 import config from './config.js'
 // import tunnel from 'tunnel-ssh';
 
-var mongoose_connect = () => {
+let mongoose_connect = () => {
     mongoose.connect(config.mongo_db);
 
-    var db = mongoose.connection;
+    let db = mongoose.connection;
 
     db.on('error', console.error.bind(console, 'DB connection error:'));
     db.once('open', function () {
@@ -19,7 +19,7 @@ export default mongoose_connect
 // db.getCollectionNames().forEach(c => { if (c != 'system.users' && c != 'system.version') { db[c].drop() } })
 
 
-// var config_db = {
+// let config_db = {
 //     username: 'root',
 //     host: '212.80.213.252',
 //     agent: process.env.SSH_AUTH_SOCK,
@@ -35,7 +35,7 @@ export default mongoose_connect
 //     }
 // mongoose.connect(config.mongo_db);
 
-// var db = mongoose.connection;
+// let db = mongoose.connection;
 // db.on('error', console.error.bind(console, 'DB connection error:'));
 // db.once('open', function () {
 // we're connected!

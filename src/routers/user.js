@@ -5,7 +5,7 @@ import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import userSchema from '../models/User/schema.user.js'
 
-var userRouters = express.Router();
+let userRouters = express.Router();
 
 userRouters.get('/all',
     validateSchema(userSchema['/api/admin/user/all'].get.parameters),

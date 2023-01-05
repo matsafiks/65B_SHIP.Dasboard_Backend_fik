@@ -9,7 +9,7 @@ const all = async (req, res) => {
 
     try {
 
-        var search = (req) ? req.query.search : undefined
+        let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
                 { ScaffoldingTypeTypeID: { $regex: '.*' + search + '.*' } },
@@ -17,12 +17,12 @@ const all = async (req, res) => {
             ]
         } : {}
 
-        var limit = req.query.limit || 10
-        var page = req.query.page || 1
-        var sort = req.query.sort || 'nOrder'
-        var order = req.query.order || 'asc'
+        let limit = req.query.limit || 10
+        let page = req.query.page || 1
+        let sort = req.query.sort || 'nOrder'
+        let order = req.query.order || 'asc'
 
-        var data = await ScaffoldingType.find()
+        let data = await ScaffoldingType.find()
             .where(search)
             .skip(((page) - 1) * limit)
             .limit(limit)
@@ -31,12 +31,12 @@ const all = async (req, res) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     if (element.created_by) {
-                        var created_by = await User.findOne().where({ _id: element.created_by })
+                        let created_by = await User.findOne().where({ _id: element.created_by })
                         if (created_by)
                             element.created_by = created_by._doc.username
                     }
                     if (element.updated_by) {
-                        var updated_by = await User.findOne().where({ _id: element.updated_by })
+                        let updated_by = await User.findOne().where({ _id: element.updated_by })
                         if (updated_by)
                             element.updated_by = updated_by._doc.username
                     }
@@ -47,10 +47,10 @@ const all = async (req, res) => {
             }))
 
 
-        var len_data = await ScaffoldingType.count().where(search)
+        let len_data = await ScaffoldingType.count().where(search)
 
 
-        var data = {
+        data = {
             currentPage: page,
             pages: Math.ceil(len_data / limit),
             currentCount: data.length,
@@ -59,29 +59,29 @@ const all = async (req, res) => {
 
         }
 
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
+        if (res)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
-        // if (res)
-        //     return res.send(utilSetResponseJson('failed', error.toString()))
-        // return utilSetResponseJson('failed', error.toString())
+        if (res)
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 const byid = async (req, res) => {
     try {
-        var data = await ScaffoldingType.find()
+        let data = await ScaffoldingType.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     if (element.created_by) {
-                        var created_by = await User.findOne().where({ _id: element.created_by })
+                        let created_by = await User.findOne().where({ _id: element.created_by })
                         if (created_by)
                             element.created_by = created_by._doc.username
                     }
                     if (element.updated_by) {
-                        var updated_by = await User.findOne().where({ _id: element.updated_by })
+                        let updated_by = await User.findOne().where({ _id: element.updated_by })
                         if (updated_by)
                             element.updated_by = updated_by._doc.username
                     }
@@ -89,22 +89,22 @@ const byid = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            // return res.send(utilSetResponseJson("failed", 'data not found'))
+            return res.send(utilSetResponseJson("failed", 'data not found'))
         }
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
+        if (res)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
-        // if (res)
-        //     return res.send(utilSetResponseJson('failed', error.toString()))
-        // return utilSetResponseJson('failed', error.toString())
+        if (res)
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 const add = async (req, res) => {
     try {
 
         if (!req.body.nObjectID) {
-            var nObjectID = await ScaffoldingType.findOne().sort({ nObjectID: -1 }).select('nObjectID')
+            let nObjectID = await ScaffoldingType.findOne().sort({ nObjectID: -1 }).select('nObjectID')
             if (nObjectID) {
                 req.body.nObjectID = nObjectID.nObjectID + 1
             } else {
@@ -112,7 +112,7 @@ const add = async (req, res) => {
             }
         }
         if (!req.body.nOrder) {
-            var nOrder = await ScaffoldingType.findOne().sort({ nOrder: -1 }).select('nOrder')
+            let nOrder = await ScaffoldingType.findOne().sort({ nOrder: -1 }).select('nOrder')
             if (nOrder) {
                 req.body.nOrder = nOrder.nOrder + 1
             } else {
@@ -120,19 +120,19 @@ const add = async (req, res) => {
             }
         }
 
-        var data = await ScaffoldingType.create(
+        let data = await ScaffoldingType.create(
             {
                 ...req.body,
                 created_by: req._id,
                 created_date: new Date()
             })
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
+        if (res)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
-        // if (res)
-        //     return res.send(utilSetResponseJson('failed', error.toString()))
-        // return utilSetResponseJson('failed', error.toString())
+        if (res)
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 
@@ -148,7 +148,7 @@ const edit = async (req, res) => {
                 updated_date: new Date()
             })
 
-        var data = await ScaffoldingType.findOne()
+        let data = await ScaffoldingType.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
@@ -163,7 +163,7 @@ const edit = async (req, res) => {
 
 const destroy = async (req, res) => {
     try {
-        var data = await ScaffoldingType.findOne()
+        let data = await ScaffoldingType.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))

@@ -8,20 +8,20 @@ const validateSchema = (parameters) => {
     const validator = new Validator();
 
     let errors = []
-    var schema = {}
+    let schema = {}
 
-    var schema_query = {
+    let schema_query = {
         properties: {},
         required: [],
         type: 'object'
     }
-    var schema_body = {
+    let schema_body = {
         properties: {},
         required: [],
         type: 'object'
     }
 
-    var schema_params = {
+    let schema_params = {
         properties: {},
         required: [],
         type: 'object'

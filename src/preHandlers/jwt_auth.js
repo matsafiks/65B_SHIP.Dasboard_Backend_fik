@@ -25,13 +25,13 @@ const check_jwt = (async (req, res, next) => {
         complete: true
     });
 
-    // var test = jwt.verify(token, '2be97053-90b3-093c-d5ba-1f4d962c3808')
+    // let test = jwt.verify(token, '2be97053-90b3-093c-d5ba-1f4d962c3808')
     // console.log(test)
 
     if (decodedToken && decodedToken.payload.exp > Math.floor(new Date().getTime()) / 1000) {
-        var check = await User.findOne().where({ "id": decodedToken.payload.sub, login_status: true })
+        let check = await User.findOne().where({ "id": decodedToken.payload.sub, login_status: true })
         if (!check)
-            var check = await User.findOne().where({ "_id": decodedToken.payload._id, login_status: true })
+            check = await User.findOne().where({ "_id": decodedToken.payload._id, login_status: true })
 
         if (!check)
             return anautorize(res)

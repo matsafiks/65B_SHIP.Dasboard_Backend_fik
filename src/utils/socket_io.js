@@ -1,7 +1,7 @@
 import { all, test } from "../handlers/scaffolding.js"
 import _ from 'lodash'
 
-var io_;
+let io_;
 
 const socketConnection = (io) => {
 
@@ -10,7 +10,7 @@ const socketConnection = (io) => {
     io.on('connection', async client => {
         // io.emit('notification', 'new')
         // setInterval(() => {
-        //     // var check_noti = await
+        //     // let check_noti = await
         //     console.log(Math.random())
         //     io.emit('notification', 'new')
         // }, 60000
@@ -19,7 +19,7 @@ const socketConnection = (io) => {
         console.info(`Client connected [id=${client.id}]`);
         client.join(client.request._query.id);
         client.on('scaffolding', async (req, res) => {
-            var data = await all()
+            let data = await all()
 
             io.sockets.emit('scaffolding', data)
         });

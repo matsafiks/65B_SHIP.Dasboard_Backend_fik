@@ -15,7 +15,7 @@ const all = async (req, res) => {
     try {
 
 
-        var application_id = config.menu_equipment_all_id
+        let application_id = config.menu_equipment_all_id
         await permission(application_id, req)
 
         await EquipmentVehicle.deleteMany({
@@ -26,10 +26,10 @@ const all = async (req, res) => {
             DateTime_Out: { $lte: new Date() }
         })
 
-        var where_permission = {}
+        let where_permission = {}
 
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
         // //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
@@ -57,38 +57,38 @@ const all = async (req, res) => {
 
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
         //แสดงภาพรวมอุปกรณ์ที่มีความเสี่ยงซึ่งติดตั้งอยู่ในพื้นที่ โดยมี Icon สี แสดงจุดที่มีการติดตั้งอุปกรณ์
-        var over_all_check = role.filter((el) => { return el.application_id == '62e3ddf5efdbb1a4f36a241d' })
+        let over_all_check = role.filter((el) => { return el.application_id == '62e3ddf5efdbb1a4f36a241d' })
 
         // การแจ้งเตือนกรณีอุปกรณ์ที่มีความเสี่ยงซึ่งติดตั้งอยู่ในพื้นที่หมดอายุการตรวจสภาพโดยมี Icon สี เพื่อแจ้งเตือน
-        var expire_check = role.filter((el) => { return el.application_id == '62e3de32efdbb1a4f36a242a' })
+        let expire_check = role.filter((el) => { return el.application_id == '62e3de32efdbb1a4f36a242a' })
 
         // การแจ้งเตือนกรณีอุปกรณ์ที่มีความเสี่ยงซึ่งติดตั้ง อยู่ในพื้นที่ ใกล้หมดอายุการตรวจสภาพ, หมดอายุการตรวจสภาพ โดยมี Icon สี เพื่อแจ้งเตือนสถานะ
-        var near_expire_check = role.filter((el) => { return el.application_id == '62e3de46efdbb1a4f36a2430' })
+        let near_expire_check = role.filter((el) => { return el.application_id == '62e3de46efdbb1a4f36a2430' })
 
         //ภาพรวมการนำอุปกรณ์เข้า - ออก พื้นที่ โดยแสดงจำนวนอุปกรณ์เข้า - ออก
-        var in_out_check = role.filter((el) => { return el.application_id == '62e3de5cefdbb1a4f36a2436' })
+        let in_out_check = role.filter((el) => { return el.application_id == '62e3de5cefdbb1a4f36a2436' })
 
         //แสดงการแจ้งเตือนอุปกรณ์ที่ยังไม่ได้นำออกจากพื้นที่ โดยแจ้งเตือนตามรายการอุปกรณ์ที่มีการขออนุญาตนำเข้าพื้นที่ในแต่ละวัน
-        var not_remove_check = role.filter((el) => { return el.application_id == '62e3de6aefdbb1a4f36a243c' })
+        let not_remove_check = role.filter((el) => { return el.application_id == '62e3de6aefdbb1a4f36a243c' })
 
         //ใช้ฟังก์ชันการค้นหาข้อมูล โดยเมนู Search สามารถทำการเปิด-ปิด หน้าต่างการค้นหาได้ เพื่อเพิ่มพื้นที่การแสดงผลของ Dashboard
-        var search_check = role.filter((el) => { return el.application_id == '62e3de79efdbb1a4f36a2442' })
+        let search_check = role.filter((el) => { return el.application_id == '62e3de79efdbb1a4f36a2442' })
 
         //การแจ้งเตือนและการแสดงผลรวมอุปกรณ์ติดตั้งกีดขวาง
-        var obstruct_check = role.filter((el) => { return el.application_id == '62e3de88efdbb1a4f36a2448' })
+        let obstruct_check = role.filter((el) => { return el.application_id == '62e3de88efdbb1a4f36a2448' })
 
         //แสดงผลรวมอุปกรณ์ทั้งหมด
-        var all_check = role.filter((el) => { return el.application_id == '62e3dee6efdbb1a4f36a244e' })
+        let all_check = role.filter((el) => { return el.application_id == '62e3dee6efdbb1a4f36a244e' })
 
 
 
 
-        var data = await common(req, res, where_permission, check_user, over_all_check, expire_check, near_expire_check, in_out_check, not_remove_check, search_check, obstruct_check, all_check)
+        let data = await common(req, res, where_permission, check_user, over_all_check, expire_check, near_expire_check, in_out_check, not_remove_check, search_check, obstruct_check, all_check)
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -112,15 +112,15 @@ const risk = async (req, res) => {
 
     try {
 
-        var application_id = config.menu_equipment_risk_id
+        let application_id = config.menu_equipment_risk_id
         await permission(application_id, req)
 
 
-        var where_permission = {}
+        let where_permission = {}
         where_permission.risk_equipment = 1
 
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
         // //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
@@ -148,37 +148,37 @@ const risk = async (req, res) => {
 
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
         //แสดงภาพรวมอุปกรณ์ที่มีความเสี่ยงซึ่งติดตั้งอยู่ในพื้นที่ โดยมี Icon สี แสดงจุดที่มีการติดตั้งอุปกรณ์
-        var over_all_check = role.filter((el) => { return el.application_id == '62e3dbfa36cd65e4612cd128' })
+        let over_all_check = role.filter((el) => { return el.application_id == '62e3dbfa36cd65e4612cd128' })
 
         // การแจ้งเตือนกรณีอุปกรณ์ที่มีความเสี่ยงซึ่งติดตั้งอยู่ในพื้นที่หมดอายุการตรวจสภาพโดยมี Icon สี เพื่อแจ้งเตือน
-        var expire_check = role.filter((el) => { return el.application_id == '62d443fe2ee0fe85f35b714a' })
+        let expire_check = role.filter((el) => { return el.application_id == '62d443fe2ee0fe85f35b714a' })
 
         // การแจ้งเตือนกรณีอุปกรณ์ที่มีความเสี่ยงซึ่งติดตั้ง อยู่ในพื้นที่ ใกล้หมดอายุการตรวจสภาพ, หมดอายุการตรวจสภาพ โดยมี Icon สี เพื่อแจ้งเตือนสถานะ
-        var near_expire_check = role.filter((el) => { return el.application_id == '62d444452ee0fe85f35b7157' })
+        let near_expire_check = role.filter((el) => { return el.application_id == '62d444452ee0fe85f35b7157' })
 
         //ภาพรวมการนำอุปกรณ์เข้า - ออก พื้นที่ โดยแสดงจำนวนอุปกรณ์เข้า - ออก
-        var in_out_check = role.filter((el) => { return el.application_id == '62d444a82ee0fe85f35b7178' })
+        let in_out_check = role.filter((el) => { return el.application_id == '62d444a82ee0fe85f35b7178' })
 
         //แสดงการแจ้งเตือนอุปกรณ์ที่ยังไม่ได้นำออกจากพื้นที่ โดยแจ้งเตือนตามรายการอุปกรณ์ที่มีการขออนุญาตนำเข้าพื้นที่ในแต่ละวัน
-        var not_remove_check = role.filter((el) => { return el.application_id == '62d444c62ee0fe85f35b7183' })
+        let not_remove_check = role.filter((el) => { return el.application_id == '62d444c62ee0fe85f35b7183' })
 
         //ใช้ฟังก์ชันการค้นหาข้อมูล โดยเมนู Search สามารถทำการเปิด-ปิด หน้าต่างการค้นหาได้ เพื่อเพิ่มพื้นที่การแสดงผลของ Dashboard
-        var search_check = role.filter((el) => { return el.application_id == '62d445be2ee0fe85f35b71b0' })
+        let search_check = role.filter((el) => { return el.application_id == '62d445be2ee0fe85f35b71b0' })
 
         //การแจ้งเตือนและการแสดงผลรวมอุปกรณ์ติดตั้งกีดขวาง
-        var obstruct_check = role.filter((el) => { return el.application_id == '62d7aa8fda04fb73f0191b60' })
+        let obstruct_check = role.filter((el) => { return el.application_id == '62d7aa8fda04fb73f0191b60' })
 
         //แสดงผลรวมอุปกรณ์ทั้งหมด
-        var all_check = role.filter((el) => { return el.application_id == '62d7ab81da04fb73f0191ba3' })
+        let all_check = role.filter((el) => { return el.application_id == '62d7ab81da04fb73f0191ba3' })
 
 
 
-        var data = await common(req, res, where_permission, check_user, over_all_check, expire_check, near_expire_check, in_out_check, not_remove_check, search_check, obstruct_check, all_check)
+        let data = await common(req, res, where_permission, check_user, over_all_check, expire_check, near_expire_check, in_out_check, not_remove_check, search_check, obstruct_check, all_check)
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -200,7 +200,7 @@ const risk = async (req, res) => {
 const common = async (req, res, where_permission, check_user, over_all_check, expire_check, near_expire_check, in_out_check, not_remove_check, search_check, obstruct_check, all_check) => {
 
 
-    var filter = {
+    let filter = {
         AgencyName: [{ AgencyName: 'ทั้งหมด' }],
         PTTStaffCode: [{ PTTStaffCode: 'ทั้งหมด', PTTStaff: 'ทั้งหมด' }],
         AreaName: [{ AreaName: 'ทั้งหมด' }],
@@ -208,24 +208,24 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
         CompanyName: [{ CompanyName: 'ทั้งหมด' }],
         notification: [{ notification: 'ทั้งหมด' }],
     }
-    var data_arr = []
-    var obstruct = 0
-    var near_expire = 0
-    var expire = 0
-    var not_remove = 0
-    var risk = 0
-    var all = 0
-    var In = 0
-    var out = 0
+    let data_arr = []
+    let obstruct = 0
+    let near_expire = 0
+    let expire = 0
+    let not_remove = 0
+    let risk = 0
+    let all = 0
+    let In = 0
+    let out = 0
 
     const today = moment().startOf('day')
 
 
 
 
-    // var check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+    // let check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
     // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no : 0
-    var EquipmentVehicle_master = await EquipmentVehicle.find({
+    let EquipmentVehicle_master = await EquipmentVehicle.find({
         // $and: [
         //     // {
         //     //     'others.run_no': check_run_no
@@ -233,24 +233,24 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
         // ]
     })
 
-    var AreaName_master = await Location.find()
+    let AreaName_master = await Location.find()
 
-    var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+    let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
     AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-    var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+    let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
     PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
 
-    var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+    let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
     AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-    var EquipmentType = (req) ? (req.query.EquipmentType && !req.query.EquipmentType.toString().includes('ทั้งหมด')) ? req.query.EquipmentType : undefined : undefined
+    let EquipmentType = (req) ? (req.query.EquipmentType && !req.query.EquipmentType.toString().includes('ทั้งหมด')) ? req.query.EquipmentType : undefined : undefined
     EquipmentType = (EquipmentType) ? { EquipmentType: { $in: EquipmentType } } : {}
 
-    var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+    let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
     CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
 
-    var Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+    let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
 
     await Equipment.find({
         // $and: [
@@ -338,7 +338,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
     }
 
 
-    var Notification_ = {}
+    let Notification_ = {}
     if (typeof Notification == 'string') {
         Notification = [Notification]
     }
@@ -375,7 +375,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
     }
 
 
-    // var test = await Equipment.aggregate([
+    // let test = await Equipment.aggregate([
     //     {
     //         "$lookup": {
     //             "from": "equipmentvehicles",
@@ -420,7 +420,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
 
 
         for (let index = 0; index < result.length; index++) {
-            var notification = {
+            let notification = {
                 expire: false,
                 not_remove: false,
                 near_expire: false,
@@ -461,7 +461,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
                 element.others.OwnerName = element.OwnerName_1
             }
 
-            var join_equipment_vehicle = await EquipmentVehicle_master.filter(el => { return el.ObstructionID == element.EquipmentID })
+            let join_equipment_vehicle = await EquipmentVehicle_master.filter(el => { return el.ObstructionID == element.EquipmentID })
             if (join_equipment_vehicle.length > 0) {
                 element.EquipmentVehicle = join_equipment_vehicle[0]
             } else {
@@ -470,7 +470,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
 
 
 
-            var continues = false
+            let continues = false
             if (req.query.notification && req.query.notification.includes('obstruct') && req.query.notification.length == 1) {
                 continues = true
             }
@@ -539,7 +539,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
                 element.others.date_expire = (element.ExpiredDate) ? new Date(element.ExpiredDate).toLocaleDateString() : null
 
 
-                // var join_equipment_vehicle = await EquipmentVehicle_master.filter(el => { return el.ObstructionID == element.EquipmentID })
+                // let join_equipment_vehicle = await EquipmentVehicle_master.filter(el => { return el.ObstructionID == element.EquipmentID })
                 // if (join_equipment_vehicle.length > 0) {
                 //     element.EquipmentVehicle = join_equipment_vehicle[0]
                 // } else {
@@ -594,7 +594,7 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
 
 
 
-    var data = {}
+    let data = {}
 
     data.summary = {}
     data.filter = {}

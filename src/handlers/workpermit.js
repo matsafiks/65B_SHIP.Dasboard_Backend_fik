@@ -17,48 +17,48 @@ const all = async (req, res) => {
     try {
 
 
-        var application_id = '62a4d45011b91829618a4413'
+        let application_id = '62a4d45011b91829618a4413'
         await permission(application_id, req)
 
-        var supervisorDep = (req) ? (req.query.supervisorDep && !req.query.supervisorDep.toString().includes('ทั้งหมด')) ? req.query.supervisorDep : undefined : undefined
+        let supervisorDep = (req) ? (req.query.supervisorDep && !req.query.supervisorDep.toString().includes('ทั้งหมด')) ? req.query.supervisorDep : undefined : undefined
         supervisorDep = (supervisorDep) ? { supervisorDep: { $in: supervisorDep } } : {}
 
-        var supervisorCode = (req) ? (req.query.supervisorCode && !req.query.supervisorCode.toString().includes('ทั้งหมด')) ? req.query.supervisorCode : undefined : undefined
+        let supervisorCode = (req) ? (req.query.supervisorCode && !req.query.supervisorCode.toString().includes('ทั้งหมด')) ? req.query.supervisorCode : undefined : undefined
         supervisorCode = (supervisorCode) ? { supervisorCode: { $in: supervisorCode } } : {}
 
 
-        var workpermitStatusId = (req) ? (req.query.workpermitStatusId && !req.query.workpermitStatusId.toString().includes('ทั้งหมด')) ? req.query.workpermitStatusId : undefined : undefined
+        let workpermitStatusId = (req) ? (req.query.workpermitStatusId && !req.query.workpermitStatusId.toString().includes('ทั้งหมด')) ? req.query.workpermitStatusId : undefined : undefined
         workpermitStatusId = (workpermitStatusId) ? { workpermitStatusId: { $in: workpermitStatusId } } : {}
 
 
-        var startDateTime = (req) ? req.query.startDateTime : undefined
+        let startDateTime = (req) ? req.query.startDateTime : undefined
         startDateTime = (startDateTime) ? { 'others.workingStart': { $gte: startDateTime } } : {}
 
-        var endDateTime = (req) ? req.query.endDateTime : undefined
+        let endDateTime = (req) ? req.query.endDateTime : undefined
         endDateTime = (endDateTime) ? { 'others.workingEnd': { $lte: endDateTime } } : {}
 
 
-        var workTypeID = (req) ? (req.query.workTypeID && !req.query.workTypeID.toString().includes('ทั้งหมด')) ? req.query.workTypeID : undefined : undefined
+        let workTypeID = (req) ? (req.query.workTypeID && !req.query.workTypeID.toString().includes('ทั้งหมด')) ? req.query.workTypeID : undefined : undefined
         workTypeID = (workTypeID) ? { workTypeID: { $in: workTypeID } } : {}
 
-        var location = (req) ? (req.query.location && !req.query.location.toString().includes('ทั้งหมด')) ? req.query.location : undefined : undefined
+        let location = (req) ? (req.query.location && !req.query.location.toString().includes('ทั้งหมด')) ? req.query.location : undefined : undefined
         location = (location) ? { location: { $in: location } } : {}
 
-        var subLocation = (req) ? (req.query.subLocation && !req.query.subLocation.toString().includes('ทั้งหมด')) ? req.query.subLocation : undefined : undefined
+        let subLocation = (req) ? (req.query.subLocation && !req.query.subLocation.toString().includes('ทั้งหมด')) ? req.query.subLocation : undefined : undefined
         subLocation = (subLocation) ? { subLocation: { $in: subLocation } } : {}
 
-        var companyName = (req) ? (req.query.companyName && !req.query.companyName.toString().includes('ทั้งหมด')) ? req.query.companyName : undefined : undefined
+        let companyName = (req) ? (req.query.companyName && !req.query.companyName.toString().includes('ทั้งหมด')) ? req.query.companyName : undefined : undefined
         companyName = (companyName) ? { companyName: { $in: companyName } } : {}
 
 
-        var Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
-        var where_permission = {}
-        var gas_check_hour = null
+        let where_permission = {}
+        let gas_check_hour = null
 
-        var filter = {
+        let filter = {
             supervisorDep: [{ supervisorDep: 'ทั้งหมด' }],
             supervisorCode: [{ supervisorCode: 'ทั้งหมด', supervisor: 'ทั้งหมด' }],
             workpermitStatusId: [{ workpermitStatusId: 'ทั้งหมด' }],
@@ -70,23 +70,23 @@ const all = async (req, res) => {
             notification: [{ notification: 'ทั้งหมด' }],
 
         }
-        var data_arr = []
-        var total = 0
-        var open = 0
-        var close = 0
-        var gas = 0
-        var near_expire = 0
-        var expire = 0
-        var impairment = 0
-        var impairment_2 = 0
+        let data_arr = []
+        let total = 0
+        let open = 0
+        let close = 0
+        let gas = 0
+        let near_expire = 0
+        let expire = 0
+        let impairment = 0
+        let impairment_2 = 0
 
 
-        var ONE_HOUR = 60 * 60 * 1000; /* ms */
+        let ONE_HOUR = 60 * 60 * 1000; /* ms */
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
+            //     let location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
             //     where_permission = { location: { $in: location1.map(el => { return el.location }) } }
             // }
             gas_check_hour = 3
@@ -113,38 +113,38 @@ const all = async (req, res) => {
             gas_check_hour = 1
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
 
         // แสดงภาพรวมการขออนุญาตทำงาน โดยมี Icon สีแสดงแยกประเภทใบอนุญาตทำงาน
-        var over_all_check = role.filter((el) => { return el.application_id == '62ac79852434683669fade56' })
+        let over_all_check = role.filter((el) => { return el.application_id == '62ac79852434683669fade56' })
 
         // แสดงภาพรวมสถานะเปิด – ปิดใบอนุญาตทำงานโดยมี Icon สี แสดงสถานะใบอนุญาตทำงาน
-        var open_close_check = role.filter((el) => { return el.application_id == '62ac7ba06d4a8ed8930557d7' })
+        let open_close_check = role.filter((el) => { return el.application_id == '62ac7ba06d4a8ed8930557d7' })
 
         //แสดงสถานะอุปกรณ์ที่ Impairment โดยมี Icon สี แสดงสถานะอุปกรณ์
-        var impairment_chek = role.filter((el) => { return el.application_id == '62ac7c1d2704eb8aa472f123' })
+        let impairment_chek = role.filter((el) => { return el.application_id == '62ac7c1d2704eb8aa472f123' })
 
         //แสดงการแจ้งเตือนรอบการวัดก๊าซ โดยมี Icon สี เพื่อแจ้งเตือน
-        var gas_check = role.filter((el) => { return el.application_id == '62ac7cfa08889e4f8e123218' })
+        let gas_check = role.filter((el) => { return el.application_id == '62ac7cfa08889e4f8e123218' })
 
         //แสดงการแจ้งเตือนเมื่อใบอนุญาตทำงานใกล้หมดอายุการขออนุญาตในแต่ละวัน ชั่วโมง โดยมี Icon สี เพื่อแจ้งเตือน
-        var near_expire_check = role.filter((el) => { return el.application_id == '62ac7d3608889e4f8e123225' })
+        let near_expire_check = role.filter((el) => { return el.application_id == '62ac7d3608889e4f8e123225' })
 
         //ใช้ฟังก์ชันการค้นหาข้อมูล โดยเมนู Search สามารถทำการเปิด-ปิด หน้าต่างการค้นหาได้ เพื่อเพิ่มพื้นที่การแสดงผลของ Dashboard
-        var search_check = role.filter((el) => { return el.application_id == '62ac7d8a08889e4f8e123232' })
+        let search_check = role.filter((el) => { return el.application_id == '62ac7d8a08889e4f8e123232' })
 
         //แสดงการแจ้งเตือนเมื่อใบอนุญาตทำงานหมดอายุ
-        var expire_check = role.filter((el) => { return el.application_id == '6341629b0e315503b7ab40fb' })
+        let expire_check = role.filter((el) => { return el.application_id == '6341629b0e315503b7ab40fb' })
 
 
-        // var check_run_no = await WorkPermit.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await WorkPermit.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no : 0
 
 
-        var WorksheetStatusId_master = await WorkpermitStatus.find()
-        var WorkTypeID_master = await WorkpermitType.find()
-        var Location_master = await Location_master_.find()
+        let WorksheetStatusId_master = await WorkpermitStatus.find()
+        let WorkTypeID_master = await WorkpermitType.find()
+        let Location_master = await Location_master_.find()
 
         await WorkPermit.find({
             // $and: [
@@ -236,7 +236,7 @@ const all = async (req, res) => {
         }
 
 
-        var Notification_ = {}
+        let Notification_ = {}
         if (typeof Notification == 'string') {
             Notification = [Notification]
         }
@@ -262,7 +262,7 @@ const all = async (req, res) => {
         }
 
 
-        var chek_status = await WorkpermitStatus.find()
+        let chek_status = await WorkpermitStatus.find()
 
         await WorkPermit.find({
             $and: [
@@ -280,7 +280,7 @@ const all = async (req, res) => {
             ]
         }).then(async (result) => {
             for (let index = 0; index < result.length; index++) {
-                var notification = {
+                let notification = {
                     near_expire: false,
                     expire: false,
                     gas: false,
@@ -297,7 +297,7 @@ const all = async (req, res) => {
 
 
                 if (element.others.workingEnd) {
-                    var workingEnd = element.others.workingEnd
+                    let workingEnd = element.others.workingEnd
                     if (workingEnd >= new Date() && workingEnd < new Date().getTime() + ONE_HOUR) {
                         near_expire = near_expire + 1
                         notification.near_expire = true
@@ -310,7 +310,7 @@ const all = async (req, res) => {
                 }
 
                 if (gas_check.length > 0) {
-                    var gasMeasurement = new Date(element.gasMeasurement)
+                    let gasMeasurement = new Date(element.gasMeasurement)
                     if (gasMeasurement <= new Date().getTime() - (gas_check_hour * ONE_HOUR)) {
                         gas = gas + 1
                         notification.gas = true
@@ -331,7 +331,7 @@ const all = async (req, res) => {
                 }
 
 
-                var check = chek_status.filter(function (el) {
+                let check = chek_status.filter(function (el) {
                     return el.Status_ID == element.workpermitStatusId
                 });
 
@@ -377,7 +377,7 @@ const all = async (req, res) => {
 
         })
 
-        var data = {}
+        let data = {}
 
         data.summary = {}
         data.filter = {}
@@ -411,7 +411,7 @@ const all = async (req, res) => {
             data.filter = filter
         }
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }

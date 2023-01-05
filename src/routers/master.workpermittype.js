@@ -5,7 +5,7 @@ import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import workpermitTypeSchema from '../models/Master/WorkpermitType/schema.workpermitType.js'
 
-var workpermitTypeRouters = express.Router();
+let workpermitTypeRouters = express.Router();
 
 workpermitTypeRouters.get('/all',
     validateSchema(workpermitTypeSchema['/api/master/workpermittype/all'].get.parameters),

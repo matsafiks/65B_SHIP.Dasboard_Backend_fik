@@ -1,21 +1,17 @@
 
 
 import utilSetResponseJson from '../utils/util.SetResponseJson.js';
-import socket_io from "../utils/socket_io.js";
 import moment from 'moment-timezone';
 import User from "../models/User/User.js";
-import { generateHashPassword, utilComparePassword } from "../utils/function.js";
 import fs from 'fs'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
-import _ from 'lodash'
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import config from "../utils/config.js";
 import Group from '../models/Group/Group.js';
 import Application from '../models/Application/Application.js';
 import Role from '../models/Role/Role.js';
-import WorkPermit from '../models/WorkPermit/WorkPermit.js';
 import { createRequire } from "module";
 import { permission } from '../preHandlers/permission.js';
 import { check_notification } from '../utils/check_notification.js'
@@ -24,24 +20,19 @@ import sanitizeHtml from "sanitize-html";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const require = createRequire(import.meta.url);
-// var user_sam = require("../utils/user_sam.json")
 const uuid = require("uuid");
 
 const dateThailand = moment.tz(Date.now(), "Asia/Bangkok");
 const URL = require("url").URL
 
 const login = async (req, res) => {
-    const privateKey = fs.readFileSync(__dirname + '/../utils/private.key')
-
     try {
 
-        var data = req.body
-        var test = []
+        let data = req.body
+        let success = true
 
-        var success = true
-
-        var api = new URL(config.auth_host + '/login')
-        var login = await axios.post(api.href,
+        let api = new URL(config.auth_host + '/login')
+        let login = await axios.post(api.href,
             {
                 loginId: data.username,
                 password: data.password,
@@ -58,7 +49,7 @@ const login = async (req, res) => {
             if (err.response) {
                 if (err.response.data.statusCode == 404) {
                     res.statusCode = 400
-                    throw 'Unauthorized'
+                    throw new Error("Unauthorized")
                 }
             }
 
@@ -68,7 +59,7 @@ const login = async (req, res) => {
 
 
         if (success == false) {
-            var data = await own_login(req.body)
+            data = await own_login(req.body)
             data = sanitizeHtml(JSON.stringify(data))
             return res.send(utilSetResponseJson("success", JSON.parse(data)))
 
@@ -76,12 +67,12 @@ const login = async (req, res) => {
 
 
 
-        var role = login.user.registrations.filter(el => { return el.applicationId == config.auth_app_id })
+        let role = login.user.registrations.filter(el => { return el.applicationId == config.auth_app_id })
 
         if (role.length == 0) {
 
             //register
-            var api = new URL(config.auth_host + '/user/registration/' + login.user.id)
+            api = new URL(config.auth_host + '/user/registration/' + login.user.id)
             await axios.post(api.href,
                 {
                     registration: {
@@ -105,8 +96,8 @@ const login = async (req, res) => {
         }
 
         role = login.user.registrations.filter(el => { return el.applicationId == config.auth_app_id })
-        var api = new URL(config.auth_host + '/application/' + config.auth_app_id)
-        var application = await axios.get(api.href,
+        api = new URL(config.auth_host + '/application/' + config.auth_app_id)
+        let application = await axios.get(api.href,
             {
                 headers: {
                     'Authorization': config.auth_api_key
@@ -114,18 +105,19 @@ const login = async (req, res) => {
             }
         )
 
-        var group_other_id = application.data.application.roles.filter(el => { return el.name == role[0].roles[0] })
+        let group_other_id = application.data.application.roles.filter(el => { return el.name == role[0].roles[0] })
 
 
-        var group_id = await Group.findOne().where({ "others.id": group_other_id[0].id })
+        let group_id = await Group.findOne().where({ "others.id": group_other_id[0].id })
 
         if (!group_id) {
             res.statusCode = 403
-            throw 'Forbidden'
+            throw new Error("Forbidden")
+
         }
 
 
-        var others = {
+        let others = {
             fname: (login.user.firstName) ? login.user.firstName : (login.user.data.fname) ? login.user.data.fname : '',
             lname: (login.user.lastName) ? login.user.lastName : (login.user.data.lname) ? login.user.data.lname : '',
 
@@ -135,15 +127,15 @@ const login = async (req, res) => {
 
         login.user.data = { ...login.user.data, ...others }
 
-        var check = await User.findOne().where({ id: login.user.id })
+        let check = await User.findOne().where({ id: login.user.id })
         if (!check) {
-            var check = await User.create({
-                username: data.username,
+            await User.create({
+                username: data.username.toString(),
                 status: 1,
-                group_id: group_id._id,
-                id: login.user.id,
+                group_id: group_id._id.toString(),
+                id: login.user.id.toString(),
                 others: others,
-                email: (login.user.email) ? login.user.email : null,
+                email: (login.user.email) ? login.user.email.toString() : null,
                 login_status: true,
                 created_date: new Date()
             })
@@ -151,8 +143,8 @@ const login = async (req, res) => {
         } else {
             await User.updateOne({ _id: check._id }, {
                 others: others,
-                email: (login.user.email) ? login.user.email : null,
-                group_id: group_id._id,
+                email: (login.user.email) ? login.user.email.toString() : null,
+                group_id: group_id._id.toString(),
                 login_status: true,
             })
 
@@ -160,7 +152,7 @@ const login = async (req, res) => {
 
 
 
-        var data = {
+        data = {
             username: data.username,
             access_token: login.token,
             expires_at: Math.floor(login.tokenExpirationInstant / 1000),
@@ -170,7 +162,7 @@ const login = async (req, res) => {
             user: login.user
         }
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -191,12 +183,12 @@ const loginAd = async (req, res) => {
 
     try {
 
-        var data = req.body
-        var test = []
+        let data = req.body
+        let test = []
 
-        var success = true
-        var api = new URL(config.auth_host + '/login/ad')
-        var login = await axios.post(api.href,
+        let success = true
+        let api = new URL(config.auth_host + '/login/ad')
+        let login = await axios.post(api.href,
             {
                 loginId: data.username,
                 applicationId: config.auth_app_id
@@ -212,7 +204,8 @@ const loginAd = async (req, res) => {
             if (err.response) {
                 if (err.response.data.statusCode == 404) {
                     res.statusCode = 400
-                    throw 'Unauthorized'
+                    throw new Error("Unauthorized")
+
                 }
             }
 
@@ -221,23 +214,23 @@ const loginAd = async (req, res) => {
         })
 
         if (success == false) {
-            var data = await own_login(req.body)
+            let data = await own_login(req.body)
             data = sanitizeHtml(JSON.stringify(data))
             return res.send(utilSetResponseJson("success", JSON.parse(data)))
 
         }
 
-        var role = login.user.registrations.filter(el => { return el.applicationId == config.auth_app_id })
+        let role = login.user.registrations.filter(el => { return el.applicationId == config.auth_app_id })
 
         /**
         * ผู้ควบคุมงาน ปตท.
         */
-        var group = config.ptt_group_id
+        let group = config.ptt_group_id
 
         if (role.length == 0) {
 
             //register
-            var api = new URL(config.auth_host + '/user/registration/' + login.user.id)
+            let api = new URL(config.auth_host + '/user/registration/' + login.user.id)
             await axios.post(api.href,
                 {
                     registration: {
@@ -261,8 +254,8 @@ const loginAd = async (req, res) => {
 
         role = login.user.registrations.filter(el => { return el.applicationId == config.auth_app_id })
 
-        var api = new URL(config.auth_host + '/application/' + config.auth_app_id)
-        var application = await axios.get(api.href,
+        api = new URL(config.auth_host + '/application/' + config.auth_app_id)
+        let application = await axios.get(api.href,
             {
                 headers: {
                     'Authorization': config.auth_api_key
@@ -270,17 +263,18 @@ const loginAd = async (req, res) => {
             }
         )
 
-        var group_other_id = application.data.application.roles.filter(el => { return el.name == role[0].roles[0] })
+        let group_other_id = application.data.application.roles.filter(el => { return el.name == role[0].roles[0] })
 
 
-        var group_id = await Group.findOne().where({ "others.id": group_other_id[0].id })
+        let group_id = await Group.findOne().where({ "others.id": group_other_id[0].id })
 
         if (!group_id) {
             res.statusCode = 403
-            throw 'Forbidden'
+            throw new Error("Forbidden")
+
         }
 
-        var others = {
+        let others = {
             fname: (login.user.firstName) ? login.user.firstName : (login.user.data.fname) ? login.user.data.fname : '',
             lname: (login.user.lastName) ? login.user.lastName : (login.user.data.lname) ? login.user.data.lname : '',
 
@@ -288,9 +282,9 @@ const loginAd = async (req, res) => {
             employeeid: login.user.data.employeeid
         }
         login.user.data = { ...login.user.data, ...others }
-        var check = await User.findOne().where({ id: login.user.id })
+        let check = await User.findOne().where({ id: login.user.id })
         if (!check) {
-            var check = await User.create({
+            let check = await User.create({
                 username: data.username,
                 status: 1,
                 group_id: group_id._id,
@@ -310,7 +304,7 @@ const loginAd = async (req, res) => {
 
         }
 
-        var data = {
+        data = {
             username: data.username,
             access_token: login.token,
             expires_at: Math.floor(login.tokenExpirationInstant / 1000),
@@ -320,7 +314,7 @@ const loginAd = async (req, res) => {
             user: login.user
         }
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -340,8 +334,8 @@ const loginAd = async (req, res) => {
 const add_role = async (data, login, group) => {
     try {
         //check default role
-        var api = new URL(config.auth_host + '/application/' + config.auth_app_id)
-        var application = await axios.get(api.href,
+        let api = new URL(config.auth_host + '/application/' + config.auth_app_id)
+        let application = await axios.get(api.href,
             {
                 headers: {
                     'Authorization': config.auth_api_key
@@ -349,18 +343,18 @@ const add_role = async (data, login, group) => {
             }
         )
 
-        var roles = application.data.application.roles
+        let roles = application.data.application.roles
 
         if (group != null) {
-            var role = roles.filter(el => { return el.id == group })
+            let role = roles.filter(el => { return el.id == group })
 
         } else {
-            var role = roles.filter(el => { return el.isDefault == true })
+            let role = roles.filter(el => { return el.isDefault == true })
         }
 
 
-        var api = new URL(config.auth_host + '/user/registration/' + login.user.id + '/' + config.auth_app_id)
-        var add_role = await axios.put(api.href,
+        api = new URL(config.auth_host + '/user/registration/' + login.user.id + '/' + config.auth_app_id)
+        let add_role = await axios.put(api.href,
             {
                 registration: {
                     applicationId: config.auth_app_id,
@@ -377,8 +371,8 @@ const add_role = async (data, login, group) => {
         )
 
         if (data.password) {
-            var api = new URL(config.auth_host + '/login')
-            var login = await axios.post(api.href,
+            let api = new URL(config.auth_host + '/login')
+            let login = await axios.post(api.href,
                 {
                     loginId: data.username,
                     password: data.password,
@@ -393,8 +387,8 @@ const add_role = async (data, login, group) => {
                 return res.data
             })
         } else {
-            var api = new URL(config.auth_host + '/login/ad')
-            var login = await axios.post(api.href,
+            let api = new URL(config.auth_host + '/login/ad')
+            let login = await axios.post(api.href,
                 {
                     loginId: data.username,
                     applicationId: config.auth_app_id
@@ -423,10 +417,10 @@ const token = async (req, res) => {
 
     try {
 
-        var grant_type = req.query.grant_type
-        var client_id = req.query.client_id
-        var client_secret = req.query.client_secret
-        var refresh_token = req.query.refresh_token
+        let grant_type = req.query.grant_type
+        let client_id = req.query.client_id
+        let client_secret = req.query.client_secret
+        let refresh_token = req.query.refresh_token
 
 
         req.body.username = client_id
@@ -471,12 +465,12 @@ const token = async (req, res) => {
 
 
 
-        //     var check = await User.findOne().where({ 'others.client_id': client_id, 'others.client_secret': client_secret })
+        //     let check = await User.findOne().where({ 'others.client_id': client_id, 'others.client_secret': client_secret })
         //     if (!check) {
         //         res.send(utilSetResponseJson('failed', 'Unauthorized'))
         //     }
 
-        //     var xCurrentTime = Math.floor(Date.now() / 1000)
+        //     let xCurrentTime = Math.floor(Date.now() / 1000)
         //     const issuedAt = xCurrentTime
         //     const expirationTime = xCurrentTime + (config.config_access_oauth_token_expiration_time);
 
@@ -490,9 +484,9 @@ const token = async (req, res) => {
 
         //     delete check._doc.password
 
-        //     var refresh_token = uuid.v4()
-        //     var exp = Date.now() + (config.config_refresh_oauth_token_expiration_time_oauth * 1000)
-        //     var before_update = await User.findOne({
+        //     let refresh_token = uuid.v4()
+        //     let exp = Date.now() + (config.config_refresh_oauth_token_expiration_time_oauth * 1000)
+        //     let before_update = await User.findOne({
         //         _id: check._id
         //     })
 
@@ -510,7 +504,7 @@ const token = async (req, res) => {
         //         }
         //     })
 
-        //     var data = {
+        //     let data = {
         //         username: check.username,
         //         access_token: token,
         //         expires_at: expirationTime,
@@ -526,7 +520,7 @@ const token = async (req, res) => {
 
         // else if (grant_type == 'refresh_token') {
 
-        //     var check = await User.findOne({
+        //     let check = await User.findOne({
         //         'others.token_set.refresh_token': refresh_token
         //     })
 
@@ -538,7 +532,7 @@ const token = async (req, res) => {
         //         return res.send(utilSetResponseJson('failed', 'refresh_token expired'))
         //     }
 
-        //     var xCurrentTime = Math.floor(Date.now() / 1000)
+        //     let xCurrentTime = Math.floor(Date.now() / 1000)
         //     const issuedAt = xCurrentTime
         //     const expirationTime = xCurrentTime + (config.config_access_oauth_token_expiration_time);
 
@@ -552,7 +546,7 @@ const token = async (req, res) => {
 
         //     delete check._doc.password
 
-        //     var data = {
+        //     let data = {
         //         username: check.username,
         //         access_token: token,
         //         expires_at: expirationTime,
@@ -590,35 +584,35 @@ const logout = async (req, res) => {
 const mydata = async (req, res) => {
     try {
 
-        var application_id = '62a5eacea5f80f8ea3c9ddc5'
+        let application_id = '62a5eacea5f80f8ea3c9ddc5'
         await permission(application_id, req)
 
         // return res.send(req._id)
-        var data = await User.findOne({ username: req.username })
-        var check_notification_all = await check_notification(data._doc)
-        var group_id = await Group.findOne().where({ _id: data._doc.group_id })
+        let data = await User.findOne({ username: req.username })
+        let check_notification_all = await check_notification(data._doc)
+        let group_id = await Group.findOne().where({ _id: data._doc.group_id })
         if (group_id)
             data._doc.group_id = {
                 group_name: group_id._doc.group_name,
                 group_id: group_id._doc.group_id,
                 _id: group_id._doc._id
             }
-        var application_all = await Application.find()
-        var role_all = await Role.find().where({ application_id: { $in: application_all.map(el => { return el._id }) }, group_id: group_id._doc._id })
+        let application_all = await Application.find()
+        let role_all = await Role.find().where({ application_id: { $in: application_all.map(el => { return el._id }) }, group_id: group_id._doc._id })
 
 
         data._doc.role = await Application.find()
             .sort('order')
             .where({ parent_id: '' })
             .then((async (result) => {
-                var result_ = []
+                let result_ = []
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
 
-                    var notification = false
+                    let notification = false
                     notification = check_notification_all[element.url]
 
-                    var check = role_all.filter((el) => { return el.application_id == element._id })
+                    let check = role_all.filter((el) => { return el.application_id == element._id })
                     if (check.length > 0) {
                         element.get = check[0]._doc.get
                         element.put = check[0]._doc.put
@@ -629,7 +623,7 @@ const mydata = async (req, res) => {
                             el = el._doc
                             if (el.parent_id == element._id) {
 
-                                var check = role_all.filter((el1) => { return el1.application_id == el._id })
+                                let check = role_all.filter((el1) => { return el1.application_id == el._id })
                                 if (check.length > 0) {
                                     el.get = check[0]._doc.get
                                     el.put = check[0]._doc.put
@@ -638,7 +632,7 @@ const mydata = async (req, res) => {
                                     el.child = application_all.filter((el1) => {
                                         el1 = el1._doc
                                         if (el1.parent_id == el._id) {
-                                            var check = role_all.filter((el2) => { return el2.application_id == el1._id })
+                                            let check = role_all.filter((el2) => { return el2.application_id == el1._id })
                                             if (check.length > 0) {
                                                 el1.get = check[0]._doc.get
                                                 el1.put = check[0]._doc.put
@@ -661,7 +655,7 @@ const mydata = async (req, res) => {
                 return result_
             }))
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -682,14 +676,15 @@ const own_login = async (body) => {
 
     try {
 
-        var check = await User.findOne().where({ $or: [{ username: body.username }, { email: body.username }] })
+        let check = await User.findOne().where({ $or: [{ username: body.username }, { email: body.username }] })
         if (!check) {
-            throw 'Unauthorized'
+            throw new Error("Unauthorized")
+
         }
 
 
 
-        var xCurrentTime = Math.floor(Date.now() / 1000)
+        let xCurrentTime = Math.floor(Date.now() / 1000)
         const issuedAt = xCurrentTime
         const expirationTime = xCurrentTime + (config.config_access_oauth_token_expiration_time);
 
@@ -703,9 +698,9 @@ const own_login = async (body) => {
 
         delete check._doc.password
 
-        // var refresh_token = uuid.v4()
-        // var exp = Date.now() + (config.config_refresh_oauth_token_expiration_time_oauth * 1000)
-        // var before_update = await User.findOne({
+        // let refresh_token = uuid.v4()
+        // let exp = Date.now() + (config.config_refresh_oauth_token_expiration_time_oauth * 1000)
+        // let before_update = await User.findOne({
         //     _id: check._id
         // })
 
@@ -715,7 +710,7 @@ const own_login = async (body) => {
 
         check._doc.data = check.others
 
-        var data = {
+        let data = {
             username: body.username,
             access_token: token,
             expires_at: expirationTime,
@@ -739,10 +734,10 @@ const exampleLogin = async (req, res) => {
     // try {
 
 
-    //     var username = req.body.username
-    //     var password = req.body.password
-    //     // var check = user_sam
-    //     var check = user_sam.filter(function (el) {
+    //     let username = req.body.username
+    //     let password = req.body.password
+    //     // let check = user_sam
+    //     let check = user_sam.filter(function (el) {
     //         return el.Username == username &&
     //             el.Password == password
     //     });

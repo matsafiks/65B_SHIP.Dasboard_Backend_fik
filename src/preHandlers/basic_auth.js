@@ -13,7 +13,7 @@ const getUnauthorizedResponse = (req) => {
 }
 
 const checkAuth = async (user, pass, cb) => {
-    var check = await User.find({ username: user })
+    let check = await User.find({ username: user })
     if (check.length > 0) {
         if (await utilComparePassword(pass, check[0].password)) {
             return cb(null, true)

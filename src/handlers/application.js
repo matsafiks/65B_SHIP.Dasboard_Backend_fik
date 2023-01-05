@@ -12,7 +12,7 @@ import { permission } from '../preHandlers/permission.js';
 
 //     try {
 
-//         var search = (req) ? req.query.search : undefined
+//         let search = (req) ? req.query.search : undefined
 //         search = (search) ? {
 //             $or: [
 //                 { application_name: { $regex: '.*' + search + '.*' } },
@@ -20,28 +20,28 @@ import { permission } from '../preHandlers/permission.js';
 //             ]
 //         } : {}
 
-//         var limit = req.query.limit || 10
-//         var page = req.query.page || 1
-//         var sort = req.query.sort || 'order'
-//         var order = req.query.order || 'asc'
+//         let limit = req.query.limit || 10
+//         let page = req.query.page || 1
+//         let sort = req.query.sort || 'order'
+//         let order = req.query.order || 'asc'
 
-//         var child = await Application.find()
+//         let child = await Application.find()
 //             .where({ ...search, parent_id: { $ne: '' } })
 //             .then((async (result) => {
 //                 for (let index = 0; index < result.length; index++) {
 //                     const element = result[index]._doc;
 //                     if (element.created_by) {
-//                         var created_by = await User.findOne().where({ _id: element.created_by })
+//                         let created_by = await User.findOne().where({ _id: element.created_by })
 //                         if (created_by)
 //                             element.created_by = created_by._doc.username
 //                     }
-//                     var role = await Role.find().where({ application_id: element._id })
+//                     let role = await Role.find().where({ application_id: element._id })
 //                     element.role = role
 //                 }
 //                 return result
 //             }))
 
-//         var data = await Application.find()
+//         let data = await Application.find()
 //             .where({ ...search, parent_id: '' })
 //             .skip(((page) - 1) * limit)
 //             .limit(limit)
@@ -50,11 +50,11 @@ import { permission } from '../preHandlers/permission.js';
 //                 for (let index = 0; index < result.length; index++) {
 //                     const element = result[index]._doc;
 //                     if (element.created_by) {
-//                         var created_by = await User.findOne().where({ _id: element.created_by })
+//                         let created_by = await User.findOne().where({ _id: element.created_by })
 //                         if (created_by)
 //                             element.created_by = created_by._doc.username
 //                     }
-//                     var role = await Role.find().where({ application_id: element._id })
+//                     let role = await Role.find().where({ application_id: element._id })
 //                     element.role = role
 
 //                     element.child = await child.filter(function (el) {
@@ -65,10 +65,10 @@ import { permission } from '../preHandlers/permission.js';
 //             }))
 
 
-//         var len_data = await Application.count().where({ ...search, parent_id: '' })
+//         let len_data = await Application.count().where({ ...search, parent_id: '' })
 
 
-//         var data = {
+//         let data = {
 //             currentPage: page,
 //             pages: Math.ceil(len_data / limit),
 //             currentCount: data.length,
@@ -94,7 +94,7 @@ const all = async (req, res) => {
         await permission('62a5f0a4f06755a7772347e1', req)
 
 
-        var search = (req) ? req.query.search : undefined
+        let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
                 { application_name: { $regex: '.*' + search + '.*' } },
@@ -102,16 +102,16 @@ const all = async (req, res) => {
             ]
         } : {}
 
-        var limit = req.query.limit || 10
-        var page = req.query.page || 1
-        var sort = req.query.sort || 'order'
-        var order = req.query.order || 'asc'
+        let limit = req.query.limit || 10
+        let page = req.query.page || 1
+        let sort = req.query.sort || 'order'
+        let order = req.query.order || 'asc'
 
-        var application_all = await Application.find().sort((order == 'desc') ? '-' + sort : sort)
-        var group_all = await Group.find()
-        var role_all = await Role.find().where({ application_id: { $in: application_all.map(el => { return el._id }) }, group_id: { $in: group_all.map(el => { return el._id }) } })
+        let application_all = await Application.find().sort((order == 'desc') ? '-' + sort : sort)
+        let group_all = await Group.find()
+        let role_all = await Role.find().where({ application_id: { $in: application_all.map(el => { return el._id }) }, group_id: { $in: group_all.map(el => { return el._id }) } })
 
-        var data = await Application.find()
+        let data = await Application.find()
             .where({ ...search, parent_id: '' })
             .skip(((page) - 1) * limit)
             .limit(limit)
@@ -120,7 +120,7 @@ const all = async (req, res) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     // if (element.created_by) {
-                    //     var created_by = await User.findOne().where({ _id: element.created_by })
+                    //     let created_by = await User.findOne().where({ _id: element.created_by })
                     //     if (created_by)
                     //         element.created_by = created_by._doc.username
                     // }
@@ -180,10 +180,10 @@ const all = async (req, res) => {
             }))
 
 
-        var len_data = await Application.count().where({ ...search, parent_id: '' })
+        let len_data = await Application.count().where({ ...search, parent_id: '' })
 
 
-        var data = {
+        data = {
             currentPage: page,
             pages: Math.ceil(len_data / limit),
             currentCount: data.length,
@@ -209,17 +209,17 @@ const byid = async (req, res) => {
         await permission('62a5f0a4f06755a7772347e1', req)
 
 
-        var application_all = await Application.find().sort('order')
-        var group_all = await Group.find()
-        var role_all = await Role.find().where({ application_id: { $in: application_all.map(el => { return el._id }) }, group_id: { $in: group_all.map(el => { return el._id }) } })
+        let application_all = await Application.find().sort('order')
+        let group_all = await Group.find()
+        let role_all = await Role.find().where({ application_id: { $in: application_all.map(el => { return el._id }) }, group_id: { $in: group_all.map(el => { return el._id }) } })
 
-        var data = await Application.find()
+        let data = await Application.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     // if (element.created_by) {
-                    //     var created_by = await User.findOne().where({ _id: element.created_by })
+                    //     let created_by = await User.findOne().where({ _id: element.created_by })
                     //     if (created_by)
                     //         element.created_by = created_by._doc.username
                     // }
@@ -276,7 +276,7 @@ const byid = async (req, res) => {
                 return result
             }))
         if (!data) {
-            var msg = escape("data not found")
+            let msg = escape("data not found")
             return res.send(utilSetResponseJson("failed", msg))
         }
         data = escape(data)
@@ -292,21 +292,21 @@ const byid = async (req, res) => {
 }
 // const byid = async (req, res) => {
 //     try {
-//         var child = await Application.find()
+//         let child = await Application.find()
 //             .where({ parent_id: req.params._id })
 //             .then((async (result) => {
 //                 for (let index = 0; index < result.length; index++) {
 //                     const element = result[index]._doc;
 //                     if (element.created_by) {
-//                         var created_by = await User.findOne().where({ _id: element.created_by })
+//                         let created_by = await User.findOne().where({ _id: element.created_by })
 //                         if (created_by)
 //                             element.created_by = created_by._doc.username
 //                     }
-//                     var role = await Role.find().where({ application_id: element._id })
+//                     let role = await Role.find().where({ application_id: element._id })
 //                         .then(async (result1) => {
 //                             for (let index1 = 0; index1 < result1.length; index1++) {
 //                                 const element1 = result1[index1]._doc;
-//                                 var group = await Group.findOne().where({ _id: element1.group_id })
+//                                 let group = await Group.findOne().where({ _id: element1.group_id })
 //                                 console.log(group.group_name)
 //                                 element1.group_name = group.group_name
 //                             }
@@ -317,21 +317,21 @@ const byid = async (req, res) => {
 //                 return result
 //             }))
 
-//         var data = await Application.find()
+//         let data = await Application.find()
 //             .where({ _id: req.params._id })
 //             .then((async (result) => {
 //                 for (let index = 0; index < result.length; index++) {
 //                     const element = result[index]._doc;
 //                     if (element.created_by) {
-//                         var created_by = await User.findOne().where({ _id: element.created_by })
+//                         let created_by = await User.findOne().where({ _id: element.created_by })
 //                         if (created_by)
 //                             element.created_by = created_by._doc.username
 //                     }
-//                     var role = await Role.find().where({ application_id: element._id })
+//                     let role = await Role.find().where({ application_id: element._id })
 //                         .then(async (result1) => {
 //                             for (let index1 = 0; index1 < result1.length; index1++) {
 //                                 const element1 = result1[index1]._doc;
-//                                 var group = await Group.findOne().where({ _id: element1.group_id })
+//                                 let group = await Group.findOne().where({ _id: element1.group_id })
 //                                 console.log(group.group_name)
 //                                 element1.group_name = group.group_name
 //                             }
@@ -367,7 +367,7 @@ const add = async (req, res) => {
         if (req.body.role && req.body.role.length > 0) {
             for (let index = 0; index < req.body.role.length; index++) {
                 const element = req.body.role[index];
-                var check = await Group.findOne().where({ _id: element.group_id })
+                let check = await Group.findOne().where({ _id: element.group_id })
                 if (!check) {
                     throw 'group not found'
                 }
@@ -377,16 +377,16 @@ const add = async (req, res) => {
             req.body.url = req.body.application_name
         }
         if (!req.body.order) {
-            var order = await Application.findOne().sort({ order: -1 }).select('order')
+            let order = await Application.findOne().sort({ order: -1 }).select('order')
             if (order) {
                 req.body.order = order.order + 1
             } else {
                 req.body.order = 1
             }
         }
-        var status = (req.body.status != undefined) ? req.body.status : 1
+        let status = (req.body.status != undefined) ? req.body.status : 1
 
-        var data = await Application.create(
+        let data = await Application.create(
             {
                 ...req.body,
                 status: status,
@@ -432,7 +432,7 @@ const edit = async (req, res) => {
 
 
         if (req.body.parent_id) {
-            var check = await Application.findOne().where({ _id: req.body.parent_id })
+            let check = await Application.findOne().where({ _id: req.body.parent_id })
             if (!check) {
                 throw 'parent_id not found'
             }
@@ -442,7 +442,7 @@ const edit = async (req, res) => {
         if (req.body.role && req.body.role.length > 0) {
             for (let index = 0; index < req.body.role.length; index++) {
                 const element = req.body.role[index];
-                var check = await Group.findOne().where({ _id: element.group_id })
+                let check = await Group.findOne().where({ _id: element.group_id })
                 if (!check) {
                     throw 'group not found'
                 }
@@ -478,19 +478,19 @@ const edit = async (req, res) => {
             await Role.deleteMany({ application_id: req.params._id })
         }
 
-        var data = await Application.find()
+        let data = await Application.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
-                    var role = await Role.find().where({ application_id: element._id })
+                    let role = await Role.find().where({ application_id: element._id })
                     element.role = role
 
                 }
                 return result[0]
             }))
         if (!data) {
-            var msg = escape("data not found")
+            let msg = escape("data not found")
             return res.send(utilSetResponseJson("failed", msg))
         }
         return res.send(utilSetResponseJson('success', data))
@@ -508,7 +508,7 @@ const destroy = async (req, res) => {
         await permission('62a5f0a4f06755a7772347e1', req)
 
 
-        var data = await Application.findOne()
+        let data = await Application.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
@@ -518,7 +518,7 @@ const destroy = async (req, res) => {
 
         await Role.deleteMany({ application_id: req.params._id })
 
-        var msg = escape("success")
+        let msg = escape("success")
         return res.send(utilSetResponseJson('success', msg))
 
     } catch (error) {

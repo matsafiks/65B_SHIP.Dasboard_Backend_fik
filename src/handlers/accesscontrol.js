@@ -1,27 +1,22 @@
 
 import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import AccessControl from "../models/AccessControl/AccessControl.js";
-import _ from 'lodash'
 import User from '../models/User/User.js';
 import AccessControlDevice from '../models/AccessControlDevice/AccessControlDevice.js';
-import e from 'express';
 import { permission } from '../preHandlers/permission.js';
 import moment from 'moment'
-import axios from 'axios';
-import config from '../utils/config.js';
 import Role from '../models/Role/Role.js';
 import Location from "../models/Master/Location/Location.js";
-import WorkPermit from '../models/WorkPermit/WorkPermit.js';
 import AccessControlExchangeCard from "../models/AccessControlExchangeCard/AccessControlExchangeCard.js";
 
 const all = async (req, res) => {
     try {
 
-        var application_id = '62a4d4fa22bdf92ba30d163b'
+        let application_id = '62a4d4fa22bdf92ba30d163b'
         await permission(application_id, req)
 
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: 'ทั้งหมด' }],
             PTTStaffCode: [{ PTTStaffCode: 'ทั้งหมด', PTTStaff: 'ทั้งหมด' }],
             AccDeviceName: [{ AccDeviceName: 'ทั้งหมด' }],
@@ -31,32 +26,33 @@ const all = async (req, res) => {
             CompanyName: [{ CompanyName: 'ทั้งหมด' }],
             notification: [{ notification: 'ทั้งหมด' }],
         }
-        var where_permission = {}
-        var data = {}
-        var all = 0
-        var In = 0
-        var Out = 0
-        var exchange_card_in = 0
-        var exchange_card_out = 0
-        var on_plant = 0
-        var online = 0
-        var offline = 0
-        var data_arr = []
+        let where_permission = {}
+        let data = {}
+        let all = 0
+        let In = 0
+        let Out = 0
+        let exchange_card_in = 0
+        let exchange_card_out = 0
+        let on_plant = 0
+        let online = 0
+        let offline = 0
+        let data_arr = []
+        let main_plant = 0
 
 
-        // var check_run_no = await AccessControlDevice.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await AccessControlDevice.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no : 0
-        var AccDeviceName_master = await AccessControlDevice.find({
+        let AccDeviceName_master = await AccessControlDevice.find({
             // $and: [
             //     {
             //         'others.run_no': check_run_no
             //     }
             // ]
         })
-        var AreaName_master = await Location.find()
+        let AreaName_master = await Location.find()
 
 
-        var CardType_master = [
+        let CardType_master = [
             { CardTypeID: '1', CardTypeName: 'ผู้มาติดต่อ' },
             { CardTypeID: '2', CardTypeName: 'ผู้เยี่ยมชม' },
             { CardTypeID: '3', CardTypeName: 'ผู้รับเหมาชั่วคราว' },
@@ -66,7 +62,7 @@ const all = async (req, res) => {
             { CardTypeID: '7', CardTypeName: 'พนักงาน ปตท. โครงการ' }
         ]
 
-        var PersonalType_master = [
+        let PersonalType_master = [
             { PersonalTypeID: '0', PersonalTypeName: 'พนักงาน ปตท. (สังกัด ผยก.)' },
             { PersonalTypeID: '1', PersonalTypeName: 'พนักงานสรรพสามิต/ราชการ/ลูกค้า' },
             { PersonalTypeID: '2', PersonalTypeName: 'ทดสอบผู้มาติดต่อ' },
@@ -77,27 +73,27 @@ const all = async (req, res) => {
             { PersonalTypeID: '8', PersonalTypeName: 'ผู้มาติดต่อ' }
         ]
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
         PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
 
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        var Scan_Date_Time_Start = (req) ? req.query.Scan_Date_Time_Start : undefined
+        let Scan_Date_Time_Start = (req) ? req.query.Scan_Date_Time_Start : undefined
         Scan_Date_Time_Start = (Scan_Date_Time_Start) ? { 'others.scan_date_time': { $gte: Scan_Date_Time_Start } } : {}
 
 
-        var Scan_Date_Time_End = (req) ? req.query.Scan_Date_Time_End : undefined
+        let Scan_Date_Time_End = (req) ? req.query.Scan_Date_Time_End : undefined
         Scan_Date_Time_End = (Scan_Date_Time_End) ? { 'others.scan_date_time': { $lte: Scan_Date_Time_End } } : {}
 
-        var AccDeviceName = (req) ? (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) ? req.query.AccDeviceName : undefined : undefined
+        let AccDeviceName = (req) ? (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) ? req.query.AccDeviceName : undefined : undefined
         if (AccDeviceName) {
             AccDeviceName = AccDeviceName_master.filter(el => { return AccDeviceName.includes(el.AccDeviceName) })
             if (AccDeviceName.length == 0) {
@@ -110,7 +106,7 @@ const all = async (req, res) => {
         AccDeviceName = (AccDeviceName) ? { ACC_ID: AccDeviceName } : {}
 
 
-        var PersonalTypeName = (req) ? (req.query.PersonalTypeName && !req.query.PersonalTypeName.toString().includes('ทั้งหมด')) ? req.query.PersonalTypeName : undefined : undefined
+        let PersonalTypeName = (req) ? (req.query.PersonalTypeName && !req.query.PersonalTypeName.toString().includes('ทั้งหมด')) ? req.query.PersonalTypeName : undefined : undefined
         if (PersonalTypeName) {
             PersonalTypeName = PersonalType_master.filter(el => { return PersonalTypeName.includes(el.PersonalTypeName) })
             if (PersonalTypeName.length == 0) {
@@ -123,21 +119,21 @@ const all = async (req, res) => {
         }
         PersonalTypeName = (PersonalTypeName) ? { PersonalTypeID: { $in: PersonalTypeName } } : {}
 
-        var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
         CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
 
-        var Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
-        var now = new Date
-        var day_7 = new Date().setDate(new Date().getDate() + 7);
+        let now = new Date
+        let day_7 = new Date().setDate(new Date().getDate() + 7);
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
-            //     var test = await WorkPermit.find({ location: { $in: location1.map(el => { return el.location }) } })
+            //     let location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
+            //     let test = await WorkPermit.find({ location: { $in: location1.map(el => { return el.location }) } })
             //     where_permission = { WorkPermitID: { $in: test.map(el => { return el.workPermitID }) } }
 
             // }
@@ -162,35 +158,28 @@ const all = async (req, res) => {
         }
 
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
-        var all = 0
-        var In = 0
-        var Out = 0
-        var exchange_card_in = 0
-        var exchange_card_out = 0
-        var on_plant = 0
-        var online = 0
-        var offline = 0
-        var main_plant = 0
+
+
 
         // แสดงภาพรวมบุคคลที่เข้า - ออก พื้นที่ โดย มี Icon แสดงแยกตามประเภทกลุ่มบุคคล และแสดงจำนวนบุคคลเข้า-ออก (ใช้ข้อมูลจากพื้นที่ที่สแกนอุปกรณ์ล่าสุด)
-        var over_all_check = role.filter((el) => { return el.application_id == '630cfaef11450344aa59db85' })
+        let over_all_check = role.filter((el) => { return el.application_id == '630cfaef11450344aa59db85' })
 
         // การสแกนบัตรเข้า - ออก
-        var In_Out_check = role.filter((el) => { return el.application_id == '630cfb0611450344aa59db91' })
+        let In_Out_check = role.filter((el) => { return el.application_id == '630cfb0611450344aa59db91' })
 
         //การแลกบัตรเข้า - ออก
-        var exchange_card_in_out_check = role.filter((el) => { return el.application_id == '630cfb1811450344aa59db97' })
+        let exchange_card_in_out_check = role.filter((el) => { return el.application_id == '630cfb1811450344aa59db97' })
 
         //บุคคลที่อยู่ในพื้นที่
-        var on_plant_check = role.filter((el) => { return el.application_id == '630cfb2b11450344aa59db9d' })
+        let on_plant_check = role.filter((el) => { return el.application_id == '630cfb2b11450344aa59db9d' })
 
         //อุปกรณ์ online offline
-        var online_offline_check = role.filter((el) => { return el.application_id == '630cfb4a11450344aa59dba3' })
+        let online_offline_check = role.filter((el) => { return el.application_id == '630cfb4a11450344aa59dba3' })
 
         //ใช้ฟังก์ชันการค้นหาข้อมูล โดยเมนู Search สามารถทำการเปิด-ปิด หน้าต่างการค้นหาได้ เพื่อเพิ่มพื้นที่การแสดงผลของ Dashboard
-        var search_check = role.filter((el) => { return el.application_id == '630cfb6011450344aa59dba9' })
+        let search_check = role.filter((el) => { return el.application_id == '630cfb6011450344aa59dba9' })
 
         await AccessControl.find({
             // $and: [
@@ -215,7 +204,7 @@ const all = async (req, res) => {
                     }
                 }
 
-                var join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
+                let join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
 
                 if (join_access_control_device.length > 0) {
                     element.AccDevice = join_access_control_device[0]
@@ -257,7 +246,7 @@ const all = async (req, res) => {
 
 
                 if (filter.PersonalTypeName.some(e => e.PersonalTypeID === element.PersonalTypeID) == false) {
-                    var check_in_master = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
+                    let check_in_master = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
                     filter.PersonalTypeName.push({
                         ...(check_in_master[0]) ? check_in_master[0] : {}, PersonalTypeID: element.PersonalTypeID
                     })
@@ -274,7 +263,7 @@ const all = async (req, res) => {
 
         filter.AccDeviceName = filter.AccDeviceName.concat(AccDeviceName_master)
 
-        var exchange = await AccessControlExchangeCard.findOne()
+        let exchange = await AccessControlExchangeCard.findOne()
         if (exchange) {
             exchange_card_in = parseInt(exchange.ExchangeCardIn)
             exchange_card_out = parseInt(exchange.ExchangeCardOut)
@@ -304,7 +293,7 @@ const all = async (req, res) => {
                 const element = result[index]._doc;
                 element.notification = {}
 
-                var join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
+                let join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
 
                 if (join_access_control_device.length > 0) {
                     element.AccDevice = join_access_control_device[0]
@@ -312,7 +301,7 @@ const all = async (req, res) => {
                     element.AccDevice = null
                 }
 
-                var join_personal_type = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
+                let join_personal_type = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
                 element.PersonalTypeName = (join_personal_type.length > 0) ? join_personal_type[0] : null
 
                 if (element.ACC_ID && element.AccDevice) {
@@ -330,11 +319,11 @@ const all = async (req, res) => {
                 }
 
 
-                var CardTypeName = CardType_master.filter(el => { return el.CardTypeID == element.CardTypeID })
+                let CardTypeName = CardType_master.filter(el => { return el.CardTypeID == element.CardTypeID })
                 element.others.CardTypeName = (CardTypeName.length > 0) ? CardTypeName[0].CardTypeName : null
 
 
-                var PersonalTypeName = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
+                let PersonalTypeName = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
 
                 if (PersonalTypeName.length > 0) {
                     element.others.PersonalTypeName = PersonalTypeName[0].PersonalTypeName
@@ -404,17 +393,17 @@ const all = async (req, res) => {
         })
 
 
-        var data_length = data_arr.length
+        let data_length = data_arr.length
 
 
-        var AccDeviceName = (req) ? req.query.AccDeviceName : undefined
+        AccDeviceName = (req) ? req.query.AccDeviceName : undefined
         AccDeviceName = (AccDeviceName) ? { AccDeviceName: AccDeviceName } : {}
 
         if (online_offline_check.length > 0) {
             filter.notification.push({ notification: 'offline' })
         }
 
-        var Notification_ = {}
+        let Notification_ = {}
         if (typeof Notification == 'string') {
             Notification = [Notification]
         }
@@ -426,7 +415,7 @@ const all = async (req, res) => {
         }
 
 
-        var data_device = await AccessControlDevice.find({
+        let data_device = await AccessControlDevice.find({
             $and: [
                 AreaName,
                 SubAreaName,
@@ -444,7 +433,7 @@ const all = async (req, res) => {
             element.others.on_table = false
 
 
-            var notification = {
+            let notification = {
                 offline: false
             }
 
@@ -468,7 +457,7 @@ const all = async (req, res) => {
         }
 
 
-        var data = {}
+        data = {}
         data.summary = {}
         data.filter = {}
         data.data = []
@@ -504,7 +493,7 @@ const all = async (req, res) => {
             data.filter = filter
         }
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }

@@ -15,10 +15,10 @@ const all = async (req, res) => {
     try {
 
 
-        var application_id = '62a4d4c622bdf92ba30d1633'
+        let application_id = '62a4d4c622bdf92ba30d1633'
         await permission(application_id, req)
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: 'ทั้งหมด' }],
             PTTStaffCode: [{ PTTStaffCode: 'ทั้งหมด', PTTStaff: 'ทั้งหมด', }],
             AreaName: [{ AreaName: 'ทั้งหมด' }],
@@ -27,42 +27,42 @@ const all = async (req, res) => {
             VendorName: [{ VendorName: 'ทั้งหมด' }],
             notification: [{ notification: 'ทั้งหมด' }],
         }
-        var where_permission = {}
-        var all = 0
-        var expire = 0
-        var near_expire = 0
-        var normal = 0
-        var no_check = 0
-        var data_arr = []
+        let where_permission = {}
+        let all = 0
+        let expire = 0
+        let near_expire = 0
+        let normal = 0
+        let no_check = 0
+        let data_arr = []
 
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
         PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
 
-        var WorkingStartDate = (req) ? req.query.WorkingStartDate : undefined
+        let WorkingStartDate = (req) ? req.query.WorkingStartDate : undefined
         WorkingStartDate = (WorkingStartDate) ? { WorkingStartDate: { $gte: WorkingStartDate } } : {}
 
-        var WorkingEndDate = (req) ? req.query.WorkingEndDate : undefined
+        let WorkingEndDate = (req) ? req.query.WorkingEndDate : undefined
         WorkingEndDate = (WorkingEndDate) ? { WorkingEndDate: { $lte: WorkingEndDate } } : {}
 
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        var VendorName = (req) ? (req.query.VendorName && !req.query.VendorName.toString().includes('ทั้งหมด')) ? req.query.VendorName : undefined : undefined
+        let VendorName = (req) ? (req.query.VendorName && !req.query.VendorName.toString().includes('ทั้งหมด')) ? req.query.VendorName : undefined : undefined
         VendorName = (VendorName) ? { VendorName: { $in: VendorName } } : {}
-        // var ScaffoldingType = (req) ? (req.query.ScaffoldingType) ? req.query.ScaffoldingType : undefined : undefined
+        // let ScaffoldingType = (req) ? (req.query.ScaffoldingType) ? req.query.ScaffoldingType : undefined : undefined
         // ScaffoldingType = (ScaffoldingType) ? { ScaffoldingType: { $in: ScaffoldingType } } : {}
 
-        var ScaffoldingType = (req) ? (req.query.ScaffoldingType && !req.query.ScaffoldingType.toString().includes('ทั้งหมด')) ? req.query.ScaffoldingType : undefined : undefined
+        let ScaffoldingType = (req) ? (req.query.ScaffoldingType && !req.query.ScaffoldingType.toString().includes('ทั้งหมด')) ? req.query.ScaffoldingType : undefined : undefined
         if (ScaffoldingType) {
-            var ScaffoldingType_ = {
+            let ScaffoldingType_ = {
                 $or: [
                     {
                         ScaffoldingType: {
@@ -92,21 +92,21 @@ const all = async (req, res) => {
 
 
 
-        var Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
         // Notification = (notification) ? { notification: { $in: notification } } : {}
         // Notification = (Notification) ? Notification : undefined
 
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
-        var now = new Date
-        var day_7 = new Date().setDate(new Date().getDate() + 7);
+        let now = new Date
+        let day_7 = new Date().setDate(new Date().getDate() + 7);
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
 
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
+            //     let location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
             //     where_permission = { AreaName: { $in: location1.map(el => { return el.AreaName }) } }
 
             // }
@@ -131,28 +131,28 @@ const all = async (req, res) => {
 
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
 
         // แสดงภาพรวมการติดตั้งนั่งร้าน โดยมี Icon สี แสดงจุดที่มีการติดตั้งนั่งร้าน
-        var over_all_check = role.filter((el) => { return el.application_id == '62dd28ce8b1b54286bab741b' })
+        let over_all_check = role.filter((el) => { return el.application_id == '62dd28ce8b1b54286bab741b' })
 
         // แสดงการแจ้งเตือนกรณีนั่งร้านที่ติดตั้งในพื้นที่หมดอายุการตรวจสภาพ โดยมี Icon สี เพื่อแจ้งเตือน
-        var expire_check = role.filter((el) => { return el.application_id == '62dd29333eb3c4301b4af56d' })
+        let expire_check = role.filter((el) => { return el.application_id == '62dd29333eb3c4301b4af56d' })
 
         //การแจ้งเตือนกรณีนั่งร้านที่ติดตั้งในพื้นที่ใกล้หมดอายุการตรวจสภาพ, หมดอายุการตรวจสภาพ โดยมี Icon สี เพื่อแจ้งเตือนสถานะ
-        var near_expire_check = role.filter((el) => { return el.application_id == '62dd29713eb3c4301b4af57b' })
+        let near_expire_check = role.filter((el) => { return el.application_id == '62dd29713eb3c4301b4af57b' })
 
         //ใช้ฟังก์ชันการค้นหาข้อมูล โดยเมนู Search สามารถทำการเปิด-ปิด หน้าต่างการค้นหาได้ เพื่อเพิ่มพื้นที่การแสดงผลของ Dashboard
-        var search_check = role.filter((el) => { return el.application_id == '62dd299c3eb3c4301b4af58c' })
+        let search_check = role.filter((el) => { return el.application_id == '62dd299c3eb3c4301b4af58c' })
 
 
         // แสดงการแจ้งเตือนยังไม่ได้ตรวจสอบ
-        var no_check_check = role.filter((el) => { return el.application_id == '62fb3a4268c0cc7688e9f9e5' })
+        let no_check_check = role.filter((el) => { return el.application_id == '62fb3a4268c0cc7688e9f9e5' })
 
 
-        var AreaName_master = await Location.find()
-        var ScaffoldingType_master = await modelScaffoldingType.find()
+        let AreaName_master = await Location.find()
+        let ScaffoldingType_master = await modelScaffoldingType.find()
 
 
         //delete row
@@ -209,7 +209,7 @@ const all = async (req, res) => {
                     }
                 }
 
-                var test = ''
+                let test = ''
                 if (element.ScaffoldingSubType) {
                     test = test = element.ScaffoldingType + ' - ' + element.ScaffoldingSubType
                 } else {
@@ -242,7 +242,7 @@ const all = async (req, res) => {
         }
 
 
-        var Notification_ = {}
+        let Notification_ = {}
         if (typeof Notification == 'string') {
             Notification = [Notification]
         }
@@ -275,7 +275,7 @@ const all = async (req, res) => {
         }).then((result) => {
             for (let index = 0; index < result.length; index++) {
 
-                var notification = {
+                let notification = {
                     expire: false,
                     near_expire: false,
                     no_check: false
@@ -335,7 +335,7 @@ const all = async (req, res) => {
 
             }
         })
-        var data = {}
+        let data = {}
         data.summary = {}
         data.filter = {}
         data.data = []
@@ -365,7 +365,7 @@ const all = async (req, res) => {
             data.filter = filter
         }
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }

@@ -20,32 +20,32 @@ const pttstaffcodeAll = async (req, res) => {
     try {
 
 
-        // var application_id = '62a4d4c622bdf92ba30d1633'
+        // let application_id = '62a4d4c622bdf92ba30d1633'
         // await permission(application_id, req)
 
 
-        var pttstaffcodeAll = []
+        let pttstaffcodeAll = []
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var AgencyName_workpermit = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName_workpermit = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName_workpermit = (AgencyName_workpermit) ? { supervisorDep: { $in: AgencyName_workpermit } } : {}
 
 
-        var which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
+        let which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
         // which = (which) ? { which: { $in: AgencyName } } : 
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
-        var now = new Date
-        var day_7 = new Date().setDate(new Date().getDate() + 7);
+        let now = new Date
+        let day_7 = new Date().setDate(new Date().getDate() + 7);
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
 
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
+            //     let location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
             //     where_permission = { AreaName: { $in: location1.map(el => { return el.AreaName }) } }
 
             // }
@@ -177,16 +177,16 @@ const subareaAll = async (req, res) => {
     try {
 
 
-        // var application_id = '62a4d4c622bdf92ba30d1633'
+        // let application_id = '62a4d4c622bdf92ba30d1633'
         // await permission(application_id, req)
 
 
-        var subareaAll = []
+        let subareaAll = []
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
+        let which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
         // which = (which) ? { which: { $in: AreaName } } : 
 
 
@@ -236,23 +236,23 @@ const wpmSubareaAll = async (req, res) => {
     try {
 
 
-        // var application_id = '62a4d4c622bdf92ba30d1633'
+        // let application_id = '62a4d4c622bdf92ba30d1633'
         // await permission(application_id, req)
 
 
-        var wpmSubareaAll = []
+        let wpmSubareaAll = []
 
-        var AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var AreaName_workpermit = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let AreaName_workpermit = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         AreaName_workpermit = (AreaName_workpermit) ? { location: { $in: AreaName_workpermit } } : {}
 
-        var WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
 
 
-        var which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
+        let which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
         // which = (which) ? { which: { $in: WPM_AreaName } } : 
 
 
@@ -317,14 +317,14 @@ const wpmSubareaAll = async (req, res) => {
 
 
         if (!which || which == 'accesscontrol') {
-            var AccDeviceName_master = await AccessControlDevice.find({})
+            let AccDeviceName_master = await AccessControlDevice.find({})
             await AccessControl.find({
                 $and: [AreaName]
             }).then(res => {
                 for (let index = 0; index < res.length; index++) {
                     const element = res[index];
 
-                    var join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
+                    let join_access_control_device = AccDeviceName_master.filter(el => { return el.AccDeviceID == element.ACC_ID })
                     if (join_access_control_device.length > 0) {
                         element.SubAreaName = join_access_control_device[0].SubAreaName
                         if (wpmSubareaAll.some(e => e.WPM_SubAreaName === element.SubAreaName) == false) {

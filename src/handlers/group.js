@@ -14,9 +14,9 @@ const all = async (req, res) => {
 
         await permission('62a595278b668a5509dbb1fd', req)
 
-        var compare = true
+        let compare = true
         //https://usaapi-test.pttplc.com/api/v1/application/3139e2c7-410f-477d-91f0-83b1dd1c7ae1/roles
-        var group_auth = await axios.get(config.auth_host + '/application/' + config.auth_app_id + '/roles', {
+        let group_auth = await axios.get(config.auth_host + '/application/' + config.auth_app_id + '/roles', {
             headers: {
                 'Authorization': config.auth_api_key
             }
@@ -28,10 +28,10 @@ const all = async (req, res) => {
         if (compare == true) {
             group_auth = group_auth.roles.map(el => { return el.id })
 
-            var group_db = await Group.find()
+            let group_db = await Group.find()
 
             //compare
-            var deleted = group_db.filter(el => { return !group_auth.includes(el.others.id) })
+            let deleted = group_db.filter(el => { return !group_auth.includes(el.others.id) })
 
             if (deleted.length > 0) {
                 await Group.deleteMany({ _id: { $in: deleted.map(el => { return el._doc._id }) } })
@@ -40,19 +40,19 @@ const all = async (req, res) => {
         }
 
 
-        var search = (req) ? req.query.search : undefined
+        let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
                 { group_name: { $regex: '.*' + search + '.*' } }
             ]
         } : {}
 
-        var limit = req.query.limit || 10
-        var page = req.query.page || 1
-        var sort = req.query.sort || 'group_id'
-        var order = req.query.order || 'asc'
+        let limit = req.query.limit || 10
+        let page = req.query.page || 1
+        let sort = req.query.sort || 'group_id'
+        let order = req.query.order || 'asc'
 
-        var data = await Group.find()
+        let data = await Group.find()
             .where(search)
             .skip(((page) - 1) * limit)
             .limit(limit)
@@ -61,7 +61,7 @@ const all = async (req, res) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index];
                     if (element._doc.created_by) {
-                        var created_by = await User.findOne().where({ _id: element._doc.created_by })
+                        let created_by = await User.findOne().where({ _id: element._doc.created_by })
                         if (created_by)
                             result[index].created_by = created_by._doc.username
                     }
@@ -70,10 +70,10 @@ const all = async (req, res) => {
             }))
 
 
-        var len_data = await Group.count().where(search)
+        let len_data = await Group.count().where(search)
 
 
-        var data = {
+        data = {
             currentPage: page,
             pages: Math.ceil(len_data / limit),
             currentCount: data.length,
@@ -97,13 +97,13 @@ const byid = async (req, res) => {
         await permission('62a595278b668a5509dbb1fd', req)
 
 
-        var data = await Group.find()
+        let data = await Group.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index];
                     if (element._doc.created_by) {
-                        var created_by = await User.findOne().where({ _id: element._doc.created_by })
+                        let created_by = await User.findOne().where({ _id: element._doc.created_by })
                         if (created_by)
                             result[index].created_by = created_by._doc.username
                     }
@@ -128,18 +128,18 @@ const add = async (req, res) => {
         await permission('62a595278b668a5509dbb1fd', req)
 
         if (!req.body.group_id) {
-            var group_id = await Group.findOne().sort({ group_id: -1 }).select('group_id')
+            let group_id = await Group.findOne().sort({ group_id: -1 }).select('group_id')
             if (group_id) {
                 req.body.group_id = group_id.group_id + 1
             } else {
                 req.body.group_id = 1
             }
         }
-        var status = (req.body.status != undefined) ? req.body.status : 1
+        let status = (req.body.status != undefined) ? req.body.status : 1
 
 
         // add role in authen systen
-        var add_role = await axios.post(config.auth_host + '/application/' + config.auth_app_id + '/role',
+        let add_role = await axios.post(config.auth_host + '/application/' + config.auth_app_id + '/role',
             {
                 role: req.body.others
             },
@@ -157,7 +157,7 @@ const add = async (req, res) => {
             throw err.toString()
         })
 
-        var data = await Group.create(
+        let data = await Group.create(
             {
                 ...req.body,
                 status: status,
@@ -182,7 +182,7 @@ const edit = async (req, res) => {
 
         // put role in authen systen
         if (req.body.others) {
-            var put_role = await axios.put(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id,
+            let put_role = await axios.put(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id,
                 {
                     role: req.body.others
                 },
@@ -207,7 +207,7 @@ const edit = async (req, res) => {
                 updated_date: new Date()
             })
 
-        var data = await Group.findOne()
+        let data = await Group.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
@@ -222,14 +222,14 @@ const edit = async (req, res) => {
 
 const destroy = async (req, res) => {
     try {
-        var data = await Group.findOne()
+        let data = await Group.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
 
         // delete role in authen systen
-        var delete_roll = await axios.delete(config.auth_host + '/application/' + config.auth_app_id + '/role/' + data.others.id,
+        let delete_roll = await axios.delete(config.auth_host + '/application/' + config.auth_app_id + '/role/' + data.others.id,
             {
                 headers: {
                     'Authorization': config.auth_api_key

@@ -16,7 +16,7 @@ const all = async (req, res) => {
         // await permission('62a594d7bb8946576769c6a7', req)
 
 
-        var search = (req) ? req.query.search : undefined
+        let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
                 { username: { $regex: '.*' + search + '.*' } },
@@ -27,12 +27,12 @@ const all = async (req, res) => {
             ]
         } : {}
 
-        var limit = req.query.limit || 10
-        var page = req.query.page || 1
-        var sort = req.query.sort || 'username'
-        var order = req.query.order || 'asc'
+        let limit = req.query.limit || 10
+        let page = req.query.page || 1
+        let sort = req.query.sort || 'username'
+        let order = req.query.order || 'asc'
 
-        var data = await Logs.find()
+        let data = await Logs.find()
             .where(search)
             .skip(((page) - 1) * limit)
             .limit(limit)
@@ -42,13 +42,13 @@ const all = async (req, res) => {
                 //     const element = result[index];
                 //     delete element._doc.password
                 //     if (element._doc.group_id) {
-                //         var group_id = await Group.findOne().where({ _id: element._doc.group_id })
+                //         let group_id = await Group.findOne().where({ _id: element._doc.group_id })
                 //         if (group_id)
                 //             result[index]._doc.group_id = {
                 //                 group_name: group_id._doc.group_name,
                 //                 group_id: group_id._doc.group_id
                 //             }
-                //         var created_by = await User.findOne().where({ _id: element._doc.created_by })
+                //         let created_by = await User.findOne().where({ _id: element._doc.created_by })
                 //         if (created_by)
                 //             result[index]._doc.created_by = created_by._doc.username
                 //     }
@@ -57,10 +57,10 @@ const all = async (req, res) => {
             }))
 
 
-        var len_data = await Logs.count().where(search)
+        let len_data = await Logs.count().where(search)
 
 
-        var data = {
+        data = {
             currentPage: page,
             pages: Math.ceil(len_data / limit),
             currentCount: data.length,

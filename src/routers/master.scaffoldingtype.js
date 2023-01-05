@@ -5,7 +5,7 @@ import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import scaffoldingTypeSchema from '../models/Master/ScaffoldingType/schema.scaffoldingType.js'
 
-var scaffoldingTypeRouters = express.Router();
+let scaffoldingTypeRouters = express.Router();
 
 scaffoldingTypeRouters.get('/all',
     validateSchema(scaffoldingTypeSchema['/api/master/scaffoldingtype/all'].get.parameters),

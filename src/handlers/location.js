@@ -9,19 +9,19 @@ const all = async (req, res) => {
 
     try {
 
-        var search = (req) ? req.query.search : undefined
+        let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
                 { Location_Name: { $regex: '.*' + search + '.*' } }
             ]
         } : {}
 
-        var limit = req.query.limit || 10
-        var page = req.query.page || 1
-        var sort = req.query.sort || 'Location_ID'
-        var order = req.query.order || 'asc'
+        let limit = req.query.limit || 10
+        let page = req.query.page || 1
+        let sort = req.query.sort || 'Location_ID'
+        let order = req.query.order || 'asc'
 
-        var data = await Location.find()
+        let data = await Location.find()
             .where(search)
             .skip(((page) - 1) * limit)
             .limit(limit)
@@ -30,12 +30,12 @@ const all = async (req, res) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     if (element.created_by) {
-                        var created_by = await User.findOne().where({ _id: element.created_by })
+                        let created_by = await User.findOne().where({ _id: element.created_by })
                         if (created_by)
                             element.created_by = created_by._doc.username
                     }
                     if (element.updated_by) {
-                        var updated_by = await User.findOne().where({ _id: element.updated_by })
+                        let updated_by = await User.findOne().where({ _id: element.updated_by })
                         if (updated_by)
                             element.updated_by = updated_by._doc.username
                     }
@@ -44,10 +44,10 @@ const all = async (req, res) => {
             }))
 
 
-        var len_data = await Location.count().where(search)
+        let len_data = await Location.count().where(search)
 
 
-        var data = {
+        data = {
             currentPage: page,
             pages: Math.ceil(len_data / limit),
             currentCount: data.length,
@@ -67,18 +67,18 @@ const all = async (req, res) => {
 }
 const byid = async (req, res) => {
     try {
-        var data = await Location.find()
+        let data = await Location.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     if (element.created_by) {
-                        var created_by = await User.findOne().where({ _id: element.created_by })
+                        let created_by = await User.findOne().where({ _id: element.created_by })
                         if (created_by)
                             element.created_by = created_by._doc.username
                     }
                     if (element.updated_by) {
-                        var updated_by = await User.findOne().where({ _id: element.updated_by })
+                        let updated_by = await User.findOne().where({ _id: element.updated_by })
                         if (updated_by)
                             element.updated_by = updated_by._doc.username
                     }
@@ -102,16 +102,16 @@ const add = async (req, res) => {
 
 
         if (!req.body.Location_ID) {
-            var Location_ID = await Location.findOne().sort({ Location_ID: -1 }).select('Location_ID')
+            let Location_ID = await Location.findOne().sort({ Location_ID: -1 }).select('Location_ID')
             if (Location_ID) {
                 req.body.Location_ID = Location_ID.Location_ID + 1
             } else {
                 req.body.Location_ID = 1
             }
         }
-        var Status = (req.body.Status != undefined) ? req.body.Status : 1
+        let Status = (req.body.Status != undefined) ? req.body.Status : 1
 
-        var data = await Location.create(
+        let data = await Location.create(
             {
                 ...req.body,
                 Status: Status,
@@ -140,7 +140,7 @@ const edit = async (req, res) => {
                 updated_date: new Date()
             })
 
-        var data = await Location.findOne()
+        let data = await Location.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson(escape('failed'), 'data not found'))
@@ -155,7 +155,7 @@ const edit = async (req, res) => {
 
 const destroy = async (req, res) => {
     try {
-        var data = await Location.findOne()
+        let data = await Location.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson(escape('failed'), 'data not found'))

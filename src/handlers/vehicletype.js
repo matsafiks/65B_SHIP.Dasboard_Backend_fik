@@ -9,7 +9,7 @@ const all = async (req, res) => {
 
     try {
 
-        var search = (req) ? req.query.search : undefined
+        let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
                 { VehicleTypeTypeID: { $regex: '.*' + search + '.*' } },
@@ -17,12 +17,12 @@ const all = async (req, res) => {
             ]
         } : {}
 
-        var limit = req.query.limit || 10
-        var page = req.query.page || 1
-        var sort = req.query.sort || 'VehicleID'
-        var order = req.query.order || 'asc'
+        let limit = req.query.limit || 10
+        let page = req.query.page || 1
+        let sort = req.query.sort || 'VehicleID'
+        let order = req.query.order || 'asc'
 
-        var data = await VehicleType.find()
+        let data = await VehicleType.find()
             .where(search)
             .skip(((page) - 1) * limit)
             .limit(limit)
@@ -31,12 +31,12 @@ const all = async (req, res) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     if (element.created_by) {
-                        var created_by = await User.findOne().where({ _id: element.created_by })
+                        let created_by = await User.findOne().where({ _id: element.created_by })
                         if (created_by)
                             element.created_by = created_by._doc.username
                     }
                     if (element.updated_by) {
-                        var updated_by = await User.findOne().where({ _id: element.updated_by })
+                        let updated_by = await User.findOne().where({ _id: element.updated_by })
                         if (updated_by)
                             element.updated_by = updated_by._doc.username
                     }
@@ -45,10 +45,10 @@ const all = async (req, res) => {
             }))
 
 
-        var len_data = await VehicleType.count().where(search)
+        let len_data = await VehicleType.count().where(search)
 
 
-        var data = {
+        data = {
             currentPage: page,
             pages: Math.ceil(len_data / limit),
             currentCount: data.length,
@@ -57,29 +57,29 @@ const all = async (req, res) => {
 
         }
 
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
+        if (res)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
-        // if (res)
-        //     return res.send(utilSetResponseJson('failed', error.toString()))
-        // return utilSetResponseJson('failed', error.toString())
+        if (res)
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 const byid = async (req, res) => {
     try {
-        var data = await VehicleType.find()
+        let data = await VehicleType.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index]._doc;
                     if (element.created_by) {
-                        var created_by = await User.findOne().where({ _id: element.created_by })
+                        let created_by = await User.findOne().where({ _id: element.created_by })
                         if (created_by)
                             element.created_by = created_by._doc.username
                     }
                     if (element.updated_by) {
-                        var updated_by = await User.findOne().where({ _id: element.updated_by })
+                        let updated_by = await User.findOne().where({ _id: element.updated_by })
                         if (updated_by)
                             element.updated_by = updated_by._doc.username
                     }
@@ -87,41 +87,41 @@ const byid = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            // return res.send(utilSetResponseJson("failed", 'data not found'))
+            return res.send(utilSetResponseJson("failed", 'data not found'))
         }
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
+        if (res)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
-        // if (res)
-        //     return res.send(utilSetResponseJson('failed', error.toString()))
-        // return utilSetResponseJson('failed', error.toString())
+        if (res)
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 const add = async (req, res) => {
     try {
 
         if (!req.body.VehicleID) {
-            var VehicleID = await VehicleType.findOne().sort({ VehicleID: -1 }).select('VehicleID')
+            let VehicleID = await VehicleType.findOne().sort({ VehicleID: -1 }).select('VehicleID')
             if (VehicleID) {
                 req.body.VehicleID = VehicleID.VehicleID + 1
             } else {
                 req.body.VehicleID = 1
             }
         }
-        var data = await VehicleType.create(
+        let data = await VehicleType.create(
             {
                 ...req.body,
                 created_by: req._id,
                 created_date: new Date()
             })
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
+        if (res)
+            return res.send(utilSetResponseJson('success', data))
+        return utilSetResponseJson('success', data)
     } catch (error) {
-        // if (res)
-        //     return res.send(utilSetResponseJson('failed', error.toString()))
-        // return utilSetResponseJson('failed', error.toString())
+        if (res)
+            return res.send(utilSetResponseJson('failed', error.toString()))
+        return utilSetResponseJson('failed', error.toString())
     }
 }
 
@@ -137,7 +137,7 @@ const edit = async (req, res) => {
                 updated_date: new Date()
             })
 
-        var data = await VehicleType.findOne()
+        let data = await VehicleType.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
@@ -152,7 +152,7 @@ const edit = async (req, res) => {
 
 const destroy = async (req, res) => {
     try {
-        var data = await VehicleType.findOne()
+        let data = await VehicleType.findOne()
             .where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))

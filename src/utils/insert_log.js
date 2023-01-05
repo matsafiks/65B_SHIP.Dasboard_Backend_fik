@@ -4,10 +4,10 @@ import config from './config.js'
 import Logs from '../models/Logs/Logs.js';
 // import tunnel from 'tunnel-ssh';
 
-var insert_log = async (req, action, error) => {
+let insert_log = async (req, action, error) => {
 
-    var fullUrl = ' '
-    var username = ' '
+    let fullUrl = ' '
+    let username = ' '
     if (req.username) {
         fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
         username = req.username

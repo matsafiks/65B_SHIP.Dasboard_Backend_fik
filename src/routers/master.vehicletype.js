@@ -5,7 +5,7 @@ import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import vehicleTypeSchema from '../models/Master/VehicleType/schema.vehicleType.js'
 
-var vehicleTypeRouters = express.Router();
+let vehicleTypeRouters = express.Router();
 
 vehicleTypeRouters.get('/all',
     validateSchema(vehicleTypeSchema['/api/master/vehicletype/all'].get.parameters),

@@ -4,7 +4,7 @@ import { pttstaffcodeAll, subareaAll, wpmSubareaAll } from '../handlers/master.j
 import { check_jwt } from '../preHandlers/jwt_auth.js'
 import schema from '../models/Master/schema.js'
 
-var masterRouters = express.Router();
+let masterRouters = express.Router();
 
 masterRouters.get('/pttstaffcode/all',
     check_jwt,

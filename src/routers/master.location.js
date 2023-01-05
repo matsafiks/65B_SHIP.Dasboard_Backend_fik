@@ -5,7 +5,7 @@ import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import locationSchema from '../models/Master/Location/schema.location.js'
 
-var locationRouters = express.Router();
+let locationRouters = express.Router();
 
 locationRouters.get('/all',
     validateSchema(locationSchema['/api/master/location/all'].get.parameters),

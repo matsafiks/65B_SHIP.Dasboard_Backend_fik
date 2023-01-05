@@ -23,20 +23,20 @@ const scaffolding = async (req, res) => {
 
     try {
 
-        var application_id = '62f762cb112721673fda40d7'
+        let application_id = '62f762cb112721673fda40d7'
         await permission(application_id, req)
 
-        var data_arr = []
-        var scaffolding_all = 0
-        var where_permission_scaffolding = {}
-        var ScaffoldingType = {}
-        var expire = 0
-        var near_expire = 0
-        var normal = 0
-        var no_check = 0
+        let data_arr = []
+        let scaffolding_all = 0
+        let where_permission_scaffolding = {}
+        let ScaffoldingType = {}
+        let expire = 0
+        let near_expire = 0
+        let normal = 0
+        let no_check = 0
 
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: "ทั้งหมด" }],
             PTTStaffCode: [{ PTTStaffCode: "ทั้งหมด", PTTStaff: "ทั้งหมด" }],
             AreaName: [{ AreaName: "ทั้งหมด" }],
@@ -49,13 +49,13 @@ const scaffolding = async (req, res) => {
             CompanyName: [{ CompanyName: "ทั้งหมด" }],
         }
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
+            //     let location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
             //     where_permission_scaffolding = { AreaName: { $in: location1.map(el => { return el.AreaName }) } }
 
             // }
@@ -80,33 +80,33 @@ const scaffolding = async (req, res) => {
         else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
         //แสดงหมุดของ scaffolding
-        var scaffolding_map_check = role.filter((el) => { return el.application_id == '62f7655c112721673fda41dc' })
+        let scaffolding_map_check = role.filter((el) => { return el.application_id == '62f7655c112721673fda41dc' })
 
         //ตัวเลขแสดงจำนวนนั่งร้าน
-        var scaffolding_amount_check = role.filter((el) => { return el.application_id == '62f764f1112721673fda41ca' })
+        let scaffolding_amount_check = role.filter((el) => { return el.application_id == '62f764f1112721673fda41ca' })
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
         PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        var WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         WPM_AreaName = (WPM_AreaName) ? { AreaName: { $in: WPM_AreaName } } : {}
 
-        var WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
+        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
         WPM_SubAreaName = (WPM_SubAreaName) ? { SubAreaName: { $in: WPM_SubAreaName } } : {}
 
-        var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
         CompanyName = (CompanyName) ? { VendorName: { $in: CompanyName } } : {}
 
         //delete row
@@ -207,7 +207,7 @@ const scaffolding = async (req, res) => {
                 element.others.show_in_map = true
                 element.others.on_table = true
 
-                var notification = {
+                let notification = {
                     expire: false,
                     near_expire: false,
                     no_check: false
@@ -245,7 +245,7 @@ const scaffolding = async (req, res) => {
 
                 scaffolding_all = scaffolding_all + 1
 
-                // var test = ''
+                // let test = ''
                 // if (element.ScaffoldingSubType) {
                 //     test = test = element.ScaffoldingType + ' - ' + element.ScaffoldingSubType
                 // } else {
@@ -265,7 +265,7 @@ const scaffolding = async (req, res) => {
         })
 
 
-        var data = {}
+        let data = {}
         data.summary = {}
         data.filter = {}
         data.data = []
@@ -282,7 +282,7 @@ const scaffolding = async (req, res) => {
         }
         data.filter = filter
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -302,11 +302,11 @@ const people = async (req, res) => {
 
     try {
 
-        var application_id = '62f762cb112721673fda40d7'
+        let application_id = '62f762cb112721673fda40d7'
         await permission(application_id, req)
 
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: "ทั้งหมด" }],
             PTTStaffCode: [{ PTTStaffCode: "ทั้งหมด", PTTStaff: "ทั้งหมด" }],
             AreaName: [{ AreaName: "ทั้งหมด" }],
@@ -320,21 +320,21 @@ const people = async (req, res) => {
         }
 
 
-        var data_arr = []
-        var people_all_wpm = 0
-        var people_all_gps = 0
-        var where_permission_people = {}
-        var PeopleType_wpm = {}
-        var PeopleType_gps = {}
+        let data_arr = []
+        let people_all_wpm = 0
+        let people_all_gps = 0
+        let where_permission_people = {}
+        let PeopleType_wpm = {}
+        let PeopleType_gps = {}
 
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await People.find({ OwnerID: check_user.others.employeeid })
+            //     let location1 = await People.find({ OwnerID: check_user.others.employeeid })
             //     where_permission_people = { WPM_AreaName: { $in: location1.map(el => { return el.WPM_AreaName }) } }
             // }
         }
@@ -357,36 +357,36 @@ const people = async (req, res) => {
         else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
         //แสดงหมุดของ people
-        var people_map_check = role.filter((el) => { return el.application_id == '62f76548112721673fda41d6' })
+        let people_map_check = role.filter((el) => { return el.application_id == '62f76548112721673fda41d6' })
 
-        var people_amount_wpm_check = role.filter((el) => { return el.application_id == '63811105517cdd08ce409750' })
-        var people_amount_gps_check = role.filter((el) => { return el.application_id == '6381114b517cdd08ce409751' })
+        let people_amount_wpm_check = role.filter((el) => { return el.application_id == '63811105517cdd08ce409750' })
+        let people_amount_gps_check = role.filter((el) => { return el.application_id == '6381114b517cdd08ce409751' })
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
         PTTStaffCode = (PTTStaffCode) ? { PTTStaffID: { $in: PTTStaffCode } } : {}
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        var WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
 
-        var WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         WPM_SubAreaName = (WPM_SubAreaName) ? { WPM_SubAreaName: { $in: WPM_SubAreaName } } : {}
 
-        var PeopleType = (req) ? (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) ? req.query.PeopleType : undefined : undefined
+        let PeopleType = (req) ? (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) ? req.query.PeopleType : undefined : undefined
         PeopleType = (PeopleType) ? { PeopleType: { $in: PeopleType } } : {}
 
-        var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
         CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
 
         await People.find({
@@ -487,7 +487,7 @@ const people = async (req, res) => {
                 element.others.show_in_map = true
                 element.others.on_table = true
 
-                var notification = {
+                let notification = {
                     still_or_out: false,
                     sos: false,
                     no_work: false
@@ -542,7 +542,7 @@ const people = async (req, res) => {
             }
         })
 
-        var data = {}
+        let data = {}
         data.summary = {}
         data.filter = {}
         data.data = []
@@ -560,7 +560,7 @@ const people = async (req, res) => {
         }
         data.filter = filter
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -581,7 +581,7 @@ const vehicle = async (req, res) => {
 
     try {
 
-        var application_id = '62f762cb112721673fda40d7'
+        let application_id = '62f762cb112721673fda40d7'
         await permission(application_id, req)
 
         //delete row
@@ -589,7 +589,7 @@ const vehicle = async (req, res) => {
             Remove_GPS: { $lte: new Date().toISOString().split('T')[0], $ne: "" }
         })
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: "ทั้งหมด" }],
             PTTStaffCode: [{ PTTStaffCode: "ทั้งหมด", PTTStaff: "ทั้งหมด" }],
             AreaName: [{ AreaName: "ทั้งหมด" }],
@@ -603,20 +603,20 @@ const vehicle = async (req, res) => {
         }
 
 
-        var In = 0
-        var out = 0
-        var remain = 0
-        var where_permission_vehicle = {}
-        var data_arr = []
+        let In = 0
+        let out = 0
+        let remain = 0
+        let where_permission_vehicle = {}
+        let data_arr = []
         const today = moment().startOf('day')
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await Vehicle.find({ OwnerCode: check_user.others.employeeid })
+            //     let location1 = await Vehicle.find({ OwnerCode: check_user.others.employeeid })
             //     where_permission_vehicle = { WPM_AreaName: { $in: location1.map(el => { return el.WPM_AreaName }) } }
             // }
         }
@@ -640,39 +640,39 @@ const vehicle = async (req, res) => {
         else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
 
 
         //แสดงหมุดของ vehicle
-        var vehicle_map_check = role.filter((el) => { return el.application_id == '63415f38ebfdbc1c9f1f7ba1' })
+        let vehicle_map_check = role.filter((el) => { return el.application_id == '63415f38ebfdbc1c9f1f7ba1' })
 
         //กราฟแท่งแสดงยานพาหนะ
-        var vehicle_check = role.filter((el) => { return el.application_id == '62f7650b112721673fda41d0' })
+        let vehicle_check = role.filter((el) => { return el.application_id == '62f7650b112721673fda41d0' })
 
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
         PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        var WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
 
-        var WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         WPM_SubAreaName = (WPM_SubAreaName) ? { WPM_SubAreaName: { $in: WPM_SubAreaName } } : {}
 
-        var VehicleType = (req) ? (req.query.VehicleType && !req.query.VehicleType.toString().includes('ทั้งหมด')) ? req.query.VehicleType : undefined : undefined
+        let VehicleType = (req) ? (req.query.VehicleType && !req.query.VehicleType.toString().includes('ทั้งหมด')) ? req.query.VehicleType : undefined : undefined
         VehicleType = (VehicleType) ? { VehicleType: { $in: VehicleType } } : {}
 
-        var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
         CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
 
 
@@ -755,9 +755,9 @@ const vehicle = async (req, res) => {
             }
         })
 
-        var vehicle5 = await Vehicle5.find()
+        let vehicle5 = await Vehicle5.find()
 
-        var in_out = await Vehicle6.findOne()
+        let in_out = await Vehicle6.findOne()
         if (in_out) {
             In = parseInt(in_out.VehicleInCount)
             out = parseInt(in_out.VehicleOutCount)
@@ -783,17 +783,17 @@ const vehicle = async (req, res) => {
                 element.others.show_in_map = true
                 element.others.on_table = true
 
-                var notification = {
+                let notification = {
                     drive_out_control_area: false,
                     enter_forbidden_area: false,
                     park_undefine_spot: false,
                     over_speed: false
                 }
 
-                // var join_vehicle6 = vehicle6.filter(el => { return el.VehicleID == element.VehicleID })
+                // let join_vehicle6 = vehicle6.filter(el => { return el.VehicleID == element.VehicleID })
                 // element.Vehicle6 = (join_vehicle6.length > 0) ? join_vehicle6[0] : null
 
-                var join_vehicle5 = vehicle5.filter(el => { return el.id == element.VehicleTypeID })
+                let join_vehicle5 = vehicle5.filter(el => { return el.id == element.VehicleTypeID })
                 element.Vehicle5 = (join_vehicle5.length > 0) ? join_vehicle5[0] : null
 
                 // if (element.Vehicle6) {
@@ -834,7 +834,7 @@ const vehicle = async (req, res) => {
         })
 
 
-        var data = {}
+        let data = {}
         data.summary = {}
         data.filter = {}
         data.data = []
@@ -853,7 +853,7 @@ const vehicle = async (req, res) => {
         }
         data.filter = filter
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }
@@ -875,11 +875,11 @@ const workpermit = async (req, res) => {
 
     try {
 
-        var application_id = '62f762cb112721673fda40d7'
+        let application_id = '62f762cb112721673fda40d7'
         await permission(application_id, req)
 
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: "ทั้งหมด" }],
             PTTStaffCode: [{ PTTStaffCode: "ทั้งหมด", PTTStaff: "ทั้งหมด" }],
             AreaName: [{ AreaName: "ทั้งหมด" }],
@@ -893,21 +893,21 @@ const workpermit = async (req, res) => {
         }
 
 
-        var data_arr = []
-        var open = 0
-        var close = 0
-        var expire = 0
-        var near_expire = 0
-        var ONE_HOUR = 60 * 60 * 1000; /* ms */
-        var where_permission_workpermit = {}
+        let data_arr = []
+        let open = 0
+        let close = 0
+        let expire = 0
+        let near_expire = 0
+        let ONE_HOUR = 60 * 60 * 1000; /* ms */
+        let where_permission_workpermit = {}
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
+            //     let location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
             //     where_permission_workpermit = { location: { $in: location1.map(el => { return el.location }) } }
             // }
         }
@@ -931,30 +931,30 @@ const workpermit = async (req, res) => {
         else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
         }
 
-        var chek_status = await WorkpermitStatus.find()
+        let chek_status = await WorkpermitStatus.find()
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
         // กราฟวงกลมแสดงใบงานเปิดและปิด
-        var workpermit_open_close_check = role.filter((el) => { return el.application_id == '62f76436112721673fda41ac' })
+        let workpermit_open_close_check = role.filter((el) => { return el.application_id == '62f76436112721673fda41ac' })
 
         // กราฟวงกลมแสดงสถานะใบงานหมดอายุและใกล้หมดอายุ
-        var workpermit_expire_near_check = role.filter((el) => { return el.application_id == '62f7645d112721673fda41b2' })
+        let workpermit_expire_near_check = role.filter((el) => { return el.application_id == '62f7645d112721673fda41b2' })
 
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { supervisorDep: { $in: AgencyName } } : {}
 
-        var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
         PTTStaffCode = (PTTStaffCode) ? { supervisorCode: { $in: PTTStaffCode } } : {}
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { location: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { subLocation: { $in: SubAreaName } } : {}
 
-        var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
         CompanyName = (CompanyName) ? { companyName: { $in: CompanyName } } : {}
 
         await WorkPermit.find({
@@ -1027,7 +1027,7 @@ const workpermit = async (req, res) => {
                     const element = result[index]._doc;
 
                     if (workpermit_open_close_check.length > 0) {
-                        var check = chek_status.filter(function (el) {
+                        let check = chek_status.filter(function (el) {
                             return el.Status_ID == element.workpermitStatusId
                         });
 
@@ -1040,7 +1040,7 @@ const workpermit = async (req, res) => {
 
                     if (workpermit_expire_near_check.length > 0) {
                         if (element.others.workingEnd) {
-                            var workingEnd = element.others.workingEnd
+                            let workingEnd = element.others.workingEnd
                             if (workingEnd - new Date() < ONE_HOUR && workingEnd >= new Date()) {
                                 near_expire = near_expire + 1
                             }
@@ -1056,7 +1056,7 @@ const workpermit = async (req, res) => {
 
         }
 
-        var data = {}
+        let data = {}
         data.summary = {}
 
         if (workpermit_open_close_check.length > 0) {
@@ -1092,7 +1092,7 @@ const equipment = async (req, res) => {
 
     try {
 
-        var application_id = '62f762cb112721673fda40d7'
+        let application_id = '62f762cb112721673fda40d7'
         await permission(application_id, req)
 
 
@@ -1104,7 +1104,7 @@ const equipment = async (req, res) => {
             DateTime_Out: { $lte: new Date() }
         })
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: "ทั้งหมด" }],
             PTTStaffCode: [{ PTTStaffCode: "ทั้งหมด", PTTStaff: "ทั้งหมด" }],
             AreaName: [{ AreaName: "ทั้งหมด" }],
@@ -1117,11 +1117,11 @@ const equipment = async (req, res) => {
             CompanyName: [{ CompanyName: "ทั้งหมด" }],
         }
 
-        var data_arr = []
-        var all = 0
-        var risk_equipment = 0
-        var where_permission_equipment = {}
-        var check_user = await User.findOne().where({ _id: req._id })
+        let data_arr = []
+        let all = 0
+        let risk_equipment = 0
+        let where_permission_equipment = {}
+        let check_user = await User.findOne().where({ _id: req._id })
 
 
         //เจ้าของพื้นที่
@@ -1147,22 +1147,22 @@ const equipment = async (req, res) => {
         else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
         //กราฟวงกลมแสดงจำนวนอุปกรณ์ทั่วไปและอุปกรณ์เสี่ยง
-        var equipment_risk_check = role.filter((el) => { return el.application_id == '62f764c6112721673fda41be' })
+        let equipment_risk_check = role.filter((el) => { return el.application_id == '62f764c6112721673fda41be' })
 
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
+        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
         PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
         CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
 
         await Equipment.find({
@@ -1265,7 +1265,7 @@ const equipment = async (req, res) => {
             })
         }
 
-        var data = {}
+        let data = {}
         data.summary = {}
         if (equipment_risk_check.length > 0) {
             data.summary = {
@@ -1292,10 +1292,10 @@ const accesscontrol = async (req, res) => {
 
     try {
 
-        var application_id = '62f762cb112721673fda40d7'
+        let application_id = '62f762cb112721673fda40d7'
         await permission(application_id, req)
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: "ทั้งหมด" }],
             PTTStaffCode: [{ PTTStaffCode: "ทั้งหมด", PTTStaff: "ทั้งหมด" }],
             AreaName: [{ AreaName: "ทั้งหมด" }],
@@ -1308,20 +1308,20 @@ const accesscontrol = async (req, res) => {
             CompanyName: [{ CompanyName: "ทั้งหมด" }],
         }
 
-        var data_arr = []
-        var online = 0
-        var offline = 0
+        let data_arr = []
+        let online = 0
+        let offline = 0
 
-        // var where_permission_accesscontrol = {}
+        // let where_permission_accesscontrol = {}
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
-            //     var test = await WorkPermit.find({ location: { $in: location1.map(el => { return el.location }) } })
+            //     let location1 = await WorkPermit.find({ approverCode: check_user.others.employeeid })
+            //     let test = await WorkPermit.find({ location: { $in: location1.map(el => { return el.location }) } })
             //     where_permission_accesscontrol = { WorkPermitID: { $in: test.map(el => { return el.workPermitID }) } }
             // }
 
@@ -1346,31 +1346,31 @@ const accesscontrol = async (req, res) => {
         else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
 
         //แสดงหมุดของ access control
-        var access_control_map_check = role.filter((el) => { return el.application_id == '62f7656c112721673fda41e2' })
+        let access_control_map_check = role.filter((el) => { return el.application_id == '62f7656c112721673fda41e2' })
 
         //กราฟวงกลมแสดงสถานะ access control ออฟไลน์และออนไลน์
-        var access_control_online_off_chcek = role.filter((el) => { return el.application_id == '62f76493112721673fda41b8' })
+        let access_control_online_off_chcek = role.filter((el) => { return el.application_id == '62f76493112721673fda41b8' })
 
-        var AccDeviceName = (req) ? (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) ? req.query.AccDeviceName : undefined : undefined
+        let AccDeviceName = (req) ? (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) ? req.query.AccDeviceName : undefined : undefined
         AccDeviceName = (AccDeviceName) ? { AccDeviceName: AccDeviceName } : {}
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        var WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         WPM_AreaName = (WPM_AreaName) ? { AreaName: { $in: WPM_AreaName } } : {}
 
-        var WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
+        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
         WPM_SubAreaName = (WPM_SubAreaName) ? { SubAreaName: { $in: WPM_SubAreaName } } : {}
 
-        var AccDeviceName_master = await AccessControlDevice.find({
+        let AccDeviceName_master = await AccessControlDevice.find({
 
         }).then((result) => {
             for (let index = 0; index < result.length; index++) {
@@ -1443,7 +1443,7 @@ const accesscontrol = async (req, res) => {
                 element.others.on_table = false
 
 
-                var notification = {
+                let notification = {
                     offline: false
                 }
 
@@ -1465,7 +1465,7 @@ const accesscontrol = async (req, res) => {
         })
 
 
-        var data = {}
+        let data = {}
         data.summary = {}
         data.filter = {}
         data.data = []

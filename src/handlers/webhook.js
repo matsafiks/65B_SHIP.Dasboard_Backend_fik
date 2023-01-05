@@ -29,14 +29,14 @@ const addBasicAuth = async (req, res) => {
 
     try {
 
-        var data = {
+        let data = {
             username: req.body.username,
             password: await generateHashPassword(req.body.password),
             user_group: req.body.user_group,
             status: 1,
             created_date: dateThailand
         }
-        var create = await User.create(data)
+        let create = await User.create(data)
         res.send(utilSetResponseJson('success', create))
     } catch (error) {
         res.send(utilSetResponseJson('failed', error.toString()))
@@ -46,7 +46,7 @@ const addBasicAuth = async (req, res) => {
 const getBasicAuth = async (req, res) => {
 
     try {
-        var data = await User.find()
+        let data = await User.find()
         res.send(utilSetResponseJson('success', data))
     } catch (error) {
         res.send(utilSetResponseJson('failed', error.toString()))
@@ -57,26 +57,26 @@ const scaffolding = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await Scaffolding.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await Scaffolding.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        var data_in_db = await Scaffolding.find()
-        var error = []
+        let data_in_db = await Scaffolding.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
             if (el.WorkingStartDate) {
-                var new_date = new Date(el.WorkingStartDate)
+                let new_date = new Date(el.WorkingStartDate)
                 if (new_date != 'Invalid Date') {
                     // WorkingEnd = new_date
                 } else {
@@ -85,7 +85,7 @@ const scaffolding = async (req, res) => {
             }
 
             if (el.WorkingEndDate) {
-                var new_date = new Date(el.WorkingEndDate)
+                let new_date = new Date(el.WorkingEndDate)
                 if (new_date != 'Invalid Date') {
                     // WorkingEnd = new_date
                 } else {
@@ -93,7 +93,7 @@ const scaffolding = async (req, res) => {
                 }
             }
             if (el.RemoveDate) {
-                var new_date = new Date(el.RemoveDate)
+                let new_date = new Date(el.RemoveDate)
                 if (new_date != 'Invalid Date') {
                     // WorkingEnd = new_date
                 } else {
@@ -115,7 +115,7 @@ const scaffolding = async (req, res) => {
                 // error.push({ index: index, cases: 'Features is required' })
             }
 
-            var check = data_in_db.filter((el1) => {
+            let check = data_in_db.filter((el1) => {
                 return el1.ScaffoldingCode == el.ScaffoldingCode
             })
 
@@ -152,7 +152,7 @@ const scaffolding = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook scaffolding', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -184,7 +184,7 @@ const scaffolding = async (req, res) => {
             }
         }
 
-        var data = await Scaffolding.find()
+        let data = await Scaffolding.find()
 
         io.sockets.emit('scaffolding', 'new')
         io.sockets.emit('notification', 'new')
@@ -200,31 +200,31 @@ const workPermit = async (req, res) => {
     try {
 
         if (res) {
-            var application_id = '62a5c8003ec7e79898750deb'
+            let application_id = '62a5c8003ec7e79898750deb'
             await permission(application_id, req)
         }
 
-        var io = await socket_io.getIo()
-        // var check_run_no = await WorkPermit.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        let io = await socket_io.getIo()
+        // let check_run_no = await WorkPermit.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
-        var data_in_db = await WorkPermit.find()
-        var error = []
+        let data_in_db = await WorkPermit.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
-        var data_delete = []
+        let data_create = []
+        let data_update = []
+        let data_delete = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
-            var workingStart = null
-            var workingEnd = null
+            let workingStart = null
+            let workingEnd = null
 
             if (el.gasMeasurement) {
                 if (el.gasMeasurement.split(' ').length > 1) {
-                    var new_date = new Date(el.gasMeasurement)
+                    let new_date = new Date(el.gasMeasurement)
                 } else {
-                    var new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.GasMeasurement)
+                    let new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.GasMeasurement)
                 }
                 if (new_date != 'Invalid Date') {
                     // gas_timeout = setTimeout(() => {
@@ -237,7 +237,7 @@ const workPermit = async (req, res) => {
             }
 
             if (el.workStartDate) {
-                var new_date = new Date(el.workStartDate.replace(/\s/g, '') + ' ' + el.workStartTime.replace(/\s/g, ''))
+                let new_date = new Date(el.workStartDate.replace(/\s/g, '') + ' ' + el.workStartTime.replace(/\s/g, ''))
                 if (new_date != 'Invalid Date') {
                     workingStart = new_date
                 } else {
@@ -246,7 +246,7 @@ const workPermit = async (req, res) => {
             }
 
             if (el.workEndDate) {
-                var new_date = new Date(el.workEndDate.replace(/\s/g, '') + ' ' + el.workEndTime.replace(/\s/g, ''))
+                let new_date = new Date(el.workEndDate.replace(/\s/g, '') + ' ' + el.workEndTime.replace(/\s/g, ''))
                 if (new_date != 'Invalid Date') {
                     workingEnd = new_date
                 } else {
@@ -254,7 +254,7 @@ const workPermit = async (req, res) => {
                 }
             }
 
-            var check = data_in_db.filter((el1) => {
+            let check = data_in_db.filter((el1) => {
                 return (el1.workPermitID == el.workPermitID && el1.idCard == el.idCard)
             })
 
@@ -295,7 +295,7 @@ const workPermit = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
 
             insert_log(req, 'webhook workpermit', error_str.toString())
 
@@ -335,7 +335,7 @@ const workPermit = async (req, res) => {
                 workPermitNo: { $in: data_delete }
             })
         }
-        var data = await WorkPermit.find()
+        let data = await WorkPermit.find()
 
         //countdown for recheck notification
         // for (let index = 0; index < data.length; index++) {
@@ -365,26 +365,26 @@ const accessControl = async (req, res) => {
     try {
 
         if (res) {
-            var application_id = '62a5c8003ec7e79898750deb'
+            let application_id = '62a5c8003ec7e79898750deb'
             await permission(application_id, req)
         }
 
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await AccessControl.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await AccessControl.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
-        var data_in_db = await AccessControl.find()
-        var error = []
+        let data_in_db = await AccessControl.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
             if (el.ScanDate) {
-                var new_date = new Date(el.ScanDate)
+                let new_date = new Date(el.ScanDate)
                 if (new_date != 'Invalid Date') {
                     // el.ScanDate = new_date
                 } else {
@@ -393,7 +393,7 @@ const accessControl = async (req, res) => {
             }
 
             if (el.ExchangeCardDate) {
-                var new_date = new Date(el.ExchangeCardDate)
+                let new_date = new Date(el.ExchangeCardDate)
                 if (new_date != 'Invalid Date') {
                     // el.ExchangeCardDate = new_date
                 } else {
@@ -402,7 +402,7 @@ const accessControl = async (req, res) => {
             }
 
             if (el.ScanTime) {
-                var new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ScanTime)
+                let new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ScanTime)
                 if (new_date != 'Invalid Date') {
                     // el.ScanTime = new_date
                 } else {
@@ -411,7 +411,7 @@ const accessControl = async (req, res) => {
             }
 
             if (el.ExchangeCardTime) {
-                var new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ExchangeCardTime)
+                let new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ExchangeCardTime)
                 if (new_date != 'Invalid Date') {
                     // el.ExchangeCardTime = new_date
                 } else {
@@ -419,11 +419,11 @@ const accessControl = async (req, res) => {
                 }
             }
 
-            var scan_date_time = null
+            let scan_date_time = null
             if (el.ScanDate && el.ScanTime) {
-                var scan_date_time = new Date(el.ScanDate + ' ' + el.ScanTime)
+                let scan_date_time = new Date(el.ScanDate + ' ' + el.ScanTime)
 
-                var ScanDateTimeAnyStatus = {}
+                let ScanDateTimeAnyStatus = {}
                 if (el.ScanStatus == 1) {
                     ScanDateTimeAnyStatus.ScanDateTime1 = scan_date_time
                 } else if (el.ScanStatus == 2) {
@@ -431,11 +431,11 @@ const accessControl = async (req, res) => {
                 }
             }
 
-            var exchange_date_time = null
+            let exchange_date_time = null
             if (el.ExchangeCardDate && el.ExchangeCardTime) {
-                var exchange_date_time = new Date(el.ExchangeCardDate + ' ' + el.ExchangeCardTime)
+                let exchange_date_time = new Date(el.ExchangeCardDate + ' ' + el.ExchangeCardTime)
 
-                var ExchangeCardDateTimeAnyStatus = {}
+                let ExchangeCardDateTimeAnyStatus = {}
                 if (el.ExchangeCardStatus == 1) {
                     ExchangeCardDateTimeAnyStatus.ExchangeCardDateTime1 = exchange_date_time
                 } else if (el.ExchangeCardStatus == 2) {
@@ -444,7 +444,7 @@ const accessControl = async (req, res) => {
             }
 
 
-            var check = data_in_db.filter((el1) => {
+            let check = data_in_db.filter((el1) => {
                 return el1.PersonalID == el.PersonalID
             })
 
@@ -490,7 +490,7 @@ const accessControl = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
 
             insert_log(req, 'webhook accesscontrol', error_str.toString())
 
@@ -523,7 +523,7 @@ const accessControl = async (req, res) => {
             }
         }
 
-        var data = await AccessControl.find()
+        let data = await AccessControl.find()
 
         io.sockets.emit('accesscontrol', 'new')
 
@@ -540,21 +540,21 @@ const accessControl = async (req, res) => {
 const accessControlPut = async (req, res) => {
 
     try {
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        var check_run_no = await AccessControl.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        let check_run_no = await AccessControl.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no : 0
 
-        var error = []
-        var data = []
+        let error = []
+        let data = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
-            var check_data = await AccessControl.find({
+            let check_data = await AccessControl.find({
                 $and: [
                     {
                         'others.run_no': check_run_no
@@ -567,7 +567,7 @@ const accessControlPut = async (req, res) => {
             }
 
             if (el.ScanDate) {
-                var new_date = new Date(el.ScanDate)
+                let new_date = new Date(el.ScanDate)
                 if (new_date != 'Invalid Date') {
                     // el.ScanDate = new_date
                 } else {
@@ -576,7 +576,7 @@ const accessControlPut = async (req, res) => {
             }
 
             if (el.ExchangeCardDate) {
-                var new_date = new Date(el.ExchangeCardDate)
+                let new_date = new Date(el.ExchangeCardDate)
                 if (new_date != 'Invalid Date') {
                     // el.ExchangeCardDate = new_date
                 } else {
@@ -585,7 +585,7 @@ const accessControlPut = async (req, res) => {
             }
 
             if (el.ScanTime) {
-                var new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ScanTime)
+                let new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ScanTime)
                 if (new_date != 'Invalid Date') {
                     // el.ScanTime = new_date
                 } else {
@@ -594,7 +594,7 @@ const accessControlPut = async (req, res) => {
             }
 
             if (el.ExchangeCardTime) {
-                var new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ExchangeCardTime)
+                let new_date = new Date(new Date().toISOString().split('T')[0] + ' ' + el.ExchangeCardTime)
                 if (new_date != 'Invalid Date') {
                     // el.ExchangeCardTime = new_date
                 } else {
@@ -602,9 +602,9 @@ const accessControlPut = async (req, res) => {
                 }
             }
 
-            var scan_date_time = null
+            let scan_date_time = null
             if (el.ScanDate && el.ScanTime) {
-                var scan_date_time = new Date(el.ScanDate + ' ' + el.ScanTime)
+                let scan_date_time = new Date(el.ScanDate + ' ' + el.ScanTime)
             }
 
             data.push(
@@ -633,7 +633,7 @@ const accessControlPut = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
 
             return res.send(utilSetResponseJson('failed', error_str))
         }
@@ -655,7 +655,7 @@ const accessControlPut = async (req, res) => {
 
         }
 
-        var data = await AccessControl.find()
+        data = await AccessControl.find()
             .where({
                 $and: [
                     {
@@ -679,17 +679,17 @@ const accessControlDevice = async (req, res) => {
 
 
         if (res) {
-            var application_id = '62a5c8003ec7e79898750deb'
+            let application_id = '62a5c8003ec7e79898750deb'
             await permission(application_id, req)
         }
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await AccessControlDevice.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await AccessControlDevice.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        var error = []
-        var data = []
+        let error = []
+        let data = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
@@ -712,7 +712,7 @@ const accessControlDevice = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook accesscontroldevice', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -720,7 +720,7 @@ const accessControlDevice = async (req, res) => {
 
         await AccessControlDevice.deleteMany()
 
-        var create = await AccessControlDevice.insertMany(data).then(res => {
+        let create = await AccessControlDevice.insertMany(data).then(res => {
             insert_log(req, 'webhook accesscontroldevice', '')
 
         }).catch(error_str => {
@@ -749,14 +749,14 @@ const accessControlExchangeCard = async (req, res) => {
 
 
         if (res) {
-            var application_id = '62a5c8003ec7e79898750deb'
+            let application_id = '62a5c8003ec7e79898750deb'
             await permission(application_id, req)
         }
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        var error = []
-        var data = []
+        let error = []
+        let data = []
 
         const el = req.body;
 
@@ -769,7 +769,7 @@ const accessControlExchangeCard = async (req, res) => {
 
         await AccessControlExchangeCard.deleteMany()
 
-        var create = await AccessControlExchangeCard.create(data).then(res => {
+        let create = await AccessControlExchangeCard.create(data).then(res => {
             insert_log(req, 'webhook accesscontrolexchangecard', '')
 
         }).catch(error_str => {
@@ -780,7 +780,7 @@ const accessControlExchangeCard = async (req, res) => {
         io.sockets.emit('accesscontrol', 'new')
         io.sockets.emit('notification', 'new')
 
-        var data = await AccessControlExchangeCard.findOne()
+        data = await AccessControlExchangeCard.findOne()
 
 
         if (res)
@@ -797,25 +797,25 @@ const equipment = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        var data_in_db = await Equipment.find()
-        var error = []
+        let data_in_db = await Equipment.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
             if (el.DateTime_In) {
-                var new_date = new Date(el.DateTime_In)
+                let new_date = new Date(el.DateTime_In)
                 if (new_date != 'Invalid Date') {
                     // el.DateTime_In = new_date
                 } else {
@@ -824,7 +824,7 @@ const equipment = async (req, res) => {
             }
 
             if (el.DateTime_Out) {
-                var new_date = new Date(el.DateTime_Out)
+                let new_date = new Date(el.DateTime_Out)
                 if (new_date != 'Invalid Date') {
                     // el.DateTime_Out = new_date
                 } else {
@@ -835,7 +835,7 @@ const equipment = async (req, res) => {
             }
 
             if (el.ExpiredDate) {
-                var new_date = new Date(el.ExpiredDate)
+                let new_date = new Date(el.ExpiredDate)
                 if (new_date != 'Invalid Date') {
                     // el.ExpiredDate = new_date
                 } else {
@@ -843,7 +843,7 @@ const equipment = async (req, res) => {
                 }
             }
 
-            var check = data_in_db.filter((el1) => {
+            let check = data_in_db.filter((el1) => {
                 return el1.EquipmentID == el.EquipmentID
             })
 
@@ -883,7 +883,7 @@ const equipment = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook equipment', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -913,7 +913,7 @@ const equipment = async (req, res) => {
             }
         }
 
-        var data = await Equipment.find()
+        let data = await Equipment.find()
 
         io.sockets.emit('equipment', 'new')
         io.sockets.emit('notification', 'new')
@@ -927,24 +927,24 @@ const equipment = async (req, res) => {
 const equipmentVehicle = async (req, res) => {
 
     try {
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await EquipmentVehicle.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await EquipmentVehicle.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
-        var data_in_db = await EquipmentVehicle.find()
-        var error = []
+        let data_in_db = await EquipmentVehicle.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
             if (el.Remove_Obstruction) {
-                var new_date = new Date(el.Remove_Obstruction)
+                let new_date = new Date(el.Remove_Obstruction)
                 if (new_date != 'Invalid Date') {
                     // el.Remove_Obstruction = new_date
                 } else {
@@ -952,7 +952,7 @@ const equipmentVehicle = async (req, res) => {
                 }
             }
 
-            var check = data_in_db.filter((el1) => {
+            let check = data_in_db.filter((el1) => {
                 return el1.ObstructionID == el.ObstructionID
             })
 
@@ -990,7 +990,7 @@ const equipmentVehicle = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook equipmentvehicle', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -1020,7 +1020,7 @@ const equipmentVehicle = async (req, res) => {
             }
         }
 
-        var data = await EquipmentVehicle.find()
+        let data = await EquipmentVehicle.find()
 
 
         io.sockets.emit('equipmentvehicle', 'new')
@@ -1036,28 +1036,28 @@ const vehicle = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        var data_in_db = await Vehicle.find()
-        var error = []
+        let data_in_db = await Vehicle.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
-            var WorkingStart = null
-            var WorkingEnd = null
+            let WorkingStart = null
+            let WorkingEnd = null
 
             if (el.WorkStartDate) {
-                var new_date = new Date(el.WorkStartDate.replace(/\s/g, '') + ' ' + el.WorkStartTime.replace(/\s/g, ''))
+                let new_date = new Date(el.WorkStartDate.replace(/\s/g, '') + ' ' + el.WorkStartTime.replace(/\s/g, ''))
                 if (new_date != 'Invalid Date') {
                     WorkingStart = new_date
                 } else {
@@ -1067,7 +1067,7 @@ const vehicle = async (req, res) => {
 
 
             if (el.WorkEndDate) {
-                var new_date = new Date(el.WorkEndDate.replace(/\s/g, '') + ' ' + el.WorkEndTime.replace(/\s/g, ''))
+                let new_date = new Date(el.WorkEndDate.replace(/\s/g, '') + ' ' + el.WorkEndTime.replace(/\s/g, ''))
                 if (new_date != 'Invalid Date') {
                     WorkingEnd = new_date
                 } else {
@@ -1076,7 +1076,7 @@ const vehicle = async (req, res) => {
             }
 
             if (el.Remove_GPS) {
-                var new_date = new Date(el.Remove_GPS)
+                let new_date = new Date(el.Remove_GPS)
                 if (new_date != 'Invalid Date') {
                     // el.Remove_GPS = new_date
                 } else {
@@ -1085,7 +1085,7 @@ const vehicle = async (req, res) => {
             }
 
 
-            var check = data_in_db.filter((el1) => {
+            let check = data_in_db.filter((el1) => {
                 return el1.VehicleID == el.VehicleID
             })
 
@@ -1125,7 +1125,7 @@ const vehicle = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook vehicle', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -1155,7 +1155,7 @@ const vehicle = async (req, res) => {
             }
         }
 
-        var data = await Vehicle.find()
+        let data = await Vehicle.find()
 
         io.sockets.emit('vehicle', 'new')
         io.sockets.emit('notification', 'new')
@@ -1170,26 +1170,26 @@ const vehicle2 = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        var data_in_db = await Vehicle2.find()
-        var error = []
+        let data_in_db = await Vehicle2.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
 
             if (el.Remove_Park) {
-                var new_date = new Date(el.Remove_Park)
+                let new_date = new Date(el.Remove_Park)
                 if (new_date != 'Invalid Date') {
                     // el.Remove_Park = new_date
                 } else {
@@ -1198,7 +1198,7 @@ const vehicle2 = async (req, res) => {
             }
 
 
-            var check = data_in_db.filter((el1) => {
+            let check = data_in_db.filter((el1) => {
                 return el1.VehicleParkID == el.VehicleParkID
             })
 
@@ -1233,7 +1233,7 @@ const vehicle2 = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook vehicle2', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -1263,7 +1263,7 @@ const vehicle2 = async (req, res) => {
             }
         }
 
-        var data = await Vehicle2.find()
+        let data = await Vehicle2.find()
 
         io.sockets.emit('vehicle2', 'new')
 
@@ -1276,24 +1276,24 @@ const vehicle5 = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        // var data_in_db = await Vehicle5.find()
-        var error = []
+        // let data_in_db = await Vehicle5.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
-            // var check = data_in_db.filter((el1) => {
+            // let check = data_in_db.filter((el1) => {
             //     return el1.id == el.id
             // })
 
@@ -1328,7 +1328,7 @@ const vehicle5 = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook vehicle5', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -1353,7 +1353,7 @@ const vehicle5 = async (req, res) => {
         //     }
         // }
 
-        var data = await Vehicle5.find()
+        let data = await Vehicle5.find()
 
         io.sockets.emit('vehicle5', 'new')
 
@@ -1366,10 +1366,10 @@ const vehicle6 = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
 
         await Vehicle6.deleteMany()
@@ -1394,7 +1394,7 @@ const vehicle6 = async (req, res) => {
             throw error_str
         })
 
-        var data = await Vehicle6.findOne()
+        let data = await Vehicle6.findOne()
 
         io.sockets.emit('vehicle6', 'new')
         io.sockets.emit('notification', 'new')
@@ -1408,28 +1408,28 @@ const people = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        // var data_in_db = await People.find()
-        var error = []
+        // let data_in_db = await People.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
-            var WorkingStart = null
-            var WorkingEnd = null
+            let WorkingStart = null
+            let WorkingEnd = null
 
             if (el.WorkStartDate) {
-                var new_date = new Date(el.WorkStartDate.replace(/\s/g, '') + ' ' + el.WorkStartTime.replace(/\s/g, ''))
+                let new_date = new Date(el.WorkStartDate.replace(/\s/g, '') + ' ' + el.WorkStartTime.replace(/\s/g, ''))
                 if (new_date != 'Invalid Date') {
                     WorkingStart = new_date
                 } else {
@@ -1439,7 +1439,7 @@ const people = async (req, res) => {
 
 
             if (el.WorkEndDate) {
-                var new_date = new Date(el.WorkEndDate.replace(/\s/g, '') + ' ' + el.WorkEndTime.replace(/\s/g, ''))
+                let new_date = new Date(el.WorkEndDate.replace(/\s/g, '') + ' ' + el.WorkEndTime.replace(/\s/g, ''))
                 if (new_date != 'Invalid Date') {
                     WorkingEnd = new_date
                 } else {
@@ -1451,7 +1451,7 @@ const people = async (req, res) => {
                 for (let index1 = 0; index1 < el.WarningStatusDateTime.length; index1++) {
                     const element = el.WarningStatusDateTime[index1];
 
-                    var new_date = new Date(element)
+                    let new_date = new Date(element)
                     if (new_date != 'Invalid Date') {
                         // el.WarningStatusDateTime = new_date
                     } else {
@@ -1462,7 +1462,7 @@ const people = async (req, res) => {
 
             }
 
-            // var check = data_in_db.filter((el1) => {
+            // let check = data_in_db.filter((el1) => {
             //     return el1.PersonalID == el.PersonalID
             // })
 
@@ -1502,7 +1502,7 @@ const people = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook people', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -1528,7 +1528,7 @@ const people = async (req, res) => {
         //     }
         // }
 
-        var data = await People.find()
+        let data = await People.find()
 
         io.sockets.emit('people', 'new')
         io.sockets.emit('notification', 'new')
@@ -1543,25 +1543,25 @@ const peopleRestrict = async (req, res) => {
 
     try {
 
-        var application_id = '62a5c8003ec7e79898750deb'
+        let application_id = '62a5c8003ec7e79898750deb'
         await permission(application_id, req)
 
-        var io = await socket_io.getIo()
+        let io = await socket_io.getIo()
 
-        // var check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
+        // let check_run_no = await Equipment.findOne().sort({ 'others.run_no': -1 }).select('others.run_no')
         // check_run_no = _.isObject(check_run_no) ? check_run_no.others.run_no + 1 : 1
 
-        // var data_in_db = await PeopleRestrict.find()
-        var error = []
+        // let data_in_db = await PeopleRestrict.find()
+        let error = []
 
-        var data_create = []
-        var data_update = []
+        let data_create = []
+        let data_update = []
 
         for (let index = 0; index < req.body.length; index++) {
             const el = req.body[index];
 
 
-            // var check = data_in_db.filter((el1) => {
+            // let check = data_in_db.filter((el1) => {
             //     return el1.RestrictedAreaID == el.RestrictedAreaID
             // })
 
@@ -1596,7 +1596,7 @@ const peopleRestrict = async (req, res) => {
                 return group;
             }, {});
 
-            var error_str = JSON.stringify(groupByCases)
+            let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook peoplerestrict', error_str.toString())
 
             return res.send(utilSetResponseJson('failed', error_str))
@@ -1621,7 +1621,7 @@ const peopleRestrict = async (req, res) => {
         //     }
         // }
 
-        var data = await PeopleRestrict.find()
+        let data = await PeopleRestrict.find()
 
         io.sockets.emit('peoplerestrict', 'new')
 

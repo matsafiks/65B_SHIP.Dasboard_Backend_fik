@@ -3,7 +3,7 @@ import express from 'express';
 import { scaffolding, people, vehicle, workpermit, equipment, accesscontrol } from '../handlers/integrate.js'
 import { check_jwt } from '../preHandlers/jwt_auth.js'
 import integrateSchema from '../models/Integrate/schema.integrate.js'
-var integrateRouters = express.Router();
+let integrateRouters = express.Router();
 
 integrateRouters.get('/scaffolding', check_jwt, scaffolding)
 integrateRouters.get('/people', check_jwt, people)

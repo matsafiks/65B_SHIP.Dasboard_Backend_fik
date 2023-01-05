@@ -6,7 +6,7 @@ import basicAuth from '../preHandlers/basic_auth.js';
 import authshema from '../models/Auth/schema.auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 
-var authRouters = express.Router();
+let authRouters = express.Router();
 
 authRouters.post('/login',
     validateSchema(authshema['/api/auth/login'].post.parameters),

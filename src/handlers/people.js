@@ -13,11 +13,11 @@ const all = async (req, res) => {
 
     try {
 
-        var application_id = '62a4d4de22bdf92ba30d1637'
+        let application_id = '62a4d4de22bdf92ba30d1637'
         await permission(application_id, req)
 
 
-        var filter = {
+        let filter = {
             AgencyName: [{ AgencyName: 'ทั้งหมด' }],
             PTTStaffID: [{ PTTStaffID: 'ทั้งหมด', PTTStaff: 'ทั้งหมด' }],
             AreaName: [{ AreaName: 'ทั้งหมด' }],
@@ -28,57 +28,57 @@ const all = async (req, res) => {
             CompanyName: [{ CompanyName: 'ทั้งหมด' }],
             notification: [{ notification: 'ทั้งหมด' }],
         }
-        var where_permission = {}
-        var all = 0
-        var sos = 0
-        var still_or_out = 0
-        var no_work = 0
-        var data_arr = []
+        let where_permission = {}
+        let all = 0
+        let sos = 0
+        let still_or_out = 0
+        let no_work = 0
+        let data_arr = []
 
 
-        var AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
+        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
         AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        var PTTStaffID = (req) ? (req.query.PTTStaffID && !req.query.PTTStaffID.toString().includes('ทั้งหมด')) ? req.query.PTTStaffID : undefined : undefined
+        let PTTStaffID = (req) ? (req.query.PTTStaffID && !req.query.PTTStaffID.toString().includes('ทั้งหมด')) ? req.query.PTTStaffID : undefined : undefined
         PTTStaffID = (PTTStaffID) ? { PTTStaffID: { $in: PTTStaffID } } : {}
 
-        var WorkingStartDate = (req) ? req.query.WorkingStartDate : undefined
+        let WorkingStartDate = (req) ? req.query.WorkingStartDate : undefined
         WorkingStartDate = (WorkingStartDate) ? { 'others.WorkingStart': { $gte: WorkingStartDate } } : {}
 
-        var WorkingEndDate = (req) ? req.query.WorkingEndDate : undefined
+        let WorkingEndDate = (req) ? req.query.WorkingEndDate : undefined
         WorkingEndDate = (WorkingEndDate) ? { 'others.WorkingEnd': { $lte: WorkingEndDate } } : {}
 
-        var AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
+        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
         AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        var SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
+        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
         SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        var WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
+        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
         WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
 
-        var WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
+        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
         WPM_SubAreaName = (WPM_SubAreaName) ? { WPM_SubAreaName: { $in: WPM_SubAreaName } } : {}
 
-        var PeopleType = (req) ? (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) ? req.query.PeopleType : undefined : undefined
+        let PeopleType = (req) ? (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) ? req.query.PeopleType : undefined : undefined
         PeopleType = (PeopleType) ? { PeopleType: { $in: PeopleType } } : {}
 
-        var CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
+        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
         CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
 
-        var Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
 
 
-        var check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: req._id })
 
-        var now = new Date
-        var day_7 = new Date().setDate(new Date().getDate() + 7);
+        let now = new Date
+        let day_7 = new Date().setDate(new Date().getDate() + 7);
 
         //เจ้าของพื้นที่
         if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
 
             // if (Object.keys(req.query).length === 0) {
-            //     var location1 = await People.find({ OwnerID: check_user.others.employeeid })
+            //     let location1 = await People.find({ OwnerID: check_user.others.employeeid })
             //     where_permission = { WPM_AreaName: { $in: location1.map(el => { return el.WPM_AreaName }) } }
             // }
 
@@ -103,27 +103,27 @@ const all = async (req, res) => {
 
         }
 
-        var role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: check_user.group_id })
 
 
         // แสดงภาพรวมบุคคลที่ปฏิบัติงาน โดยมี Icon แสดงแยกตามประเภทกลุ่มบุคคล ได้แก่ ผู้รับเหมา, เจ้าหน้าที่ความปลอดภัย, ผู้เฝ้าระวังไฟ เป็นต้น
-        var over_all_check = role.filter((el) => { return el.application_id == '630cf4add911b53955bbc08b' })
+        let over_all_check = role.filter((el) => { return el.application_id == '630cf4add911b53955bbc08b' })
 
         // การแจ้งเตือนอยู่นิ่งหรืออยู่นอกพื้นที่
-        var still_or_out_check = role.filter((el) => { return el.application_id == '630cf62cd911b53955bbc091' })
+        let still_or_out_check = role.filter((el) => { return el.application_id == '630cf62cd911b53955bbc091' })
 
         //การแจ้งเตือน sos"
-        var sos_check = role.filter((el) => { return el.application_id == '630cf671d911b53955bbc097' })
+        let sos_check = role.filter((el) => { return el.application_id == '630cf671d911b53955bbc097' })
 
         //การแจ้งเตือนไม่มีงาน"
-        var no_work_check = role.filter((el) => { return el.application_id == '630cf6b0d911b53955bbc09d' })
+        let no_work_check = role.filter((el) => { return el.application_id == '630cf6b0d911b53955bbc09d' })
 
         //ใช้ฟังก์ชันการค้นหาข้อมูล โดยเมนู Search สามารถทำการเปิด-ปิด หน้าต่างการค้นหาได้ เพื่อเพิ่มพื้นที่การแสดงผลของ Dashboard
-        var search_check = role.filter((el) => { return el.application_id == '630cf6d2d911b53955bbc0a3' })
+        let search_check = role.filter((el) => { return el.application_id == '630cf6d2d911b53955bbc0a3' })
 
 
-        var AreaName_master = await Location.find()
-        // var ScaffoldingType_master = await modelScaffoldingType.find()
+        let AreaName_master = await Location.find()
+        // let ScaffoldingType_master = await modelScaffoldingType.find()
 
 
         await People.find({
@@ -237,7 +237,7 @@ const all = async (req, res) => {
         }
 
 
-        var Notification_ = {}
+        let Notification_ = {}
         if (typeof Notification == 'string') {
             Notification = [Notification]
         }
@@ -272,7 +272,7 @@ const all = async (req, res) => {
         }).then((result) => {
             for (let index = 0; index < result.length; index++) {
 
-                var notification = {
+                let notification = {
                     still_or_out: false,
                     sos: false,
                     no_work: false
@@ -347,7 +347,7 @@ const all = async (req, res) => {
         })
 
 
-        var data = {}
+        let data = {}
         data.summary = {}
         data.filter = {}
         data.data = []
@@ -376,7 +376,7 @@ const all = async (req, res) => {
             data.filter = filter
         }
 
-        var data_ = {
+        let data_ = {
             Status: 'success',
             Message: data
         }

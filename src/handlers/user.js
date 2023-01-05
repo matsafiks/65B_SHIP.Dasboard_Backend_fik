@@ -21,7 +21,7 @@ const all = async (req, res) => {
 
         compare_user()
 
-        var search = (req) ? req.query.search : undefined
+        let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
                 { username: { $regex: '.*' + search + '.*' } },
@@ -32,13 +32,13 @@ const all = async (req, res) => {
             ]
         } : {}
 
-        var limit = req.query.limit || 10
-        var page = req.query.page || 1
-        var sort = req.query.sort || 'username'
-        var order = req.query.order || 'asc'
+        let limit = req.query.limit || 10
+        let page = req.query.page || 1
+        let sort = req.query.sort || 'username'
+        let order = req.query.order || 'asc'
 
 
-        var data = await User.find()
+        let data = await User.find()
             .where(search)
             .skip(((page) - 1) * limit)
             .limit(limit)
@@ -48,7 +48,7 @@ const all = async (req, res) => {
                     const element = result[index];
                     delete element._doc.password
                     if (element._doc.group_id) {
-                        var group_id = await Group.findOne().where({ _id: element._doc.group_id })
+                        let group_id = await Group.findOne().where({ _id: element._doc.group_id })
                         if (group_id)
                             result[index]._doc.group_id = {
                                 group_name: group_id._doc.group_name,
@@ -56,7 +56,7 @@ const all = async (req, res) => {
                                 _id: group_id._doc._id
 
                             }
-                        var created_by = await User.findOne().where({ _id: element._doc.created_by })
+                        let created_by = await User.findOne().where({ _id: element._doc.created_by })
                         if (created_by)
                             result[index]._doc.created_by = created_by._doc.username
                     }
@@ -65,10 +65,10 @@ const all = async (req, res) => {
             }))
 
 
-        var len_data = await User.count().where(search)
+        let len_data = await User.count().where(search)
 
 
-        var data = {
+        data = {
             currentPage: page,
             pages: Math.ceil(len_data / limit),
             currentCount: data.length,
@@ -91,14 +91,14 @@ const byid = async (req, res) => {
 
         await permission('62a594d7bb8946576769c6a7', req)
 
-        var data = await User.find()
+        let data = await User.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index];
                     delete element._doc.password
                     if (element._doc.group_id) {
-                        var group_id = await Group.findOne().where({ _id: element._doc.group_id })
+                        let group_id = await Group.findOne().where({ _id: element._doc.group_id })
                         if (group_id)
                             result[index]._doc.group_id = {
                                 group_name: group_id._doc.group_name,
@@ -106,7 +106,7 @@ const byid = async (req, res) => {
                                 _id: group_id._doc._id
 
                             }
-                        var created_by = await User.findOne().where({ _id: element._doc.created_by })
+                        let created_by = await User.findOne().where({ _id: element._doc.created_by })
                         if (created_by)
                             result[index]._doc.created_by = created_by._doc.username
                     }
@@ -132,16 +132,16 @@ const add = async (req, res) => {
         await permission('62a594d7bb8946576769c6a7', req)
 
         if (req.body.group_id) {
-            var check = await Group.findOne().where({ _id: req.body.group_id })
+            let check = await Group.findOne().where({ _id: req.body.group_id })
             if (!check) {
                 throw 'group_id not found'
             }
         }
-        var status = (req.body.status != undefined) ? req.body.status : 1
+        let status = (req.body.status != undefined) ? req.body.status : 1
 
         // add user in authen systen
-        var api = new URL(config.auth_host + '/user/registration')
-        var add_user = await axios.post(api.href,
+        let api = new URL(config.auth_host + '/user/registration')
+        let add_user = await axios.post(api.href,
             {
                 "registration": {
                     "applicationId": config.auth_app_id
@@ -166,19 +166,19 @@ const add = async (req, res) => {
 
         if (req.body.group_id) {
 
-            var group = check
+            let group = check
 
-            var api = new URL(config.auth_host + '/application/' + config.auth_app_id)
-            var application = await axios.get(api.href,
+            let api = new URL(config.auth_host + '/application/' + config.auth_app_id)
+            let application = await axios.get(api.href,
                 {
                     headers: {
                         'Authorization': config.auth_api_key
                     }
                 }
             )
-            var group_other_id = application.data.application.roles.filter(el => { return el.id == group.others.id })
+            let group_other_id = application.data.application.roles.filter(el => { return el.id == group.others.id })
 
-            var api = new URL(config.auth_host + '/user/registration/' + add_user.user.id + '/' + config.auth_app_id)
+            api = new URL(config.auth_host + '/user/registration/' + add_user.user.id + '/' + config.auth_app_id)
             await axios.put(api.href,
                 {
                     "registration": {
@@ -200,10 +200,10 @@ const add = async (req, res) => {
             })
 
         } else {
-            var group = await Group.findOne().where({ "others.name": add_user.registration.roles[0] })
+            let group = await Group.findOne().where({ "others.name": add_user.registration.roles[0] })
             req.body.group_id = group._id
         }
-        var data = await User.create(
+        let data = await User.create(
             {
                 ...req.body,
                 password: await generateHashPassword(req.body.password),
@@ -228,22 +228,22 @@ const edit = async (req, res) => {
 
 
         await permission('62a594d7bb8946576769c6a7', req)
-        var data = await User.findOne().where({ _id: req.params._id })
+        let data = await User.findOne().where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
         if (req.body.group_id) {
-            var check = await Group.findOne().where({ _id: req.body.group_id })
+            let check = await Group.findOne().where({ _id: req.body.group_id })
             if (!check) {
                 throw 'group_id not found'
             }
         }
 
-        var put_user = {}
+        let put_user = {}
 
         if (req.body.others) {
-            var api = new URL(config.auth_host + '/user/' + data.id)
-            var put_user_ = await axios.patch(api.href,
+            let api = new URL(config.auth_host + '/user/' + data.id)
+            let put_user_ = await axios.patch(api.href,
                 {
                     "applicationId": config.auth_app_id,
                     "user": {
@@ -265,19 +265,19 @@ const edit = async (req, res) => {
         }
 
         if (req.body.group_id) {
-            var group = check
+            let group = check
 
-            var api = new URL(config.auth_host + '/application/' + config.auth_app_id)
-            var application = await axios.get(api.href,
+            let api = new URL(config.auth_host + '/application/' + config.auth_app_id)
+            let application = await axios.get(api.href,
                 {
                     headers: {
                         'Authorization': config.auth_api_key
                     }
                 }
             )
-            var group_other_id = application.data.application.roles.filter(el => { return el.id == group.others.id })
+            let group_other_id = application.data.application.roles.filter(el => { return el.id == group.others.id })
 
-            var api = new URL(config.auth_host + '/user/registration/' + data.id + '/' + config.auth_app_id)
+            api = new URL(config.auth_host + '/user/registration/' + data.id + '/' + config.auth_app_id)
             await axios.put(api.href,
                 {
                     "registration": {
@@ -324,11 +324,11 @@ const destroy = async (req, res) => {
 
         await permission('62a594d7bb8946576769c6a7', req)
 
-        var data = await User.findOne().where({ _id: req.params._id })
+        let data = await User.findOne().where({ _id: req.params._id })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
-        var api = new URL(config.auth_host + '/user/' + data.id)
+        let api = new URL(config.auth_host + '/user/' + data.id)
         await axios.delete(api.href,
             {
                 headers: {

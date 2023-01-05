@@ -10,7 +10,7 @@ import validateSchema from '../preHandlers/schema_validate.js';
 import webhookSchema from '../models/Webhook/schema.webhook.js'
 import { check_jwt } from '../preHandlers/jwt_auth.js';
 
-var webHookRouters = express.Router();
+let webHookRouters = express.Router();
 
 
 // webHookRouters.post('/addbasicauth/add',

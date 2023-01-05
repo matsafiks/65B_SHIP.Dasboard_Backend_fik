@@ -24,16 +24,16 @@ const check_row_expire = async () => {
     const job = schedule.scheduleJob('0 0 0 * * *', async function () {
 
         // equipment
-        // var equipment_exp = await Equipment.find({
+        // let equipment_exp = await Equipment.find({
         //     DateTime_Out: { $lte: new Date() }
         // })
 
-        // var equipment_vehicle_exp = await EquipmentVehicle.find({
+        // let equipment_vehicle_exp = await EquipmentVehicle.find({
         //     Remove_Obstruction: { $lte: new Date() },
         //     ObstructionID: { $in: equipment_exp.map(el => { return el.EquipmentID }) }
         // })
 
-        // var to_delete = equipment_vehicle_exp.map(el => {
+        // let to_delete = equipment_vehicle_exp.map(el => {
         //     return el.ObstructionID
         // })
 
@@ -62,7 +62,7 @@ const check_row_expire = async () => {
 
         //workpermit
 
-        var chek_status = await WorkpermitStatus.find()
+        let chek_status = await WorkpermitStatus.find()
 
 
         await WorkPermit.find({
@@ -71,7 +71,7 @@ const check_row_expire = async () => {
 
                 const element = result[index]._doc;
 
-                var check = chek_status.filter(function (el) {
+                let check = chek_status.filter(function (el) {
                     return el.Status_ID == element.WorksheetStatusId
                 });
 
@@ -104,13 +104,13 @@ const get_workpermit_from_acc = async () => {
 
         try {
             //get token 
-            var api = new URL(config.acc_api + '/ship-api/auth/token')
-            var token = await axios.post(api.href,
+            let api = new URL(config.acc_api + '/ship-api/auth/token')
+            let token = await axios.post(api.href,
                 { "api_key": config.acc_api_key }
             )
 
-            var api = new URL(config.acc_api + '/ship-api/wpm/permit-worker')
-            var test = await axios.get(api.href,
+            api = new URL(config.acc_api + '/ship-api/wpm/permit-worker')
+            let test = await axios.get(api.href,
                 {
                     headers: {
                         'Authorization': 'Bearer ' + token.data.access_token
@@ -118,7 +118,7 @@ const get_workpermit_from_acc = async () => {
                 }
             )
             await WorkPermit.deleteMany()
-            var data = {}
+            let data = {}
             data.body = test.data
             await workPermit(data).then(res => { console.log(res) }).catch(err => { console.log(err) })
         } catch (error) {
@@ -134,13 +134,13 @@ const get_acc_from_acc = async () => {
 
         try {
             //get token 
-            var api = new URL(config.acc_api + '/ship-api/auth/token')
-            var token = await axios.post(api.href,
+            let api = new URL(config.acc_api + '/ship-api/auth/token')
+            let token = await axios.post(api.href,
                 { "api_key": config.acc_api_key }
             )
 
-            var api = new URL(config.acc_api + '/ship-api/cmd/scan-in-out')
-            var test = await axios.get(api.href,
+            api = new URL(config.acc_api + '/ship-api/cmd/scan-in-out')
+            let test = await axios.get(api.href,
                 {
                     headers: {
                         'Authorization': 'Bearer ' + token.data.access_token
@@ -148,7 +148,7 @@ const get_acc_from_acc = async () => {
                 }
             )
             await AccessControl.deleteMany()
-            var data = {}
+            let data = {}
             data.body = test.data
             // console.log(data)
             await accessControl(data).then(res => { console.log(res) }).catch(err => { console.log(err) })
@@ -165,13 +165,13 @@ const get_acc_device_from_acc = async () => {
 
         try {
             //get token 
-            var api = new URL(config.acc_api + '/ship-api/auth/token')
-            var token = await axios.post(api.href,
+            let api = new URL(config.acc_api + '/ship-api/auth/token')
+            let token = await axios.post(api.href,
                 { "api_key": config.acc_api_key }
             )
 
-            var api = new URL(config.acc_api + '/ship-api/cmd/acc-device')
-            var test = await axios.get(api.href,
+            api = new URL(config.acc_api + '/ship-api/cmd/acc-device')
+            let test = await axios.get(api.href,
                 {
                     headers: {
                         'Authorization': 'Bearer ' + token.data.access_token
@@ -179,7 +179,7 @@ const get_acc_device_from_acc = async () => {
                 }
             )
             await AccessControlDevice.deleteMany()
-            var data = {}
+            let data = {}
             data.body = test.data
             console.log(data)
             await accessControlDevice(data).then(res => { console.log(res) }).catch(err => { console.log(err) })
@@ -217,26 +217,26 @@ const get_workpermit_from_rabbitmq = async () => {
 }
 
 const compare_user = async () => {
-    var api = new URL(config.auth_host + '/user/all?perPage=9999')
-    var user_in_usa = await axios.get(api.href,
+    let api = new URL(config.auth_host + '/user/all?perPage=9999')
+    let user_in_usa = await axios.get(api.href,
         {
             headers: {
                 'Authorization': config.auth_api_key
             }
         }
     ).then(res => { return res.data.users })
-    var user_in_usa_arr = user_in_usa.map(el => { return el.id })
+    let user_in_usa_arr = user_in_usa.map(el => { return el.id })
 
-    var data_in_db = await User.find()
-    var data_in_db_arr = data_in_db.map(el => { return el.id })
+    let data_in_db = await User.find()
+    let data_in_db_arr = data_in_db.map(el => { return el.id })
 
 
-    var create_user = []
-    var delete_user = []
+    let create_user = []
+    let delete_user = []
     for (let index = 0; index < user_in_usa.length; index++) {
         const element = user_in_usa[index];
         if (!data_in_db_arr.includes(element.id) && element.active == true) {
-            var others = {
+            let others = {
                 fname: (element.firstName) ? element.firstName : (element.data.fname) ? element.data.fname : '',
                 lname: (element.lastName) ? element.lastName : (element.data.lname) ? element.data.lname : '',
 

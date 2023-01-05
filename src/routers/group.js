@@ -5,7 +5,7 @@ import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import groupSchema from '../models/Group/schema.group.js'
 
-var groupRouters = express.Router();
+let groupRouters = express.Router();
 
 groupRouters.get('/all',
     validateSchema(groupSchema['/api/admin/group/all'].get.parameters),
