@@ -6,84 +6,6 @@ import Role from '../models/Role/Role.js';
 import { permission } from '../preHandlers/permission.js';
 import sanitizeHtml from "sanitize-html";
 
-// const all = async (req, res) => {
-
-//     try {
-
-//         let search = (req) ? req.query.search : undefined
-//         search = (search) ? {
-//             $or: [
-//                 { application_name: { $regex: '.*' + search + '.*' } },
-//                 { url: { $regex: '.*' + search + '.*' } },
-//             ]
-//         } : {}
-
-//         let limit = req.query.limit || 10
-//         let page = req.query.page || 1
-//         let sort = req.query.sort || 'order'
-//         let order = req.query.order || 'asc'
-
-//         let child = await Application.find()
-//             .where({ ...search, parent_id: { $ne: '' } })
-//             .then((async (result) => {
-//                 for (let index = 0; index < result.length; index++) {
-//                     const element = result[index]._doc;
-//                     if (element.created_by) {
-//                         let created_by = await User.findOne().where({ _id: element.created_by })
-//                         if (created_by)
-//                             element.created_by = created_by._doc.username
-//                     }
-//                     let role = await Role.find().where({ application_id: element._id })
-//                     element.role = role
-//                 }
-//                 return result
-//             }))
-
-//         let data = await Application.find()
-//             .where({ ...search, parent_id: '' })
-//             .skip(((page) - 1) * limit)
-//             .limit(limit)
-//             .sort((order == 'desc') ? '-' + sort : sort)
-//             .then((async (result) => {
-//                 for (let index = 0; index < result.length; index++) {
-//                     const element = result[index]._doc;
-//                     if (element.created_by) {
-//                         let created_by = await User.findOne().where({ _id: element.created_by })
-//                         if (created_by)
-//                             element.created_by = created_by._doc.username
-//                     }
-//                     let role = await Role.find().where({ application_id: element._id })
-//                     element.role = role
-
-//                     element.child = await child.filter(function (el) {
-//                         return el.parent_id == element._id
-//                     });
-//                 }
-//                 return result
-//             }))
-
-
-//         let len_data = await Application.count().where({ ...search, parent_id: '' })
-
-
-//         let data = {
-//             currentPage: page,
-//             pages: Math.ceil(len_data / limit),
-//             currentCount: data.length,
-//             totalCount: len_data,
-//             data: data
-
-//         }
-
-//         if (res)
-//             return res.send(utilSetResponseJson('success', data))
-//         return utilSetResponseJson('success', data)
-//     } catch (error) {
-//         if (res)
-//             return res.send(utilSetResponseJson('failed',error)
-//         return utilSetResponseJson('failed',error
-//     }
-// }
 
 const all = async (req, res) => {
 
@@ -115,8 +37,8 @@ const all = async (req, res) => {
             .limit(limit)
             .sort((order == 'desc') ? '-' + sort : sort)
             .then((async (result) => {
-                for (let index = 0; index < result.length; index++) {
-                    const element = result[index]._doc;
+                for (let element of result) {
+                    element = element._doc;
                     element.role = []
                     element.child = []
                     element.role = role_all.filter((el) => {
@@ -210,13 +132,8 @@ const byid = async (req, res) => {
         let data = await Application.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
-                for (let index = 0; index < result.length; index++) {
-                    const element = result[index]._doc;
-                    // if (element.created_by) {
-                    //     let created_by = await User.findOne().where({ _id: element.created_by })
-                    //     if (created_by)
-                    //         element.created_by = created_by._doc.username
-                    // }
+                for (let element of result) {
+                    element = element._doc;
                     element.role = []
                     element.child = []
                     element.role = role_all.filter((el, index) => {
@@ -284,74 +201,7 @@ const byid = async (req, res) => {
         return utilSetResponseJson('failed', error)
     }
 }
-// const byid = async (req, res) => {
-//     try {
-//         let child = await Application.find()
-//             .where({ parent_id: req.params._id })
-//             .then((async (result) => {
-//                 for (let index = 0; index < result.length; index++) {
-//                     const element = result[index]._doc;
-//                     if (element.created_by) {
-//                         let created_by = await User.findOne().where({ _id: element.created_by })
-//                         if (created_by)
-//                             element.created_by = created_by._doc.username
-//                     }
-//                     let role = await Role.find().where({ application_id: element._id })
-//                         .then(async (result1) => {
-//                             for (let index1 = 0; index1 < result1.length; index1++) {
-//                                 const element1 = result1[index1]._doc;
-//                                 let group = await Group.findOne().where({ _id: element1.group_id })
-//                                 console.log(group.group_name)
-//                                 element1.group_name = group.group_name
-//                             }
-//                             return result1
-//                         })
-//                     element.role = role
-//                 }
-//                 return result
-//             }))
 
-//         let data = await Application.find()
-//             .where({ _id: req.params._id })
-//             .then((async (result) => {
-//                 for (let index = 0; index < result.length; index++) {
-//                     const element = result[index]._doc;
-//                     if (element.created_by) {
-//                         let created_by = await User.findOne().where({ _id: element.created_by })
-//                         if (created_by)
-//                             element.created_by = created_by._doc.username
-//                     }
-//                     let role = await Role.find().where({ application_id: element._id })
-//                         .then(async (result1) => {
-//                             for (let index1 = 0; index1 < result1.length; index1++) {
-//                                 const element1 = result1[index1]._doc;
-//                                 let group = await Group.findOne().where({ _id: element1.group_id })
-//                                 console.log(group.group_name)
-//                                 element1.group_name = group.group_name
-//                             }
-//                             return result1
-//                         })
-//                     element.role = role
-
-//                     element.child = await child.filter(function (el) {
-//                         return el.parent_id == element._id
-//                     });
-
-//                 }
-//                 return result[0]
-//             }))
-//         if (!data) {
-//             return res.send(utilSetResponseJson("failed", 'data not found'))
-//         }
-//         if (res)
-//             return res.send(utilSetResponseJson('success', data))
-//         return utilSetResponseJson('success', data)
-//     } catch (error) {
-//         if (res)
-//             return res.send(utilSetResponseJson('failed',error)
-//         return utilSetResponseJson('failed',error
-//     }
-// }
 const add = async (req, res) => {
     try {
 
@@ -359,8 +209,7 @@ const add = async (req, res) => {
 
 
         if (req.body.role && req.body.role.length > 0) {
-            for (let index = 0; index < req.body.role.length; index++) {
-                const element = req.body.role[index];
+            for (let element of req.body.role) {
                 let check = await Group.findOne().where({ _id: element.group_id.toString() })
                 if (!check) {
                     throw new Error("group not found")
@@ -384,7 +233,7 @@ const add = async (req, res) => {
             {
                 ...req.body,
                 status: status,
-                created_by: req._id,
+                created_by: req._id.toString(),
                 created_date: new Date()
             })
         if (req.body.role && req.body.role.length > 0) {
@@ -396,8 +245,8 @@ const add = async (req, res) => {
 
                 await Role.create({
                     // ...element,
-                    application_id: data._id,
-                    group_id: element.group_id,
+                    application_id: data._id.toString(),
+                    group_id: element.group_id.toString(),
                     get: element.get,
                     put: element.put,
                     post: element.post,
@@ -427,7 +276,7 @@ const edit = async (req, res) => {
 
 
         if (req.body.parent_id) {
-            let check = await Application.findOne().where({ _id: req.body.parent_id })
+            let check = await Application.findOne().where({ _id: req.body.parent_id.toString() })
             if (!check) {
                 throw new Error("parent_id not found")
 
@@ -436,8 +285,7 @@ const edit = async (req, res) => {
         }
 
         if (req.body.role && req.body.role.length > 0) {
-            for (let index = 0; index < req.body.role.length; index++) {
-                const element = req.body.role[index];
+            for (let element of req.body.role) {
                 let check = await Group.findOne().where({ _id: element.group_id })
                 if (!check) {
                     throw new Error("group not found")
@@ -449,7 +297,7 @@ const edit = async (req, res) => {
             { _id: req.params._id },
             {
                 ...req.body,
-                updated_by: req._id,
+                updated_by: req._id.toString(),
                 updated_date: new Date()
             })
         if (req.body.role && req.body.role.length > 0) {
@@ -461,8 +309,8 @@ const edit = async (req, res) => {
 
                 await Role.create({
                     // ...element,
-                    application_id: req.params._id,
-                    group_id: element.group_id,
+                    application_id: req.params._id.toString(),
+                    group_id: element.group_id.toString(),
                     get: element.get,
                     put: element.put,
                     post: element.post,
@@ -471,15 +319,15 @@ const edit = async (req, res) => {
                 })
             }
         } else if (req.body.role && req.body.role.length == 0) {
-            await Role.deleteMany({ application_id: req.params._id })
+            await Role.deleteMany({ application_id: req.params._id.toString() })
         }
 
         let data = await Application.find()
-            .where({ _id: req.params._id })
+            .where({ _id: req.params._id.toString() })
             .then((async (result) => {
-                for (let index = 0; index < result.length; index++) {
-                    const element = result[index]._doc;
-                    let role = await Role.find().where({ application_id: element._id })
+                for (let element of result.length) {
+                    element = element._doc;
+                    let role = await Role.find().where({ application_id: element._id.toString() })
                     element.role = role
 
                 }
@@ -507,14 +355,14 @@ const destroy = async (req, res) => {
 
 
         let data = await Application.findOne()
-            .where({ _id: req.params._id })
+            .where({ _id: req.params._id.toString() })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
         await Application.deleteOne(
             { _id: req.params._id })
 
-        await Role.deleteMany({ application_id: req.params._id })
+        await Role.deleteMany({ application_id: req.params._id.toString() })
 
         return res.send(utilSetResponseJson('success', "success"))
 
