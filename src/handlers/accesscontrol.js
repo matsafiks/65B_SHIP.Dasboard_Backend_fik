@@ -129,11 +129,11 @@ const all = async (req, res) => {
 
 
         //เจ้าของพื้นที่
-        if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
+        // if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
 
-        }
+        // }
         //ผู้ควบคุมงาน ปตท.
-        else if (check_user.group_id == "62a4cb17e0a99b4456aaf51e") {
+        if (check_user.group_id == "62a4cb17e0a99b4456aaf51e") {
             if (Object.keys(req.query).length === 0) {
                 where_permission = { PTTStaffCode: check_user.others.employeeid }
             }
@@ -180,23 +180,23 @@ const all = async (req, res) => {
             //     where_permission
             // ]
         }).then((result) => {
-            for (let element of result) {
+            for (var element of result) {
                 if (!element) {
                     break;
                 } else {
                     element = element._doc;
 
-                    if (filter.AgencyName.some(e => e.AgencyName === element.AgencyName) == false) {
+                    if (filter.AgencyName.some(e => e.AgencyName === element.AgencyName) == 0) {
                         filter.AgencyName.push({ AgencyName: element.AgencyName })
                     }
                     if (req.query.AgencyName) {
                         if (req.query.AgencyName.toString().includes(element.AgencyName) || req.query.AgencyName.toString().includes('ทั้งหมด')) {
-                            if (filter.PTTStaffCode.some(e => e.PTTStaffCode === element.PTTStaffCode) == false) {
+                            if (filter.PTTStaffCode.some(e => e.PTTStaffCode === element.PTTStaffCode) == 0) {
                                 filter.PTTStaffCode.push({ PTTStaffCode: element.PTTStaffCode, PTTStaff: element.PTTStaffFirstName + ' ' + element.PTTStaffLastName })
                             }
                         }
                     } else {
-                        if (filter.PTTStaffCode.some(e => e.PTTStaffCode === element.PTTStaffCode) == false) {
+                        if (filter.PTTStaffCode.some(e => e.PTTStaffCode === element.PTTStaffCode) == 0) {
                             filter.PTTStaffCode.push({ PTTStaffCode: element.PTTStaffCode, PTTStaff: element.PTTStaffFirstName + ' ' + element.PTTStaffLastName })
                         }
                     }
@@ -214,7 +214,7 @@ const all = async (req, res) => {
                         element.AreaName = element.AccDevice.AreaName
                         element.SubAreaName = element.AccDevice.SubAreaName
 
-                        if (filter.AreaName.some(e => e.AreaName === element.AreaName) == false) {
+                        if (filter.AreaName.some(e => e.AreaName === element.AreaName) == 0) {
                             filter.AreaName.push({
                                 ...(AreaName_master.filter(el => { return el.Location_Name == element.AreaName })[0]) ?
                                     AreaName_master.filter(el => { return el.Location_Name == element.AreaName })[0]._doc : {},
@@ -226,14 +226,14 @@ const all = async (req, res) => {
 
                     if (req.query.AreaName) {
                         if (req.query.AreaName.toString().includes(element.AreaName) || req.query.AreaName.toString().includes('ทั้งหมด')) {
-                            if (filter.SubAreaName.some(e => e.SubAreaName === element.SubAreaName) == false) {
+                            if (filter.SubAreaName.some(e => e.SubAreaName === element.SubAreaName) == 0) {
                                 filter.SubAreaName.push({
                                     SubAreaName: element.SubAreaName
                                 })
                             }
                         }
                     } else {
-                        if (filter.SubAreaName.some(e => e.SubAreaName === element.SubAreaName) == false) {
+                        if (filter.SubAreaName.some(e => e.SubAreaName === element.SubAreaName) == 0) {
                             filter.SubAreaName.push({
                                 SubAreaName: element.SubAreaName
                             })
@@ -242,7 +242,7 @@ const all = async (req, res) => {
 
 
 
-                    if (filter.PersonalTypeName.some(e => e.PersonalTypeID === element.PersonalTypeID) == false) {
+                    if (filter.PersonalTypeName.some(e => e.PersonalTypeID === element.PersonalTypeID) == 0) {
                         let check_in_master = PersonalType_master.filter(el => { return el.PersonalTypeID == element.PersonalTypeID })
                         filter.PersonalTypeName.push({
                             ...(check_in_master[0]) ? check_in_master[0] : {}, PersonalTypeID: element.PersonalTypeID
@@ -250,7 +250,7 @@ const all = async (req, res) => {
                     }
 
 
-                    if (filter.CompanyName.some(e => e.CompanyName === element.CompanyName) == false) {
+                    if (filter.CompanyName.some(e => e.CompanyName === element.CompanyName) == 0) {
                         filter.CompanyName.push({ CompanyName: element.CompanyName })
                     }
                 }
@@ -282,7 +282,7 @@ const all = async (req, res) => {
                 PersonalTypeName
             ]
         }).then((result) => {
-            for (let element of result) {
+            for (var element of result) {
                 if (!element) {
                     break;
                 } else {
@@ -354,30 +354,23 @@ const all = async (req, res) => {
                         element.others.on_plant = false
                     }
 
-                    // if (exchange_card_in_out_check.length > 0) {
                     if (element.ExchangeCardStatus == '1') {
                         if (element.others.ExchangeCardDateTime1 >= today.toDate() && element.others.ExchangeCardDateTime1 <= moment(today).endOf('day').toDate()) {
-                            // exchange_card_in = exchange_card_in + 1
                         }
                         element.others.ExchangeCard_Status_Name = 'แลกบัตรเข้า'
                     }
                     else if (element.ExchangeCardStatus == '2') {
                         if (element.others.ExchangeCardDateTime2 >= today.toDate() && element.others.ExchangeCardDateTime2 <= moment(today).endOf('day').toDate()) {
-                            // exchange_card_out = exchange_card_out + 1
                         }
                         element.others.ExchangeCard_Status_Name = 'แลกบัตรออก'
                     }
                     else if (element.ExchangeCardStatus == '3') {
-                        // exchange_card_out = exchange_card_out + 1
                         element.others.ExchangeCard_Status_Name = 'De-Activate'
                     }
                     else if (element.ExchangeCardStatus == '4') {
-                        // exchange_card_out = exchange_card_out + 1
                         element.others.ExchangeCard_Status_Name = 'Activate'
                     }
-                    // }
-                    // delete element._id
-                    // delete element.__v
+
 
                     element.others.on_table = true
 
@@ -423,7 +416,7 @@ const all = async (req, res) => {
         })
 
 
-        for (let element of data_device) {
+        for (var element of data_device) {
             if (!element) {
                 break;
             } else {

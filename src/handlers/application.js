@@ -37,7 +37,7 @@ const all = async (req, res) => {
             .limit(limit)
             .sort((order == 'desc') ? '-' + sort : sort)
             .then((async (result) => {
-                for (let element of result) {
+                for (var element of result) {
                     if (!element) {
                         break;                                 // Compliant
                     } else {
@@ -136,7 +136,7 @@ const byid = async (req, res) => {
         let data = await Application.find()
             .where({ _id: req.params._id })
             .then((async (result) => {
-                for (let element of result) {
+                for (var element of result) {
                     if (!element) {
                         break;                                 // Compliant
                     } else {
@@ -349,7 +349,7 @@ const edit = async (req, res) => {
         let data = await Application.find()
             .where({ _id: req.params._id.toString() })
             .then((async (result) => {
-                for (let element of result.length) {
+                for (var element of result.length) {
                     if (!element) {
                         break;                                 // Compliant
                     } else {
@@ -357,8 +357,6 @@ const edit = async (req, res) => {
                         let role = await Role.find().where({ application_id: element._id.toString() })
                         element.role = role
                     }
-
-
                 }
                 return result[0]
             }))
