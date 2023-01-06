@@ -1,7 +1,6 @@
 
 import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Group from "../models/Group/Group.js";
-import _ from 'lodash'
 import User from '../models/User/User.js';
 import { permission } from '../preHandlers/permission.js';
 import config from '../utils/config.js';
@@ -17,7 +16,7 @@ const all = async (req, res) => {
 
         await permission('62a595278b668a5509dbb1fd', req)
 
-        let compare = true
+        let compare = 1
         //https://usaapi-test.pttplc.com/api/v1/application/3139e2c7-410f-477d-91f0-83b1dd1c7ae1/roles
         let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/roles')
         let group_auth = await axios.get(api.href, {
@@ -26,10 +25,10 @@ const all = async (req, res) => {
             }
         }).then(res => { return res.data }).catch(err => {
             console.log(err.message)
-            compare = false
+            compare = 0
         })
 
-        if (compare == true) {
+        if (compare == 1) {
             group_auth = group_auth.roles.map(el => { return el.id })
 
             let group_db = await Group.find()
@@ -51,10 +50,10 @@ const all = async (req, res) => {
             ]
         } : {}
 
-        let limit = req.query.limit || 10
-        let page = req.query.page || 1
-        let sort = req.query.sort || 'group_id'
-        let order = req.query.order || 'asc'
+        let limit = (req.query.limit) ? req.query.limit : 10
+        let page = (req.query.page) ? req.query.page : 1
+        let sort = (req.query.sort) ? req.query.sort : 'group_id'
+        let order = (req.query.order) ? req.query.order : 'asc'
 
         let data = await Group.find()
             .where(search)
@@ -88,13 +87,9 @@ const all = async (req, res) => {
 
         data = sanitizeHtml(JSON.stringify(data))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(utilSetResponseJson('success', data))
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        return res.send(utilSetResponseJson('failed', error.toString()))
     }
 }
 const byid = async (req, res) => {
