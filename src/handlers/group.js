@@ -7,6 +7,9 @@ import { permission } from '../preHandlers/permission.js';
 import config from '../utils/config.js';
 import axios from 'axios';
 import sanitizeHtml from "sanitize-html";
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
+const URL = require("url").URL
 
 const all = async (req, res) => {
 
@@ -16,7 +19,8 @@ const all = async (req, res) => {
 
         let compare = true
         //https://usaapi-test.pttplc.com/api/v1/application/3139e2c7-410f-477d-91f0-83b1dd1c7ae1/roles
-        let group_auth = await axios.get(config.auth_host + '/application/' + config.auth_app_id + '/roles', {
+        let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/roles')
+        let group_auth = await axios.get(api.href, {
             headers: {
                 'Authorization': config.auth_api_key
             }
@@ -143,7 +147,8 @@ const add = async (req, res) => {
 
 
         // add role in authen systen
-        let add_role = await axios.post(config.auth_host + '/application/' + config.auth_app_id + '/role',
+        let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role')
+        let add_role = await axios.post(api.href,
             {
                 role: req.body.others
             },
@@ -189,7 +194,8 @@ const edit = async (req, res) => {
 
         // put role in authen systen
         if (req.body.others) {
-            let put_role = await axios.put(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id,
+            let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id)
+            let put_role = await axios.put(api.href,
                 {
                     role: req.body.others
                 },
@@ -238,7 +244,8 @@ const destroy = async (req, res) => {
         }
 
         // delete role in authen systen
-        let delete_roll = await axios.delete(config.auth_host + '/application/' + config.auth_app_id + '/role/' + data.others.id,
+        let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + data.others.id)
+        let delete_roll = await axios.delete(api.href,
             {
                 headers: {
                     'Authorization': config.auth_api_key
