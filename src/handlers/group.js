@@ -9,7 +9,7 @@ import sanitizeHtml from "sanitize-html";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const URL = require("url").URL
-var sanitize = require('mongo-sanitize');
+const sanitize = require('mongo-sanitize');
 
 const all = async (req, res) => {
 
@@ -45,10 +45,9 @@ const all = async (req, res) => {
         }
 
 
-        let search = (req) ? req.query.search : undefined
-        search = (search) ? {
+        let search = (req.query.search) ? {
             $or: [
-                { group_name: { $regex: '.*' + search + '.*' } }
+                { group_name: { $regex: '.*' + sanitize(req.query.search) + '.*' } }
             ]
         } : {}
 
