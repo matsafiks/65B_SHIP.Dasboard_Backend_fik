@@ -9,6 +9,7 @@ import sanitizeHtml from "sanitize-html";
 import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const URL = require("url").URL
+var sanitize = require('mongo-sanitize');
 
 const all = async (req, res) => {
 
@@ -56,10 +57,10 @@ const all = async (req, res) => {
         // let sort = (req.query.sort) ? req.query.sort : 'group_id'
         // let order = (req.query.order) ? req.query.order : 'asc'
 
-        let limit = parseInt(req.query.limit) || 10
-        let page = parseInt(req.query.page) || 1
-        let sort = req.query.sort?.toString() || 'group_id'
-        let order = req.query.order?.toString() || 'asc'
+        let limit = sanitize(req.query.limit) || 10
+        let page = sanitize(req.query.page) || 1
+        let sort = sanitize(req.query.sort) || 'group_id'
+        let order = sanitize(req.query.order) || 'asc'
 
 
         let data = await Group.find()
@@ -106,7 +107,7 @@ const byid = async (req, res) => {
 
 
         let data = await Group.find()
-            .where({ _id: req.params._id })
+            .where({ _id: sanitize(req.params._id) })
             .then((async (result) => {
                 for (let index = 0; index < result.length; index++) {
                     const element = result[index];
@@ -174,7 +175,7 @@ const add = async (req, res) => {
                 ...req.body,
                 status: status,
                 others: add_role.role,
-                created_by: req._id,
+                created_by: req._id.toString(),
                 created_date: new Date()
             })
         data = sanitizeHtml(JSON.stringify(data))
@@ -197,7 +198,7 @@ const edit = async (req, res) => {
         // put role in authen systen
         if (req.body.others) {
             let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id)
-            let put_role = await axios.put(api.href,
+            await axios.put(api.href,
                 {
                     role: req.body.others
                 },
@@ -247,7 +248,7 @@ const destroy = async (req, res) => {
 
         // delete role in authen systen
         let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + data.others.id)
-        let delete_roll = await axios.delete(api.href,
+        await axios.delete(api.href,
             {
                 headers: {
                     'Authorization': config.auth_api_key
