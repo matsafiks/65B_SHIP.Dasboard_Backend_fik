@@ -9,6 +9,7 @@ import Role from '../models/Role/Role.js';
 import Location from "../models/Master/Location/Location.js";
 import AccessControlExchangeCard from "../models/AccessControlExchangeCard/AccessControlExchangeCard.js";
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
     try {
@@ -76,47 +77,47 @@ const all = async (req, res) => {
 
         let AgencyName = {}
         if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
-            AgencyName = { AgencyName: { $in: req.query.AgencyName } }
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
         }
 
         let PTTStaffCode = {}
         if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
-            PTTStaffCode = { PTTStaffCode: { $in: req.query.PTTStaffCode } }
+            PTTStaffCode = { PTTStaffCode: { $in: sanitize(req.query.PTTStaffCode) } }
         }
 
         let AreaName = {}
         if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
-            AreaName = { AreaName: { $in: req.query.AreaName } }
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
         }
 
         let SubAreaName = {}
         if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
-            SubAreaName = { SubAreaName: { $in: req.query.SubAreaName } }
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
         }
 
 
         let Scan_Date_Time_Start = (req) ? req.query.Scan_Date_Time_Start : undefined
-        Scan_Date_Time_Start = (Scan_Date_Time_Start) ? { 'others.scan_date_time': { $gte: Scan_Date_Time_Start.toString() } } : {}
+        Scan_Date_Time_Start = (Scan_Date_Time_Start) ? { 'others.scan_date_time': { $gte: sanitize(Scan_Date_Time_Start) } } : {}
 
 
         let Scan_Date_Time_End = (req) ? req.query.Scan_Date_Time_End : undefined
-        Scan_Date_Time_End = (Scan_Date_Time_End) ? { 'others.scan_date_time': { $lte: Scan_Date_Time_End.toString() } } : {}
+        Scan_Date_Time_End = (Scan_Date_Time_End) ? { 'others.scan_date_time': { $lte: sanitize(Scan_Date_Time_End) } } : {}
 
         let AccDeviceName = {}
         if (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) {
-            AccDeviceName = { ACC_ID: req.query.AccDeviceName.toString() }
+            AccDeviceName = { ACC_ID: sanitize(req.query.AccDeviceName) }
 
         }
 
         let PersonalTypeName = {}
         if (req.query.PersonalTypeName && !req.query.PersonalTypeName.toString().includes('ทั้งหมด')) {
-            PersonalTypeName = { PersonalTypeID: { $in: req.query.PersonalTypeName } }
+            PersonalTypeName = { PersonalTypeID: { $in: sanitize(req.query.PersonalTypeName) } }
 
         }
 
         let CompanyName = {}
         if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
-            CompanyName = { CompanyName: { $in: req.query.CompanyName } }
+            CompanyName = { CompanyName: { $in: sanitize(req.query.CompanyName) } }
         }
 
         let Notification = []
