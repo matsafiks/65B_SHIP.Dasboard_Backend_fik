@@ -40,6 +40,7 @@ const all = async (req, res) => {
                 await Group.deleteMany({ _id: { $in: deleted.map(el => { return el._doc._id }) } })
 
             }
+
         }
 
 
@@ -50,10 +51,16 @@ const all = async (req, res) => {
             ]
         } : {}
 
-        let limit = (req.query.limit) ? req.query.limit : 10
-        let page = (req.query.page) ? req.query.page : 1
-        let sort = (req.query.sort) ? req.query.sort : 'group_id'
-        let order = (req.query.order) ? req.query.order : 'asc'
+        // let limit = (req.query.limit) ? req.query.limit : 10
+        // let page = (req.query.page) ? req.query.page : 1
+        // let sort = (req.query.sort) ? req.query.sort : 'group_id'
+        // let order = (req.query.order) ? req.query.order : 'asc'
+
+        let limit = req.query?.limit || 10
+        let page = req.query?.page || 1
+        let sort = req.query?.sort || 'group_id'
+        let order = req.query?.order || 'asc'
+
 
         let data = await Group.find()
             .where(search)
