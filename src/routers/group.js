@@ -19,7 +19,7 @@ groupRouters.post('/add',
     check_jwt,
     add)
 groupRouters.put('/put/:_id',
-    validateSchema(groupSchema['/api/admin/group/put/{_id}'].put.parameters),
+    // validateSchema(groupSchema['/api/admin/group/put/{_id}'].put.parameters),
     check_jwt,
     edit
 )
