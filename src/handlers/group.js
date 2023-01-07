@@ -56,10 +56,10 @@ const all = async (req, res) => {
         // let sort = (req.query.sort) ? req.query.sort : 'group_id'
         // let order = (req.query.order) ? req.query.order : 'asc'
 
-        let limit = req.query?.limit || 10
-        let page = req.query?.page || 1
-        let sort = req.query?.sort || 'group_id'
-        let order = req.query?.order || 'asc'
+        let limit = parseInt(req.query.limit) || 10
+        let page = parseInt(req.query.page) || 1
+        let sort = req.query.sort?.toString() || 'group_id'
+        let order = req.query.order?.toString() || 'asc'
 
 
         let data = await Group.find()
