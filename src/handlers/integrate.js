@@ -17,6 +17,7 @@ import Vehicle from "../models/Vehicle/Vehicle.js";
 import Vehicle6 from '../models/Vehicle6/Vehicle6.js';
 import Vehicle5 from '../models/Vehicle5/Vehicle5.js';
 import moment from "moment"
+import sanitize from 'mongo-sanitize';
 
 
 const scaffolding = async (req, res) => {
@@ -88,26 +89,43 @@ const scaffolding = async (req, res) => {
         //ตัวเลขแสดงจำนวนนั่งร้าน
         let scaffolding_amount_check = role.filter((el) => { return el.application_id == '62f764f1112721673fda41ca' })
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { PTTStaffCode: { $in: sanitize(req.query.PTTStaffCode) } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        WPM_AreaName = (WPM_AreaName) ? { AreaName: { $in: WPM_AreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
+        }
 
-        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
-        WPM_SubAreaName = (WPM_SubAreaName) ? { SubAreaName: { $in: WPM_SubAreaName } } : {}
 
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { VendorName: { $in: CompanyName } } : {}
+        let WPM_AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            WPM_AreaName = { AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
+
+        let WPM_SubAreaName = {}
+        if (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) {
+            WPM_SubAreaName = { SubAreaName: { $in: sanitize(req.query.WPM_SubAreaName) } }
+        }
+
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { VendorName: { $in: sanitize(req.query.CompanyName) } }
+        }
+
 
         //delete row
         await Scaffolding.deleteMany({
@@ -365,29 +383,48 @@ const people = async (req, res) => {
         let people_amount_wpm_check = role.filter((el) => { return el.application_id == '63811105517cdd08ce409750' })
         let people_amount_gps_check = role.filter((el) => { return el.application_id == '6381114b517cdd08ce409751' })
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { PTTStaffID: { $in: PTTStaffCode } } : {}
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { PTTStaffID: { $in: sanitize(req.query.PTTStaffCode) } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
 
-        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        WPM_SubAreaName = (WPM_SubAreaName) ? { WPM_SubAreaName: { $in: WPM_SubAreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
+        }
 
-        let PeopleType = (req) ? (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) ? req.query.PeopleType : undefined : undefined
-        PeopleType = (PeopleType) ? { PeopleType: { $in: PeopleType } } : {}
+        let WPM_AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            WPM_AreaName = { WPM_AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
 
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
+        let WPM_SubAreaName = {}
+        if (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) {
+            WPM_SubAreaName = { WPM_SubAreaName: { $in: sanitize(req.query.WPM_SubAreaName) } }
+        }
+
+        let PeopleType = {}
+        if (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) {
+            PeopleType = { PeopleType: { $in: sanitize(req.query.PeopleType) } }
+        }
+
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { CompanyName: { $in: sanitize(req.query.CompanyName) } }
+        }
+
 
         await People.find({
             // $and: [
@@ -651,29 +688,46 @@ const vehicle = async (req, res) => {
         let vehicle_check = role.filter((el) => { return el.application_id == '62f7650b112721673fda41d0' })
 
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { PTTStaffCode: { $in: sanitize(req.query.PTTStaffCode) } }
+        }
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
+        }
 
-        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        WPM_SubAreaName = (WPM_SubAreaName) ? { WPM_SubAreaName: { $in: WPM_SubAreaName } } : {}
+        let WPM_AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            WPM_AreaName = { WPM_AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
 
-        let VehicleType = (req) ? (req.query.VehicleType && !req.query.VehicleType.toString().includes('ทั้งหมด')) ? req.query.VehicleType : undefined : undefined
-        VehicleType = (VehicleType) ? { VehicleType: { $in: VehicleType } } : {}
+        let WPM_SubAreaName = {}
+        if (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) {
+            WPM_SubAreaName = { WPM_SubAreaName: { $in: sanitize(req.query.WPM_SubAreaName) } }
+        }
 
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
+        let VehicleType = {}
+        if (req.query.VehicleType && !req.query.VehicleType.toString().includes('ทั้งหมด')) {
+            VehicleType = { VehicleType: { $in: sanitize(req.query.VehicleType) } }
+        }
+
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { CompanyName: { $in: sanitize(req.query.CompanyName) } }
+        }
 
 
 
@@ -941,21 +995,30 @@ const workpermit = async (req, res) => {
         // กราฟวงกลมแสดงสถานะใบงานหมดอายุและใกล้หมดอายุ
         let workpermit_expire_near_check = role.filter((el) => { return el.application_id == '62f7645d112721673fda41b2' })
 
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { supervisorDep: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { supervisorDep: { $in: AgencyName } } : {}
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { supervisorCode: { $in: sanitize(req.query.PTTStaffCode) } }
+        }
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { supervisorCode: { $in: PTTStaffCode } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { location: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { location: { $in: AreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { subLocation: { $in: sanitize(req.query.SubAreaName) } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { subLocation: { $in: SubAreaName } } : {}
-
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { companyName: { $in: CompanyName } } : {}
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { companyName: { $in: sanitize(req.query.CompanyName) } }
+        }
 
         await WorkPermit.find({
             // $and: [
@@ -1153,17 +1216,26 @@ const equipment = async (req, res) => {
         let equipment_risk_check = role.filter((el) => { return el.application_id == '62f764c6112721673fda41be' })
 
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { PTTStaffCode: { $in: sanitize(req.query.PTTStaffCode) } }
+        }
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
+
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { CompanyName: { $in: sanitize(req.query.CompanyName) } }
+        }
 
         await Equipment.find({
             // $and: [
@@ -1355,20 +1427,32 @@ const accesscontrol = async (req, res) => {
         //กราฟวงกลมแสดงสถานะ access control ออฟไลน์และออนไลน์
         let access_control_online_off_chcek = role.filter((el) => { return el.application_id == '62f76493112721673fda41b8' })
 
-        let AccDeviceName = (req) ? (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) ? req.query.AccDeviceName : undefined : undefined
-        AccDeviceName = (AccDeviceName) ? { AccDeviceName: AccDeviceName } : {}
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let AccDeviceName = {}
+        if (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) {
+            AccDeviceName = { AccDeviceName: sanitize(req.query.AccDeviceName) }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        WPM_AreaName = (WPM_AreaName) ? { AreaName: { $in: WPM_AreaName } } : {}
 
-        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
-        WPM_SubAreaName = (WPM_SubAreaName) ? { SubAreaName: { $in: WPM_SubAreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
+        }
+
+        let WPM_AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            WPM_AreaName = { AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
+
+        let WPM_SubAreaName = {}
+        if (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) {
+            WPM_SubAreaName = { SubAreaName: { $in: sanitize(req.query.WPM_SubAreaName) } }
+        }
 
         let AccDeviceName_master = await AccessControlDevice.find({
 
