@@ -12,6 +12,8 @@ import Vehicle5 from '../models/Vehicle5/Vehicle5.js';
 import Vehicle6 from '../models/Vehicle6/Vehicle6.js';
 import moment from "moment"
 import Vehicle2 from '../models/Vehicle2/Vehicle2.js';
+import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -50,37 +52,62 @@ const all = async (req, res) => {
 
         const today = moment().startOf('day')
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { PTTStaffCode: { $in: sanitize(req.query.PTTStaffCode) } }
+        }
 
-        let WorkingStartDate = (req) ? req.query.WorkingStartDate : undefined
-        WorkingStartDate = (WorkingStartDate) ? { 'others.WorkingStart': { $gte: WorkingStartDate } } : {}
+        let WorkingStartDate = {}
+        if (req.query.WorkingStartDate) {
+            WorkingStartDate = { 'others.WorkingStart': { $gte: sanitize(req.query.WorkingStartDate) } }
+        }
 
-        let WorkingEndDate = (req) ? req.query.WorkingEndDate : undefined
-        WorkingEndDate = (WorkingEndDate) ? { 'others.WorkingEnd': { $lte: WorkingEndDate } } : {}
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let WorkingEndDate = {}
+        if (req.query.WorkingEndDate) {
+            WorkingEndDate = { 'others.WorkingEnd': { $lte: sanitize(req.query.WorkingEndDate) } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
-        WPM_SubAreaName = (WPM_SubAreaName) ? { WPM_SubAreaName: { $in: WPM_SubAreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
+        }
 
-        let VehicleType = (req) ? (req.query.VehicleType && !req.query.VehicleType.toString().includes('ทั้งหมด')) ? req.query.VehicleType : undefined : undefined
-        VehicleType = (VehicleType) ? { VehicleType: { $in: VehicleType } } : {}
+        let WPM_AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            WPM_AreaName = { WPM_AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
 
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
+        let WPM_SubAreaName = {}
+        if (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) {
+            WPM_SubAreaName = { WPM_SubAreaName: { $in: sanitize(req.query.WPM_SubAreaName) } }
+        }
 
-        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let VehicleType = {}
+        if (req.query.VehicleType && !req.query.VehicleType.toString().includes('ทั้งหมด')) {
+            VehicleType = { VehicleType: { $in: sanitize(req.query.VehicleType) } }
+        }
+
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { CompanyName: { $in: sanitize(req.query.CompanyName) } }
+        }
+
+        let Notification = []
+        if (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) {
+            Notification = req.query.notification
+        }
 
 
         let check_user = await User.findOne().where({ _id: req._id })

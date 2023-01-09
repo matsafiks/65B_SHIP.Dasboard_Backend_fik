@@ -9,6 +9,8 @@ import { permission } from '../preHandlers/permission.js';
 import Role from '../models/Role/Role.js';
 import socket_io from "../utils/socket_io.js";
 import config from '../utils/config.js';
+import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -36,32 +38,50 @@ const all = async (req, res) => {
         let data_arr = []
 
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-        PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
+        let PTTStaffCode = {}
+        if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+            PTTStaffCode = { PTTStaffCode: { $in: sanitize(req.query.PTTStaffCode) } }
+        }
 
-        let WorkingStartDate = (req) ? req.query.WorkingStartDate : undefined
-        WorkingStartDate = (WorkingStartDate) ? { WorkingStartDate: { $gte: WorkingStartDate } } : {}
+        let WorkingStartDate = {}
+        if (req.query.WorkingStartDate) {
+            WorkingStartDate = { WorkingStartDate: { $gte: sanitize(req.query.WorkingStartDate) } }
+        }
 
-        let WorkingEndDate = (req) ? req.query.WorkingEndDate : undefined
-        WorkingEndDate = (WorkingEndDate) ? { WorkingEndDate: { $lte: WorkingEndDate } } : {}
 
+        let WorkingEndDate = {}
+        if (req.query.WorkingEndDate) {
+            WorkingEndDate = { WorkingEndDate: { $lte: sanitize(req.query.WorkingEndDate) } }
+        }
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
+        }
 
-        let VendorName = (req) ? (req.query.VendorName && !req.query.VendorName.toString().includes('ทั้งหมด')) ? req.query.VendorName : undefined : undefined
-        VendorName = (VendorName) ? { VendorName: { $in: VendorName } } : {}
-        // let ScaffoldingType = (req) ? (req.query.ScaffoldingType) ? req.query.ScaffoldingType : undefined : undefined
-        // ScaffoldingType = (ScaffoldingType) ? { ScaffoldingType: { $in: ScaffoldingType } } : {}
+        let VendorName = {}
+        if (req.query.VendorName && !req.query.VendorName.toString().includes('ทั้งหมด')) {
+            VendorName = { VendorName: { $in: sanitize(req.query.VendorName) } }
+        }
 
-        let ScaffoldingType = (req) ? (req.query.ScaffoldingType && !req.query.ScaffoldingType.toString().includes('ทั้งหมด')) ? req.query.ScaffoldingType : undefined : undefined
-        if (ScaffoldingType) {
+        let ScaffoldingType = {}
+        if (req.query.ScaffoldingType && !req.query.ScaffoldingType.toString().includes('ทั้งหมด')) {
+            ScaffoldingType = req.query.ScaffoldingType
+
+            if (typeof ScaffoldingType == 'string') {
+                ScaffoldingType = [ScaffoldingType]
+            }
+
             let ScaffoldingType_ = {
                 $or: [
                     {
@@ -72,7 +92,7 @@ const all = async (req, res) => {
                 ]
             }
             for (let index = 0; index < ScaffoldingType.length; index++) {
-                const element = ScaffoldingType[index];
+                const element = sanitize(ScaffoldingType[index]);
                 if (element.split(' - ').length > 1) {
                     ScaffoldingType_.$or.push({
                         ScaffoldingType: element.split(' - ')[0],
@@ -85,53 +105,50 @@ const all = async (req, res) => {
             }
 
             ScaffoldingType = ScaffoldingType_
-
-        } else {
-            ScaffoldingType = {}
         }
 
 
+        let Notification = []
+        if (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) {
+            Notification = req.query.notification
+        }
 
-        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
-        // Notification = (notification) ? { notification: { $in: notification } } : {}
-        // Notification = (Notification) ? Notification : undefined
 
-
-        let check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: sanitize(req._id) })
 
         let now = new Date
         let day_7 = new Date().setDate(new Date().getDate() + 7);
 
         //เจ้าของพื้นที่
-        if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
+        // if (check_user.group_id == "62a4cad5e0a99b4456aaf514") {
 
-            // if (Object.keys(req.query).length === 0) {
-            //     let location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
-            //     where_permission = { AreaName: { $in: location1.map(el => { return el.AreaName }) } }
+        //     // if (Object.keys(req.query).length === 0) {
+        //     //     let location1 = await Scaffolding.find({ Owner: check_user.others.employeeid })
+        //     //     where_permission = { AreaName: { $in: location1.map(el => { return el.AreaName }) } }
 
-            // }
-        }
+        //     // }
+        // }
         //ผู้ควบคุมงาน ปตท.
-        else if (check_user.group_id == "62a4cb17e0a99b4456aaf51e") {
+        if (check_user.group_id == "62a4cb17e0a99b4456aaf51e") {
             if (Object.keys(req.query).length === 0) {
-                where_permission = { PTTStaffCode: check_user.others.employeeid }
+                where_permission = { PTTStaffCode: sanitize(check_user.others.employeeid) }
             }
         }
-        //เจ้าหน้าที่รักษาความปลอดภัย
-        else if (check_user.group_id == "62a4cb26e0a99b4456aaf522") {
+        // //เจ้าหน้าที่รักษาความปลอดภัย
+        // else if (check_user.group_id == "62a4cb26e0a99b4456aaf522") {
 
-        }
-        //หน่วยงาน ปภ.ผยก.
-        else if (check_user.group_id == "62a4cb5896deebf8a1f8abbe") {
+        // }
+        // //หน่วยงาน ปภ.ผยก.
+        // else if (check_user.group_id == "62a4cb5896deebf8a1f8abbe") {
 
-        }
+        // }
 
-        //ผู้ดูแลระบบ
-        else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
+        // //ผู้ดูแลระบบ
+        // else if (check_user.group_id == "62a4cb7696deebf8a1f8abc9") {
 
-        }
+        // }
 
-        let role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: sanitize(check_user.group_id) })
 
 
         // แสดงภาพรวมการติดตั้งนั่งร้าน โดยมี Icon สี แสดงจุดที่มีการติดตั้งนั่งร้าน
@@ -372,11 +389,9 @@ const all = async (req, res) => {
         if (check_user.others.employeeid && check_user.group_id == "62a4cb17e0a99b4456aaf51e" && Object.keys(req.query).length === 0 && data_arr.length == 0) {
             data_.MessageAlert = 'ไม่พบข้อมูลใบงานที่คุณเป็นผู้ควบคุมงาน กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
-        res.send(data_)
+        data_ = sanitizeHtml(JSON.stringify(data_))
+        res.send(JSON.parse(data_))
 
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
     } catch (error) {
         if (res)
             return res.send(utilSetResponseJson('failed', error.toString()))

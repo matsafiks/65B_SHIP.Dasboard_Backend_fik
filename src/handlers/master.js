@@ -26,14 +26,21 @@ const pttstaffcodeAll = async (req, res) => {
 
         let pttstaffcodeAll = []
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let AgencyName_workpermit = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName_workpermit = (AgencyName_workpermit) ? { supervisorDep: { $in: AgencyName_workpermit } } : {}
+        let AgencyName_workpermit = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName_workpermit = { supervisorDep: { $in: sanitize(req.query.AgencyName) } }
+        }
 
+        let which = {}
+        if (req.query.which && !req.query.which.toString().includes('ทั้งหมด')) {
+            which = req.query.which
+        }
 
-        let which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
         // which = (which) ? { which: { $in: AgencyName } } : 
 
         let check_user = await User.findOne().where({ _id: req._id })
@@ -183,10 +190,15 @@ const subareaAll = async (req, res) => {
 
         let subareaAll = []
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
+        let which = {}
+        if (req.query.which && !req.query.which.toString().includes('ทั้งหมด')) {
+            which = req.query.which
+        }
         // which = (which) ? { which: { $in: AreaName } } : 
 
 
@@ -242,17 +254,27 @@ const wpmSubareaAll = async (req, res) => {
 
         let wpmSubareaAll = []
 
-        let AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
 
-        let AreaName_workpermit = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        AreaName_workpermit = (AreaName_workpermit) ? { location: { $in: AreaName_workpermit } } : {}
+        let AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
 
-        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
+        let AreaName_workpermit = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            AreaName_workpermit = { location: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
+
+        let WPM_AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            WPM_AreaName = { WPM_AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
 
 
-        let which = (req) ? (req.query.which && req.query.which.toString() != 'ทั้งหมด') ? req.query.which : undefined : undefined
+        let which = {}
+        if (req.query.which && !req.query.which.toString().includes('ทั้งหมด')) {
+            which = req.query.which
+        }
         // which = (which) ? { which: { $in: WPM_AreaName } } : 
 
 

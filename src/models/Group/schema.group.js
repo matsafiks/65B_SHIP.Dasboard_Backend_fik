@@ -31,13 +31,15 @@ const schema = ({
                     "in": "query",
                     "name": "sort",
                     "type": "string",
-                    "description": "เรียงโดย"
+                    "description": "เรียงโดย",
+                    "default": "group_id"
                 },
                 {
                     "in": "query",
                     "name": "order",
                     "type": "string",
                     "description": "",
+                    "default": "acs",
                     "enum": [
                         "acs",
                         "desc"

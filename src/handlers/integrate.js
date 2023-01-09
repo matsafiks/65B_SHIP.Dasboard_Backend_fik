@@ -19,7 +19,6 @@ import Vehicle5 from '../models/Vehicle5/Vehicle5.js';
 import moment from "moment"
 import sanitize from 'mongo-sanitize';
 
-
 const scaffolding = async (req, res) => {
 
     try {

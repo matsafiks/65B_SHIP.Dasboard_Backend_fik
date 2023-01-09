@@ -96,12 +96,16 @@ const all = async (req, res) => {
         }
 
 
-        let Scan_Date_Time_Start = (req) ? req.query.Scan_Date_Time_Start : undefined
-        Scan_Date_Time_Start = (Scan_Date_Time_Start) ? { 'others.scan_date_time': { $gte: sanitize(Scan_Date_Time_Start) } } : {}
+        let Scan_Date_Time_Start = {}
+        if (req.query.Scan_Date_Time_Start) {
+            Scan_Date_Time_Start = { 'others.scan_date_time': { $gte: sanitize(req.query.Scan_Date_Time_Start) } }
+        }
 
 
-        let Scan_Date_Time_End = (req) ? req.query.Scan_Date_Time_End : undefined
-        Scan_Date_Time_End = (Scan_Date_Time_End) ? { 'others.scan_date_time': { $lte: sanitize(Scan_Date_Time_End) } } : {}
+        let Scan_Date_Time_End = {}
+        if (req.query.Scan_Date_Time_End) {
+            Scan_Date_Time_End = { 'others.scan_date_time': { $lte: sanitize(req.query.Scan_Date_Time_End) } }
+        }
 
         let AccDeviceName = {}
         if (req.query.AccDeviceName && !req.query.AccDeviceName.toString().includes('ทั้งหมด')) {
@@ -121,12 +125,12 @@ const all = async (req, res) => {
         }
 
         let Notification = []
-        if (req.query.Notification && !req.query.Notification.toString().includes('ทั้งหมด')) {
+        if (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) {
             Notification = req.query.notification
         }
 
 
-        let check_user = await User.findOne().where({ _id: req._id })
+        let check_user = await User.findOne().where({ _id: sanitize(req._id) })
 
 
         //เจ้าของพื้นที่
@@ -153,7 +157,7 @@ const all = async (req, res) => {
         // }
 
 
-        let role = await Role.find().where({ group_id: check_user.group_id })
+        let role = await Role.find().where({ group_id: sanitize(check_user.group_id) })
 
 
 

@@ -11,6 +11,8 @@ import Location_master_ from "../models/Master/Location/Location.js";
 import config from "../utils/config.js";
 import Role from "../models/Role/Role.js";
 import { permission } from "../preHandlers/permission.js";
+import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -20,38 +22,57 @@ const all = async (req, res) => {
         let application_id = '62a4d45011b91829618a4413'
         await permission(application_id, req)
 
-        let supervisorDep = (req) ? (req.query.supervisorDep && !req.query.supervisorDep.toString().includes('ทั้งหมด')) ? req.query.supervisorDep : undefined : undefined
-        supervisorDep = (supervisorDep) ? { supervisorDep: { $in: supervisorDep } } : {}
+        let supervisorDep = {}
+        if (req.query.supervisorDep && !req.query.supervisorDep.toString().includes('ทั้งหมด')) {
+            supervisorDep = { supervisorDep: { $in: sanitize(req.query.supervisorDep) } }
+        }
 
-        let supervisorCode = (req) ? (req.query.supervisorCode && !req.query.supervisorCode.toString().includes('ทั้งหมด')) ? req.query.supervisorCode : undefined : undefined
-        supervisorCode = (supervisorCode) ? { supervisorCode: { $in: supervisorCode } } : {}
-
-
-        let workpermitStatusId = (req) ? (req.query.workpermitStatusId && !req.query.workpermitStatusId.toString().includes('ทั้งหมด')) ? req.query.workpermitStatusId : undefined : undefined
-        workpermitStatusId = (workpermitStatusId) ? { workpermitStatusId: { $in: workpermitStatusId } } : {}
-
-
-        let startDateTime = (req) ? req.query.startDateTime : undefined
-        startDateTime = (startDateTime) ? { 'others.workingStart': { $gte: startDateTime } } : {}
-
-        let endDateTime = (req) ? req.query.endDateTime : undefined
-        endDateTime = (endDateTime) ? { 'others.workingEnd': { $lte: endDateTime } } : {}
+        let supervisorCode = {}
+        if (req.query.supervisorCode && !req.query.supervisorCode.toString().includes('ทั้งหมด')) {
+            supervisorCode = { supervisorCode: { $in: sanitize(req.query.supervisorCode) } }
+        }
 
 
-        let workTypeID = (req) ? (req.query.workTypeID && !req.query.workTypeID.toString().includes('ทั้งหมด')) ? req.query.workTypeID : undefined : undefined
-        workTypeID = (workTypeID) ? { workTypeID: { $in: workTypeID } } : {}
-
-        let location = (req) ? (req.query.location && !req.query.location.toString().includes('ทั้งหมด')) ? req.query.location : undefined : undefined
-        location = (location) ? { location: { $in: location } } : {}
-
-        let subLocation = (req) ? (req.query.subLocation && !req.query.subLocation.toString().includes('ทั้งหมด')) ? req.query.subLocation : undefined : undefined
-        subLocation = (subLocation) ? { subLocation: { $in: subLocation } } : {}
-
-        let companyName = (req) ? (req.query.companyName && !req.query.companyName.toString().includes('ทั้งหมด')) ? req.query.companyName : undefined : undefined
-        companyName = (companyName) ? { companyName: { $in: companyName } } : {}
+        let workpermitStatusId = {}
+        if (req.query.workpermitStatusId && !req.query.workpermitStatusId.toString().includes('ทั้งหมด')) {
+            workpermitStatusId = { workpermitStatusId: { $in: sanitize(req.query.workpermitStatusId) } }
+        }
 
 
-        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let startDateTime = {}
+        if (req.query.startDateTime) {
+            startDateTime = { 'others.workingStart': { $gte: sanitize(req.query.startDateTime) } }
+        }
+
+        let endDateTime = {}
+        if (req.query.endDateTime) {
+            endDateTime = { 'others.workingEnd': { $lte: sanitize(req.query.endDateTime) } }
+        }
+
+        let workTypeID = {}
+        if (req.query.workTypeID && !req.query.workTypeID.toString().includes('ทั้งหมด')) {
+            workTypeID = { workTypeID: { $in: sanitize(req.query.workTypeID) } }
+        }
+
+        let location = {}
+        if (req.query.location && !req.query.location.toString().includes('ทั้งหมด')) {
+            location = { location: { $in: sanitize(req.query.location) } }
+        }
+
+        let subLocation = {}
+        if (req.query.subLocation && !req.query.subLocation.toString().includes('ทั้งหมด')) {
+            subLocation = { subLocation: { $in: sanitize(req.query.subLocation) } }
+        }
+
+        let companyName = {}
+        if (req.query.companyName && !req.query.companyName.toString().includes('ทั้งหมด')) {
+            companyName = { companyName: { $in: sanitize(req.query.companyName) } }
+        }
+
+        let Notification = []
+        if (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) {
+            Notification = req.query.notification
+        }
 
         let check_user = await User.findOne().where({ _id: req._id })
 

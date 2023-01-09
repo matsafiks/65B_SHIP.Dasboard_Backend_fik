@@ -4,7 +4,7 @@ import VehicleType from "../models/Master/VehicleType/VehicleType.js";
 import _ from 'lodash'
 import User from '../models/User/User.js';
 import sanitizeHtml from "sanitize-html";
-
+import sanitize from 'mongo-sanitize';
 const all = async (req, res) => {
 
     try {

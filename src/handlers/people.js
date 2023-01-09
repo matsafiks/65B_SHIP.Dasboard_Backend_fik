@@ -36,37 +36,63 @@ const all = async (req, res) => {
         let data_arr = []
 
 
-        let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-        AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+        let AgencyName = {}
+        if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+            AgencyName = { AgencyName: { $in: sanitize(req.query.AgencyName) } }
+        }
 
-        let PTTStaffID = (req) ? (req.query.PTTStaffID && !req.query.PTTStaffID.toString().includes('ทั้งหมด')) ? req.query.PTTStaffID : undefined : undefined
-        PTTStaffID = (PTTStaffID) ? { PTTStaffID: { $in: PTTStaffID } } : {}
+        let PTTStaffID = {}
+        if (req.query.PTTStaffID && !req.query.PTTStaffID.toString().includes('ทั้งหมด')) {
+            PTTStaffID = { PTTStaffID: { $in: sanitize(req.query.PTTStaffID) } }
+        }
 
-        let WorkingStartDate = (req) ? req.query.WorkingStartDate : undefined
-        WorkingStartDate = (WorkingStartDate) ? { 'others.WorkingStart': { $gte: WorkingStartDate } } : {}
+        let WorkingStartDate = {}
+        if (req.query.WorkingStartDate) {
+            WorkingStartDate = { 'others.WorkingStart': { $gte: sanitize(req.query.WorkingStartDate) } }
+        }
 
-        let WorkingEndDate = (req) ? req.query.WorkingEndDate : undefined
-        WorkingEndDate = (WorkingEndDate) ? { 'others.WorkingEnd': { $lte: WorkingEndDate } } : {}
 
-        let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-        AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+        let WorkingEndDate = {}
+        if (req.query.WorkingEndDate) {
+            WorkingEndDate = { 'others.WorkingEnd': { $lte: sanitize(req.query.WorkingEndDate) } }
+        }
 
-        let SubAreaName = (req) ? (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) ? req.query.SubAreaName : undefined : undefined
-        SubAreaName = (SubAreaName) ? { SubAreaName: { $in: SubAreaName } } : {}
 
-        let WPM_AreaName = (req) ? (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_AreaName : undefined : undefined
-        WPM_AreaName = (WPM_AreaName) ? { WPM_AreaName: { $in: WPM_AreaName } } : {}
+        let AreaName = {}
+        if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+            AreaName = { AreaName: { $in: sanitize(req.query.AreaName) } }
+        }
 
-        let WPM_SubAreaName = (req) ? (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) ? req.query.WPM_SubAreaName : undefined : undefined
-        WPM_SubAreaName = (WPM_SubAreaName) ? { WPM_SubAreaName: { $in: WPM_SubAreaName } } : {}
+        let SubAreaName = {}
+        if (req.query.SubAreaName && !req.query.SubAreaName.toString().includes('ทั้งหมด')) {
+            SubAreaName = { SubAreaName: { $in: sanitize(req.query.SubAreaName) } }
+        }
 
-        let PeopleType = (req) ? (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) ? req.query.PeopleType : undefined : undefined
-        PeopleType = (PeopleType) ? { PeopleType: { $in: PeopleType } } : {}
+        let WPM_AreaName = {}
+        if (req.query.WPM_AreaName && !req.query.WPM_AreaName.toString().includes('ทั้งหมด')) {
+            WPM_AreaName = { WPM_AreaName: { $in: sanitize(req.query.WPM_AreaName) } }
+        }
 
-        let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-        CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
+        let WPM_SubAreaName = {}
+        if (req.query.WPM_SubAreaName && !req.query.WPM_SubAreaName.toString().includes('ทั้งหมด')) {
+            WPM_SubAreaName = { WPM_SubAreaName: { $in: sanitize(req.query.WPM_SubAreaName) } }
+        }
 
-        let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+        let PeopleType = {}
+        if (req.query.PeopleType && !req.query.PeopleType.toString().includes('ทั้งหมด')) {
+            PeopleType = { PeopleType: { $in: sanitize(req.query.PeopleType) } }
+        }
+
+
+        let CompanyName = {}
+        if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+            CompanyName = { CompanyName: { $in: sanitize(req.query.CompanyName) } }
+        }
+
+        let Notification = []
+        if (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) {
+            Notification = req.query.notification
+        }
 
 
         let check_user = await User.findOne().where({ _id: req._id })

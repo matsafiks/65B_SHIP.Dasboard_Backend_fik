@@ -10,6 +10,8 @@ import Application from '../models/Application/Application.js';
 import Location from '../models/Master/Location/Location.js';
 import { permission } from '../preHandlers/permission.js';
 import moment from "moment"
+import sanitize from 'mongo-sanitize';
+
 const all = async (req, res) => {
 
     try {
@@ -235,22 +237,40 @@ const common = async (req, res, where_permission, check_user, over_all_check, ex
 
     let AreaName_master = await Location.find()
 
-    let AgencyName = (req) ? (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) ? req.query.AgencyName : undefined : undefined
-    AgencyName = (AgencyName) ? { AgencyName: { $in: AgencyName } } : {}
+    let AgencyName = {}
+    if (req.query.AgencyName && !req.query.AgencyName.toString().includes('ทั้งหมด')) {
+        AgencyName = { AgencyName: sanitize(req.query.AgencyName) }
 
-    let PTTStaffCode = (req) ? (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) ? req.query.PTTStaffCode : undefined : undefined
-    PTTStaffCode = (PTTStaffCode) ? { PTTStaffCode: { $in: PTTStaffCode } } : {}
+    }
+    let PTTStaffCode = {}
+    if (req.query.PTTStaffCode && !req.query.PTTStaffCode.toString().includes('ทั้งหมด')) {
+        PTTStaffCode = { PTTStaffCode: sanitize(req.query.PTTStaffCode) }
 
-    let AreaName = (req) ? (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) ? req.query.AreaName : undefined : undefined
-    AreaName = (AreaName) ? { AreaName: { $in: AreaName } } : {}
+    }
 
-    let EquipmentType = (req) ? (req.query.EquipmentType && !req.query.EquipmentType.toString().includes('ทั้งหมด')) ? req.query.EquipmentType : undefined : undefined
-    EquipmentType = (EquipmentType) ? { EquipmentType: { $in: EquipmentType } } : {}
+    let AreaName = {}
+    if (req.query.AreaName && !req.query.AreaName.toString().includes('ทั้งหมด')) {
+        AreaName = { AreaName: sanitize(req.query.AreaName) }
 
-    let CompanyName = (req) ? (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) ? req.query.CompanyName : undefined : undefined
-    CompanyName = (CompanyName) ? { CompanyName: { $in: CompanyName } } : {}
+    }
 
-    let Notification = (req) ? (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) ? req.query.notification : [] : []
+    let EquipmentType = {}
+    if (req.query.EquipmentType && !req.query.EquipmentType.toString().includes('ทั้งหมด')) {
+        EquipmentType = { EquipmentType: sanitize(req.query.EquipmentType) }
+
+    }
+
+    let CompanyName = {}
+    if (req.query.CompanyName && !req.query.CompanyName.toString().includes('ทั้งหมด')) {
+        CompanyName = { CompanyName: sanitize(req.query.CompanyName) }
+
+    }
+
+    let Notification = []
+    if (req.query.notification && !req.query.notification.toString().includes('ทั้งหมด')) {
+        Notification = req.query.notification
+    }
+
 
     await Equipment.find({
         // $and: [
