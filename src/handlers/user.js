@@ -242,7 +242,7 @@ const edit = async (req, res) => {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
         if (req.body.group_id) {
-            let check = await Group.findOne().where({ _id: req.body.group_id })
+            let check = await Group.findOne().where({ _id: sanitize(req.body.group_id) })
             if (!check) {
                 throw new Error('group_id not found')
             }
