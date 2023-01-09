@@ -241,13 +241,17 @@ const add = async (req, res) => {
                 req.body.order = 1
             }
         }
-        let status = (req.body.status != undefined) ? req.body.status : 1
 
-        let body = sanitize(req.body)
+
         let data = await Application.create(
             {
-                ...body,
-                status: status,
+                application_name: sanitize(req.body.application_name),
+                parent_id: sanitize(req.body.parent_id),
+                is_menu: sanitize(req.body.is_menu),
+                url: sanitize(req.body.url),
+                config: sanitize(req.body.config),
+                status: sanitize(req.body.status) || 1,
+                order: sanitize(req.body.order),
                 created_by: sanitize(req._id),
                 created_date: new Date()
             })
