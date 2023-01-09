@@ -196,23 +196,19 @@ const edit = async (req, res) => {
 
         // put role in authen systen
         if (req.body.others) {
-            let id = req.body.others.id.toString() || null
-            if (id) {
-                let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + id)
-                await axios.put(api.href,
-                    {
-                        role: req.body.others
-                    },
-                    {
-                        headers: {
-                            'Authorization': config.auth_api_key
-                        }
+            let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id.toString())
+            await axios.put(api.href,
+                {
+                    role: sanitize(req.body.others)
+                },
+                {
+                    headers: {
+                        'Authorization': config.auth_api_key
                     }
-                ).catch(err => {
-                    throw new Error(err.toString())
-                })
-            }
-
+                }
+            ).catch(err => {
+                throw new Error(err.toString())
+            })
         }
 
         delete req.body.created_by
