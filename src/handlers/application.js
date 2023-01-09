@@ -5,6 +5,7 @@ import Group from '../models/Group/Group.js';
 import Role from '../models/Role/Role.js';
 import { permission } from '../preHandlers/permission.js';
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 
 const all = async (req, res) => {
@@ -17,8 +18,8 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { application_name: { $regex: '.*' + search + '.*' } },
-                { url: { $regex: '.*' + search + '.*' } },
+                { application_name: { $regex: '.*' + sanitize(search) + '.*' } },
+                { url: { $regex: '.*' + sanitize(search) + '.*' } },
             ]
         } : {}
 
@@ -221,7 +222,7 @@ const add = async (req, res) => {
                 if (!element) {
                     break;                                 // Compliant
                 } else {
-                    let check = await Group.findOne().where({ _id: element.group_id.toString() })
+                    let check = await Group.findOne().where({ _id: sanitize(element.group_id) })
                     if (!check) {
                         throw new Error("group not found")
                     }
@@ -242,16 +243,17 @@ const add = async (req, res) => {
         }
         let status = (req.body.status != undefined) ? req.body.status : 1
 
+        let body = sanitize(req.body)
         let data = await Application.create(
             {
-                ...req.body,
+                ...body,
                 status: status,
-                created_by: req._id.toString(),
+                created_by: sanitize(req._id),
                 created_date: new Date()
             })
         if (req.body.role && req.body.role.length > 0) {
 
-            await Role.deleteMany({ application_id: req.params._id })
+            await Role.deleteMany({ application_id: sanitize(req.params._id) })
 
             for (let element of req.body.role) {
                 if (!element) {
@@ -259,12 +261,12 @@ const add = async (req, res) => {
                 } else {
                     await Role.create({
                         // ...element,
-                        application_id: data._id.toString(),
-                        group_id: element.group_id.toString(),
-                        get: element.get,
-                        put: element.put,
-                        post: element.post,
-                        delete: element.delete
+                        application_id: sanitize(data._id),
+                        group_id: sanitize(element.group_id),
+                        get: sanitize(element.get),
+                        put: sanitize(element.put),
+                        post: sanitize(element.post),
+                        delete: sanitize(element.delete)
 
                     })
                 }
@@ -292,7 +294,7 @@ const edit = async (req, res) => {
 
 
         if (req.body.parent_id) {
-            let check = await Application.findOne().where({ _id: req.body.parent_id.toString() })
+            let check = await Application.findOne().where({ _id: sanitize(req.body.parent_id) })
             if (!check) {
                 throw new Error("parent_id not found")
 
@@ -305,7 +307,7 @@ const edit = async (req, res) => {
                 if (!element) {
                     break;                                 // Compliant
                 } else {
-                    let check = await Group.findOne().where({ _id: element.group_id })
+                    let check = await Group.findOne().where({ _id: sanitize(element.group_id) })
                     if (!check) {
                         throw new Error("group not found")
                     }
@@ -314,16 +316,17 @@ const edit = async (req, res) => {
             }
         }
 
+        let body = sanitize(req.body)
         await Application.updateOne(
-            { _id: req.params._id },
+            { _id: sanitize(req.params._id) },
             {
-                ...req.body,
-                updated_by: req._id.toString(),
+                ...body,
+                updated_by: sanitize(req._id),
                 updated_date: new Date()
             })
         if (req.body.role && req.body.role.length > 0) {
 
-            await Role.deleteMany({ application_id: req.params._id })
+            await Role.deleteMany({ application_id: sanitize(req.params._id) })
 
             for (let element of req.body.role) {
                 if (!element) {
@@ -331,30 +334,30 @@ const edit = async (req, res) => {
                 } else {
                     await Role.create({
                         // ...element,
-                        application_id: req.params._id.toString(),
-                        group_id: element.group_id.toString(),
-                        get: element.get,
-                        put: element.put,
-                        post: element.post,
-                        delete: element.delete
+                        application_id: sanitize(req.params._id),
+                        group_id: sanitize(element.group_id),
+                        get: sanitize(element.get),
+                        put: sanitize(element.put),
+                        post: sanitize(element.post),
+                        delete: sanitize(element.delete)
 
                     })
                 }
 
             }
         } else if (req.body.role && req.body.role.length == 0) {
-            await Role.deleteMany({ application_id: req.params._id.toString() })
+            await Role.deleteMany({ application_id: sanitize(req.params._id) })
         }
 
         let data = await Application.find()
-            .where({ _id: req.params._id.toString() })
+            .where({ _id: sanitize(req.params._id) })
             .then((async (result) => {
                 for (var element of result.length) {
                     if (!element) {
                         break;                                 // Compliant
                     } else {
                         element = element._doc;
-                        let role = await Role.find().where({ application_id: element._id.toString() })
+                        let role = await Role.find().where({ application_id: sanitize(element._id) })
                         element.role = role
                     }
                 }
@@ -382,14 +385,14 @@ const destroy = async (req, res) => {
 
 
         let data = await Application.findOne()
-            .where({ _id: req.params._id.toString() })
+            .where({ _id: sanitize(req.params._id) })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }
         await Application.deleteOne(
-            { _id: req.params._id })
+            { _id: sanitize(req.params._id) })
 
-        await Role.deleteMany({ application_id: req.params._id.toString() })
+        await Role.deleteMany({ application_id: sanitize(req.params._id) })
 
         return res.send(utilSetResponseJson('success', "success"))
 
