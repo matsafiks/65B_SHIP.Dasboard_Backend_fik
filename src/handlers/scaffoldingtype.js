@@ -5,6 +5,7 @@ import _ from 'lodash'
 import moment from 'moment-timezone';
 import User from '../models/User/User.js';
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -13,8 +14,8 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { ScaffoldingTypeTypeID: { $regex: '.*' + search + '.*' } },
-                { URL_Image: { $regex: '.*' + search + '.*' } }
+                { ScaffoldingTypeTypeID: { $regex: '.*' + sanitize(search) + '.*' } },
+                { URL_Image: { $regex: '.*' + sanitize(search) + '.*' } }
             ]
         } : {}
 
@@ -127,8 +128,12 @@ const add = async (req, res) => {
 
         let data = await ScaffoldingType.create(
             {
-                ...req.body,
-                created_by: req._id,
+                nObjectID: sanitize(req.body.nObjectID),
+                nHeadID: sanitize(req.body.nHeadID),
+                nOrder: sanitize(req.body.nOrder),
+                sObjectName: sanitize(req.body.sObjectName),
+                sObjectShortName: sanitize(req.body.sObjectShortName),
+                created_by: sanitize(req._id),
                 created_date: new Date()
             })
         data = sanitizeHtml(JSON.stringify(data))

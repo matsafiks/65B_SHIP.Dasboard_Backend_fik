@@ -8,6 +8,7 @@ import User from '../models/User/User.js';
 import { permission } from '../preHandlers/permission.js';
 import Role from '../models/Role/Role.js';
 import PeopleRestrict from '../models/PeopleRestrict/PeopleRestrict.js';
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 

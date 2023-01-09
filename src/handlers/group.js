@@ -145,7 +145,6 @@ const add = async (req, res) => {
                 req.body.group_id = 1
             }
         }
-        let status = (req.body.status != undefined) ? req.body.status : 1
 
 
         // add role in authen systen
@@ -171,10 +170,11 @@ const add = async (req, res) => {
 
         let data = await Group.create(
             {
-                ...req.body,
-                status: status,
-                others: add_role.role,
-                created_by: req._id.toString(),
+                group_id: sanitize(req.body.group_id),
+                group_name: sanitize(req.body.group_name),
+                status: sanitize(req.body.status) || 1,
+                others: sanitize(add_role.role),
+                created_by: sanitize(req._id),
                 created_date: new Date()
             })
         data = sanitizeHtml(JSON.stringify(data))
@@ -196,7 +196,7 @@ const edit = async (req, res) => {
 
         // put role in authen systen
         if (req.body.others) {
-            let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id)
+            let api = new URL(config.auth_host + '/application/' + config.auth_app_id + '/role/' + req.body.others.id.toString())
             await axios.put(api.href,
                 {
                     role: req.body.others

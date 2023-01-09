@@ -16,6 +16,7 @@ import { createRequire } from "module";
 import { permission } from '../preHandlers/permission.js';
 import { check_notification } from '../utils/check_notification.js'
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -130,12 +131,12 @@ const login = async (req, res) => {
         let check = await User.findOne().where({ id: login.user.id })
         if (!check) {
             await User.create({
-                username: data.username.toString(),
+                username: sanitize(data.username),
                 status: 1,
-                group_id: group_id._id.toString(),
-                id: login.user.id.toString(),
-                others: others,
-                email: (login.user.email) ? login.user.email.toString() : null,
+                group_id: sanitize(group_id._id),
+                id: sanitize(login.user.id),
+                others: sanitize(others),
+                email: (login.user.email) ? sanitize(login.user.email) : null,
                 login_status: true,
                 created_date: new Date()
             })
@@ -143,8 +144,8 @@ const login = async (req, res) => {
         } else {
             await User.updateOne({ _id: check._id }, {
                 others: others,
-                email: (login.user.email) ? login.user.email.toString() : null,
-                group_id: group_id._id.toString(),
+                email: (login.user.email) ? sanitize(login.user.email) : null,
+                group_id: sanitize(group_id._id),
                 login_status: true,
             })
 
@@ -285,20 +286,20 @@ const loginAd = async (req, res) => {
         let check = await User.findOne().where({ id: login.user.id })
         if (!check) {
             let check = await User.create({
-                username: data.username,
+                username: sanitize(data.username),
                 status: 1,
-                group_id: group_id._id,
-                id: login.user.id,
-                others: others,
+                group_id: sanitize(group_id._id),
+                id: sanitize(login.user.id),
+                others: sanitize(others),
                 login_status: true,
                 created_date: new Date()
             })
 
         } else {
             await User.updateOne({ _id: check._id }, {
-                username: data.username,
-                others: others,
-                group_id: group_id._id,
+                username: sanitize(data.username),
+                others: sanitize(others),
+                group_id: sanitize(group_id._id),
                 login_status: true,
             })
 
@@ -676,7 +677,7 @@ const own_login = async (body) => {
 
     try {
 
-        let check = await User.findOne().where({ $or: [{ username: body.username }, { email: body.username }] })
+        let check = await User.findOne().where({ $or: [{ username: sanitize(body.username) }, { email: sanitize(body.username) }] })
         if (!check) {
             throw new Error("Unauthorized")
 

@@ -5,6 +5,7 @@ import _ from 'lodash'
 import moment from 'moment-timezone';
 import User from '../models/User/User.js';
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -13,7 +14,7 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { Location_Name: { $regex: '.*' + search + '.*' } }
+                { Location_Name: { $regex: '.*' + sanitize(search) + '.*' } }
             ]
         } : {}
 
@@ -114,13 +115,14 @@ const add = async (req, res) => {
                 req.body.Location_ID = 1
             }
         }
-        let Status = (req.body.Status != undefined) ? req.body.Status : 1
 
         let data = await Location.create(
             {
-                ...req.body,
-                Status: Status,
-                created_by: req._id,
+                // ...req.body,
+                Location_Name: sanitize(req.body.Location_Name),
+                Location_ID: sanitize(req.body.Location_ID),
+                Status: sanitize(req.body.Status) || 1,
+                created_by: sanitize(req._id),
                 created_date: new Date()
             })
 

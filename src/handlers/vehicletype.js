@@ -5,6 +5,7 @@ import _ from 'lodash'
 import User from '../models/User/User.js';
 import sanitizeHtml from "sanitize-html";
 import sanitize from 'mongo-sanitize';
+
 const all = async (req, res) => {
 
     try {
@@ -12,8 +13,8 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { VehicleTypeTypeID: { $regex: '.*' + search + '.*' } },
-                { URL_Image: { $regex: '.*' + search + '.*' } }
+                { VehicleTypeTypeID: { $regex: '.*' + sanitize(search) + '.*' } },
+                { URL_Image: { $regex: '.*' + sanitize(search) + '.*' } }
             ]
         } : {}
 

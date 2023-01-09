@@ -4,6 +4,7 @@ import WorkpermitStatus from "../models/Master/WorkpermitStatus/WorkpermitStatus
 import _ from 'lodash'
 import User from '../models/User/User.js';
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -12,9 +13,9 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { Status_ID: { $regex: '.*' + search + '.*' } },
-                { Status_Name: { $regex: '.*' + search + '.*' } },
-                { Status_Desc: { $regex: '.*' + search + '.*' } }
+                { Status_ID: { $regex: '.*' + sanitize(search) + '.*' } },
+                { Status_Name: { $regex: '.*' + sanitize(search) + '.*' } },
+                { Status_Desc: { $regex: '.*' + sanitize(search) + '.*' } }
             ]
         } : {}
 

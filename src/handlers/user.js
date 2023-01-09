@@ -12,6 +12,7 @@ import { createRequire } from "module";
 const require = createRequire(import.meta.url);
 const URL = require("url").URL
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -24,11 +25,11 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { username: { $regex: '.*' + search + '.*' } },
-                { id: { $regex: '.*' + search + '.*' } },
-                { email: { $regex: '.*' + search + '.*' } },
-                { 'others.fname': { $regex: '.*' + search + '.*' } },
-                { 'others.lname': { $regex: '.*' + search + '.*' } }
+                { username: { $regex: '.*' + sanitize(search) + '.*' } },
+                { id: { $regex: '.*' + sanitize(search) + '.*' } },
+                { email: { $regex: '.*' + sanitize(search) + '.*' } },
+                { 'others.fname': { $regex: '.*' + sanitize(search) + '.*' } },
+                { 'others.lname': { $regex: '.*' + sanitize(search) + '.*' } }
             ]
         } : {}
 
@@ -141,7 +142,6 @@ const add = async (req, res) => {
                 throw new Error('group_id not found')
             }
         }
-        let status = (req.body.status != undefined) ? req.body.status : 1
 
         // add user in authen systen
         let api = new URL(config.auth_host + '/user/registration')
@@ -209,11 +209,14 @@ const add = async (req, res) => {
         }
         let data = await User.create(
             {
-                ...req.body,
+                // ...req.body,
+                username: sanitize(req.body.username),
+                group_id: sanitize(req.body.group_id),
+                others: sanitize(req.body.others),
                 password: await generateHashPassword(req.body.password),
-                id: add_user.user.id,
-                status: status,
-                created_by: req._id,
+                id: sanitize(add_user.user.id),
+                status: sanitize(req.body.status) || 1,
+                created_by: sanitize(req._id),
                 created_date: new Date()
             })
         data = sanitizeHtml(JSON.stringify(data))
@@ -234,7 +237,7 @@ const edit = async (req, res) => {
 
 
         await permission('62a594d7bb8946576769c6a7', req)
-        let data = await User.findOne().where({ _id: req.params._id })
+        let data = await User.findOne().where({ _id: sanitize(req.params._id) })
         if (!data) {
             return res.send(utilSetResponseJson("failed", 'data not found'))
         }

@@ -3,6 +3,7 @@ import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import _ from 'lodash'
 import Logs from '../models/Logs/Logs.js';
 import sanitizeHtml from "sanitize-html";
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -11,10 +12,10 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { username: { $regex: '.*' + search + '.*' } },
-                { url: { $regex: '.*' + search + '.*' } },
-                { aciton: { $regex: '.*' + search + '.*' } },
-                { error: { $regex: '.*' + search + '.*' } },
+                { username: { $regex: '.*' + sanitize(search) + '.*' } },
+                { url: { $regex: '.*' + sanitize(search) + '.*' } },
+                { aciton: { $regex: '.*' + sanitize(search) + '.*' } },
+                { error: { $regex: '.*' + sanitize(search) + '.*' } },
 
             ]
         } : {}

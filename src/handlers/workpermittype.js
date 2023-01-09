@@ -4,6 +4,7 @@ import WorkpermitType from "../models/Master/WorkpermitType/WorkpermitType.js";
 import _ from 'lodash'
 import moment from 'moment-timezone';
 import User from '../models/User/User.js';
+import sanitize from 'mongo-sanitize';
 
 const all = async (req, res) => {
 
@@ -12,8 +13,8 @@ const all = async (req, res) => {
         let search = (req) ? req.query.search : undefined
         search = (search) ? {
             $or: [
-                { WP_Type_ID: { $regex: '.*' + search + '.*' } },
-                { WP_Type_Name: { $regex: '.*' + search + '.*' } }
+                { WP_Type_ID: { $regex: '.*' + sanitize(search) + '.*' } },
+                { WP_Type_Name: { $regex: '.*' + sanitize(search) + '.*' } }
             ]
         } : {}
 
@@ -113,12 +114,13 @@ const add = async (req, res) => {
                 req.body.Seq = 1
             }
         }
-        let IsMain = (req.body.IsMain != undefined) ? req.body.IsMain : 1
         let data = await WorkpermitType.create(
             {
-                ...req.body,
-                created_by: req._id,
-                IsMain: IsMain,
+                WP_Type_ID: sanitize(req.body.WP_Type_ID),
+                WP_Type_Name: sanitize(req.body.WP_Type_Name),
+                Seq: sanitize(req.body.Seq),
+                created_by: sanitize(req._id),
+                IsMain: sanitize(eq.body.IsMain) || 1,
                 created_date: new Date()
             })
         if (res)
