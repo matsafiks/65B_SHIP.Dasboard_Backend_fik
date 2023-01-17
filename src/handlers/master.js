@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Scaffolding from "../models/Scaffolding/Scaffolding.js";
 import Location from "../models/Master/Location/Location.js";
 import modelScaffoldingType from "../models/Master/ScaffoldingType/ScaffoldingType.js";
@@ -169,14 +168,14 @@ const pttstaffcodeAll = async (req, res) => {
             })
         }
 
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: pttstaffcodeAll }))
+        data = JSON.parse(data)
+        return res.send(data)
 
-        if (res)
-            return res.send(utilSetResponseJson('success', pttstaffcodeAll))
-        return utilSetResponseJson('success', data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 const subareaAll = async (req, res) => {
@@ -232,15 +231,14 @@ const subareaAll = async (req, res) => {
         }
 
 
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: subareaAll }))
+        data = JSON.parse(data)
+        return res.send(data)
 
-
-        if (res)
-            return res.send(utilSetResponseJson('success', subareaAll))
-        return utilSetResponseJson('success', data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 const wpmSubareaAll = async (req, res) => {
@@ -358,15 +356,14 @@ const wpmSubareaAll = async (req, res) => {
         }
 
 
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: wpmSubareaAll }))
+        data = JSON.parse(data)
+        return res.send(data)
 
-
-        if (res)
-            return res.send(utilSetResponseJson('success', wpmSubareaAll))
-        return utilSetResponseJson('success', data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 

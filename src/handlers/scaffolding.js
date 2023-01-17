@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Scaffolding from "../models/Scaffolding/Scaffolding.js";
 import Location from "../models/Master/Location/Location.js";
 import modelScaffoldingType from "../models/Master/ScaffoldingType/ScaffoldingType.js";
@@ -393,15 +392,11 @@ const all = async (req, res) => {
         res.send(JSON.parse(data_))
 
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
-const test = async (res) => {
 
-    return utilSetResponseJson('success', 'data')
-}
-
-export { all, test };
+export { all };

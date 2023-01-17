@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import People from "../models/People/People.js";
 import Location from "../models/Master/Location/Location.js";
 // import modelScaffoldingType from "../models/Master/PeopleType/PeopleType.js";
@@ -412,19 +411,12 @@ const all = async (req, res) => {
         }
         res.send(data_)
 
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
-const test = async (res) => {
 
-    return utilSetResponseJson('success', 'data')
-}
-
-export { all, test };
+export { all };

@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import _ from 'lodash'
 import Logs from '../models/Logs/Logs.js';
 import sanitizeHtml from "sanitize-html";
@@ -62,15 +61,13 @@ const all = async (req, res) => {
 
         }
 
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 

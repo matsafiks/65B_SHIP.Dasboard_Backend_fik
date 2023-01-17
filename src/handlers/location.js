@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Location from "../models/Master/Location/Location.js";
 import _ from 'lodash'
 import moment from 'moment-timezone';
@@ -46,7 +45,7 @@ const all = async (req, res) => {
             }))
 
 
-        let len_data = await Location.count().where(search)
+        let len_data = await Locations.count().where(search)
 
 
         data = {
@@ -57,16 +56,13 @@ const all = async (req, res) => {
             data: data
 
         }
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        error = error.toString()
-        if (res)
-            return res.send(utilSetResponseJson('failed', error))
-        return utilSetResponseJson('failed', error)
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 const byid = async (req, res) => {
@@ -90,17 +86,18 @@ const byid = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            return res.send(utilSetResponseJson('failed', 'data not found'))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: "data not found" }))
+            data = JSON.parse(data)
+            return res.send(data)
+
         }
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 const add = async (req, res) => {
@@ -126,15 +123,13 @@ const add = async (req, res) => {
                 created_date: new Date()
             })
 
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -153,15 +148,19 @@ const edit = async (req, res) => {
         let data = await Location.findOne()
             .where({ _id: req.params._id })
         if (!data) {
-            return res.send(utilSetResponseJson('failed', 'data not found'))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: "data not found" }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
 
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        return res.send(utilSetResponseJson('success', data))
+        return res.send(data)
 
     } catch (error) {
-        return res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -171,15 +170,21 @@ const destroy = async (req, res) => {
         let data = await Location.findOne()
             .where({ _id: req.params._id })
         if (!data) {
-            return res.send(utilSetResponseJson('failed', 'data not found'))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: "data not found" }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
         await Location.deleteOne(
             { _id: req.params._id })
 
-        return res.send(utilSetResponseJson('success', 'success'))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: "success" }))
+        data = JSON.parse(data)
+        return res.send(data)
 
     } catch (error) {
-        return res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 

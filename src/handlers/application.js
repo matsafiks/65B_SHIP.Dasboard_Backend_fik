@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Application from "../models/Application/Application.js";
 import Group from '../models/Group/Group.js';
 import Role from '../models/Role/Role.js';
@@ -112,16 +111,13 @@ const all = async (req, res) => {
 
         }
 
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        error = error.toString()
-        if (res)
-            return res.send(utilSetResponseJson('failed', error))
-        return utilSetResponseJson('failed', error)
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 const byid = async (req, res) => {
@@ -197,18 +193,17 @@ const byid = async (req, res) => {
                 return result
             }))
         if (!data) {
-            return res.send(utilSetResponseJson("failed", "data not found"))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: "data not found" }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        error = error.toString()
-        if (res)
-            return res.send(utilSetResponseJson('failed', error))
-        return utilSetResponseJson('failed', error)
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -277,16 +272,13 @@ const add = async (req, res) => {
 
             }
         }
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        error = error.toString()
-        if (res)
-            return res.send(utilSetResponseJson('failed', error))
-        return utilSetResponseJson('failed', error)
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -368,16 +360,19 @@ const edit = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            return res.send(utilSetResponseJson("failed", "data not found"))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: "data not found" }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
+        return res.send(data)
 
-        return res.send(utilSetResponseJson('success', data))
 
     } catch (error) {
-        error = error.toString()
-        return res.send(utilSetResponseJson('failed', error))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -391,18 +386,23 @@ const destroy = async (req, res) => {
         let data = await Application.findOne()
             .where({ _id: sanitize(req.params._id) })
         if (!data) {
-            return res.send(utilSetResponseJson("failed", 'data not found'))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: 'data not found' }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
         await Application.deleteOne(
             { _id: sanitize(req.params._id) })
 
         await Role.deleteMany({ application_id: sanitize(req.params._id) })
 
-        return res.send(utilSetResponseJson('success', "success"))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: "success" }))
+        data = JSON.parse(data)
+        return res.send(data)
 
     } catch (error) {
-        error = error.toString()
-        return res.send(utilSetResponseJson('failed', error))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 

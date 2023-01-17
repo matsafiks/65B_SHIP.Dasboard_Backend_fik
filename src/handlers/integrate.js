@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Scaffolding from "../models/Scaffolding/Scaffolding.js";
 import Location from "../models/Master/Location/Location.js";
 import modelScaffoldingType from "../models/Master/ScaffoldingType/ScaffoldingType.js";
@@ -18,6 +17,7 @@ import Vehicle6 from '../models/Vehicle6/Vehicle6.js';
 import Vehicle5 from '../models/Vehicle5/Vehicle5.js';
 import moment from "moment"
 import sanitize from 'mongo-sanitize';
+import sanitizeHtml from "sanitize-html";
 
 const scaffolding = async (req, res) => {
 
@@ -309,9 +309,9 @@ const scaffolding = async (req, res) => {
         res.send(data_)
 
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -606,9 +606,9 @@ const people = async (req, res) => {
         res.send(data_)
 
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -917,9 +917,9 @@ const vehicle = async (req, res) => {
 
 
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -1139,13 +1139,15 @@ const workpermit = async (req, res) => {
         data.filter = filter
         data.data = data_arr
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
+
+
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -1349,13 +1351,13 @@ const equipment = async (req, res) => {
         data.filter = filter
         data.data = data_arr
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -1565,13 +1567,13 @@ const accesscontrol = async (req, res) => {
         }
         data.filter = filter
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }

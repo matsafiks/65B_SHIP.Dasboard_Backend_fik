@@ -9,7 +9,6 @@ import socket_io from "./src/utils/socket_io.js";
 import swaggerUi from 'swagger-ui-express';
 import methodOverride from 'method-override'
 import mongoose_connect from './src/utils/db.js';
-import utilSetResponseJson from './src/utils/util.SetResponseJson.js';
 import { createRequire } from "module";
 import { authRouters, authshema } from './src/routers/auth.js';
 import { webHookRouters, webHookSchema } from './src/routers/webhook.js'
@@ -40,6 +39,7 @@ import { oauthRouters } from './src/routers/oauth.js';
 import { check_row_expire, get_workpermit_from_acc, get_acc_from_acc, get_acc_device_from_acc, get_workpermit_from_rabbitmq } from './src/utils/schedule_func.js';
 import { peopleRouters, peopleSchema } from './src/routers/people.js';
 import { vehicleRouters, vehicleSchema } from './src/routers/vehicle.js';
+import sanitizeHtml from "sanitize-html";
 
 import { integrateSchema, integrateRouters } from './src/routers/integrate.js';
 import { check_notification_loop } from './src/utils/check_notification.js';
@@ -131,15 +131,24 @@ server.use('/api/master/scaffoldingtype', scaffoldingTypeRouters)
 server.use('/api/master/location', locationRouters)
 
 server.get('/', (req, res) => {
-    res.status(200).send(utilSetResponseJson('success', escape('65B_SHIP.DASHBOARD_BACKEND')))
+    data = sanitizeHtml(JSON.stringify({ Status: "success", Message: "65B_SHIP.DASHBOARD_BACKEND" }))
+    data = JSON.parse(data)
+    res.status(200).send(data)
 })
 
 server.use((error, request, response, next) => {
     if (error instanceof ValidationError) {
-        response.status(400).send(utilSetResponseJson('failed', error.validationErrors));
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.validationErrors }))
+        error = JSON.parse(error)
+
+        response.status(400).send(error);
         next();
     } else {
-        response.status(200).send(utilSetResponseJson('failed', error.toString()))
+
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+
+        response.status(200).send(error)
     }
 });
 

@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import AccessControl from "../models/AccessControl/AccessControl.js";
 import User from '../models/User/User.js';
 import AccessControlDevice from '../models/AccessControlDevice/AccessControlDevice.js';
@@ -506,10 +505,9 @@ const all = async (req, res) => {
         res.send(JSON.parse(data_))
 
     } catch (error) {
-        error = error.toString()
-        if (res)
-            return res.send(utilSetResponseJson('failed', error))
-        return utilSetResponseJson('failed', error)
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 

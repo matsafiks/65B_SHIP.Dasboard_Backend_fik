@@ -1,7 +1,6 @@
 
 
 import WorkPermit from "../models/WorkPermit/WorkPermit.js";
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import socket_io from "../utils/socket_io.js";
 import moment from 'moment-timezone';
 import User from "../models/User/User.js";
@@ -37,9 +36,14 @@ const addBasicAuth = async (req, res) => {
             created_date: dateThailand
         }
         let create = await User.create(data)
-        res.send(utilSetResponseJson('success', create))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: create }))
+        data = JSON.parse(data)
+        res.send(data)
+
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -47,9 +51,14 @@ const getBasicAuth = async (req, res) => {
 
     try {
         let data = await User.find()
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
+
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -155,7 +164,10 @@ const scaffolding = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook scaffolding', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
+
         }
 
         if (data_create.length > 0) {
@@ -190,9 +202,13 @@ const scaffolding = async (req, res) => {
         io.sockets.emit('notification', 'new')
 
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -299,9 +315,9 @@ const workPermit = async (req, res) => {
 
             insert_log(req, 'webhook workpermit', error_str.toString())
 
-            if (res)
-                return res.send(utilSetResponseJson('failed', error_str))
-            return utilSetResponseJson('failed', error_str)
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
 
@@ -346,17 +362,18 @@ const workPermit = async (req, res) => {
         //     // setTimeout
         // }
 
-        // return res.send(utilSetResponseJson('success', data))
+        data = JSON.parse(data)
+        res.send(data)
 
         io.sockets.emit('workpermit', 'new')
         io.sockets.emit('notification', 'new')
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -494,9 +511,9 @@ const accessControl = async (req, res) => {
 
             insert_log(req, 'webhook accesscontrol', error_str.toString())
 
-            if (res)
-                return res.send(utilSetResponseJson('failed', error_str))
-            return utilSetResponseJson('failed', error_str)
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         if (data_create.length > 0) {
@@ -527,13 +544,13 @@ const accessControl = async (req, res) => {
 
         io.sockets.emit('accesscontrol', 'new')
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -635,7 +652,9 @@ const accessControlPut = async (req, res) => {
 
             let error_str = JSON.stringify(groupByCases)
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         for (let index = 0; index < data.length; index++) {
@@ -666,9 +685,13 @@ const accessControlPut = async (req, res) => {
 
         io.sockets.emit('accesscontrol', 'new')
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -715,7 +738,9 @@ const accessControlDevice = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook accesscontroldevice', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         await AccessControlDevice.deleteMany()
@@ -733,13 +758,14 @@ const accessControlDevice = async (req, res) => {
 
         data = await AccessControlDevice.find()
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', create)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
+
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -782,14 +808,14 @@ const accessControlExchangeCard = async (req, res) => {
 
         data = await AccessControlExchangeCard.findOne()
 
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', create)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -886,7 +912,9 @@ const equipment = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook equipment', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         if (data_create.length > 0) {
@@ -919,9 +947,13 @@ const equipment = async (req, res) => {
         io.sockets.emit('notification', 'new')
 
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 const equipmentVehicle = async (req, res) => {
@@ -993,7 +1025,9 @@ const equipmentVehicle = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook equipmentvehicle', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         if (data_create.length > 0) {
@@ -1026,9 +1060,13 @@ const equipmentVehicle = async (req, res) => {
         io.sockets.emit('equipmentvehicle', 'new')
         io.sockets.emit('notification', 'new')
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -1128,7 +1166,9 @@ const vehicle = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook vehicle', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         if (data_create.length > 0) {
@@ -1161,9 +1201,13 @@ const vehicle = async (req, res) => {
         io.sockets.emit('notification', 'new')
 
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 const vehicle2 = async (req, res) => {
@@ -1236,7 +1280,9 @@ const vehicle2 = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook vehicle2', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         if (data_create.length > 0) {
@@ -1267,9 +1313,13 @@ const vehicle2 = async (req, res) => {
 
         io.sockets.emit('vehicle2', 'new')
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 const vehicle5 = async (req, res) => {
@@ -1331,7 +1381,9 @@ const vehicle5 = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook vehicle5', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         await Vehicle5.deleteMany()
@@ -1357,9 +1409,13 @@ const vehicle5 = async (req, res) => {
 
         io.sockets.emit('vehicle5', 'new')
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 const vehicle6 = async (req, res) => {
@@ -1399,9 +1455,13 @@ const vehicle6 = async (req, res) => {
         io.sockets.emit('vehicle6', 'new')
         io.sockets.emit('notification', 'new')
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 const people = async (req, res) => {
@@ -1505,7 +1565,9 @@ const people = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook people', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         await People.deleteMany()
@@ -1534,9 +1596,13 @@ const people = async (req, res) => {
         io.sockets.emit('notification', 'new')
 
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 const peopleRestrict = async (req, res) => {
@@ -1599,7 +1665,9 @@ const peopleRestrict = async (req, res) => {
             let error_str = JSON.stringify(groupByCases)
             insert_log(req, 'webhook peoplerestrict', error_str.toString())
 
-            return res.send(utilSetResponseJson('failed', error_str))
+            error_str = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error_str.toString() }))
+            error_str = JSON.parse(error_str)
+            return res.send(error_str)
         }
 
         await PeopleRestrict.deleteMany()
@@ -1625,9 +1693,13 @@ const peopleRestrict = async (req, res) => {
 
         io.sockets.emit('peoplerestrict', 'new')
 
-        res.send(utilSetResponseJson('success', data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        res.send(data)
     } catch (error) {
-        res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 export {

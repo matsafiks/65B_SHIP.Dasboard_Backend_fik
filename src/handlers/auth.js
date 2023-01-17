@@ -1,6 +1,5 @@
 
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import moment from 'moment-timezone';
 import User from "../models/User/User.js";
 import fs from 'fs'
@@ -61,8 +60,10 @@ const login = async (req, res) => {
 
         if (success == false) {
             data = await own_login(req.body)
-            data = sanitizeHtml(JSON.stringify(data))
-            return res.send(utilSetResponseJson("success", JSON.parse(data)))
+
+            data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+            data = JSON.parse(data)
+            return res.send(data)
 
         }
 
@@ -174,8 +175,10 @@ const login = async (req, res) => {
         res.send(JSON.parse(data_))
 
     } catch (error) {
-        error = error.toString()
-        res.send(utilSetResponseJson('failed', error))
+
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -216,8 +219,10 @@ const loginAd = async (req, res) => {
 
         if (success == false) {
             let data = await own_login(req.body)
-            data = sanitizeHtml(JSON.stringify(data))
-            return res.send(utilSetResponseJson("success", JSON.parse(data)))
+
+            data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+            data = JSON.parse(data)
+            return res.send(data)
 
         }
 
@@ -322,13 +327,13 @@ const loginAd = async (req, res) => {
         if (group_id.others.id == config.ptt_group_id && !login.user.data.employeeid) {
             data_.MessageAlert = 'ไม่พบรหัสพนักงานผู้ควบคุมงานของคุณในระบบ กรุณาทำการค้นหาข้อมูลที่ต้องการ'
         }
-        // res.send(utilSetResponseJson('success', data))
         data_ = sanitizeHtml(JSON.stringify(data_))
         res.send(JSON.parse(data_))
 
     } catch (error) {
-        error = error.toString()
-        res.send(utilSetResponseJson('failed', error))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -563,8 +568,9 @@ const token = async (req, res) => {
         // }
 
     } catch (error) {
-        error = error.toString()
-        res.send(utilSetResponseJson('failed', error))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 const logout = async (req, res) => {
@@ -575,10 +581,14 @@ const logout = async (req, res) => {
             login_status: false
         })
 
-        res.send(utilSetResponseJson('success', "success"))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: "success" }))
+        data = JSON.parse(data)
+        res.send(data)
+
     } catch (error) {
-        error = error.toString()
-        res.send(utilSetResponseJson('failed', error))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 
@@ -667,8 +677,9 @@ const mydata = async (req, res) => {
         res.send(JSON.parse(data_))
 
     } catch (error) {
-        error = error.toString()
-        res.send(utilSetResponseJson('failed', error))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        res.send(error)
     }
 }
 

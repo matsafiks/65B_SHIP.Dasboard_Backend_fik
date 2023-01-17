@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import Vehicle from "../models/Vehicle/Vehicle.js";
 import Location from "../models/Master/Location/Location.js";
 // import modelVehicleType from "../models/Master/VehicleType/VehicleType.js";
@@ -482,13 +481,10 @@ const all = async (req, res) => {
         }
         res.send(data_)
 
-        // if (res)
-        //     return res.send(utilSetResponseJson('success', data))
-        // return utilSetResponseJson('success', data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -511,19 +507,16 @@ const vehicle2 = async (req, res) => {
 
 
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
-const test = async (res) => {
 
-    return utilSetResponseJson('success', 'data')
-}
 
-export { all, test, vehicle2 };
+export { all, vehicle2 };

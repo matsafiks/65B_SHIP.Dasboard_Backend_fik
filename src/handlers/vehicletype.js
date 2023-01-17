@@ -1,5 +1,4 @@
 
-import utilSetResponseJson from '../utils/util.SetResponseJson.js';
 import VehicleType from "../models/Master/VehicleType/VehicleType.js";
 import _ from 'lodash'
 import User from '../models/User/User.js';
@@ -62,13 +61,13 @@ const all = async (req, res) => {
         data = sanitizeHtml(JSON.stringify(data))
         data = JSON.parse(data)
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 const byid = async (req, res) => {
@@ -92,19 +91,21 @@ const byid = async (req, res) => {
                 return result[0]
             }))
         if (!data) {
-            return res.send(utilSetResponseJson("failed", 'data not found'))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: 'data not found' }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
 
         data = sanitizeHtml(JSON.stringify(data))
         data = JSON.parse(data)
 
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
+        data = JSON.parse(data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 const add = async (req, res) => {
@@ -125,15 +126,13 @@ const add = async (req, res) => {
                 created_date: new Date()
             })
 
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        if (res)
-            return res.send(utilSetResponseJson('success', data))
-        return utilSetResponseJson('success', data)
+        return res.send(data)
     } catch (error) {
-        if (res)
-            return res.send(utilSetResponseJson('failed', error.toString()))
-        return utilSetResponseJson('failed', error.toString())
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 
@@ -152,15 +151,19 @@ const edit = async (req, res) => {
         let data = await VehicleType.findOne()
             .where({ _id: req.params._id })
         if (!data) {
-            return res.send(utilSetResponseJson("failed", 'data not found'))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: 'data not found' }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
 
-        data = sanitizeHtml(JSON.stringify(data))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: data }))
         data = JSON.parse(data)
-        return res.send(utilSetResponseJson('success', data))
+        return res.send(data)
 
     } catch (error) {
-        return res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 
 }
@@ -170,15 +173,21 @@ const destroy = async (req, res) => {
         let data = await VehicleType.findOne()
             .where({ _id: req.params._id })
         if (!data) {
-            return res.send(utilSetResponseJson("failed", 'data not found'))
+            data = sanitizeHtml(JSON.stringify({ Status: "failed", Message: 'data not found' }))
+            data = JSON.parse(data)
+            return res.send(data)
         }
         await VehicleType.deleteOne(
             { _id: req.params._id })
 
-        return res.send(utilSetResponseJson('success', 'success'))
+        data = sanitizeHtml(JSON.stringify({ Status: "success", Message: "success" }))
+        data = JSON.parse(data)
+        return res.send(data)
 
     } catch (error) {
-        return res.send(utilSetResponseJson('failed', error.toString()))
+        error = sanitizeHtml(JSON.stringify({ Status: "failed", Message: error.toString() }))
+        error = JSON.parse(error)
+        return res.send(error)
     }
 }
 

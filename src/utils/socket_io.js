@@ -1,4 +1,4 @@
-import { all, test } from "../handlers/scaffolding.js"
+import { all } from "../handlers/scaffolding.js"
 import _ from 'lodash'
 
 let io_;
