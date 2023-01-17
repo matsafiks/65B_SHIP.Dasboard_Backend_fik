@@ -9,6 +9,14 @@ import webHookSchema from '../models/Webhook/schema.webhook.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import webhookSchema from '../models/Webhook/schema.webhook.js'
 import { check_jwt } from '../preHandlers/jwt_auth.js';
+import csrf from 'csurf';
+import bodyParser from 'body-parser'
+
+var csrfProtect = csrf({ cookie: true })
+
+var parseForm = bodyParser.urlencoded({
+    extended: false
+})
 
 let webHookRouters = express.Router();
 
@@ -21,7 +29,8 @@ let webHookRouters = express.Router();
 // webHookRouters.get('/addbasicauth/all', basicAuth(), getBasicAuth)
 
 webHookRouters.post('/scaffolding',
-    validateSchema(webhookSchema['/api/webhook/scaffolding'].post.parameters),
+    parseForm,
+    csrfProtect,
     check_jwt,
     scaffolding)
 webHookRouters.post('/workpermit',
@@ -29,7 +38,8 @@ webHookRouters.post('/workpermit',
     check_jwt,
     workPermit)
 webHookRouters.post('/accesscontrol',
-    validateSchema(webhookSchema['/api/webhook/accesscontrol'].post.parameters),
+    parseForm,
+    csrfProtect,
     check_jwt,
     accessControl)
 // webHookRouters.put('/accesscontrol/put',

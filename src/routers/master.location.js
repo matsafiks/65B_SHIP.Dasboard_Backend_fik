@@ -4,27 +4,38 @@ import { all, byid, add, edit, destroy } from '../handlers/location.js'
 import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import locationSchema from '../models/Master/Location/schema.location.js'
+import csrf from 'csurf';
+import bodyParser from 'body-parser'
+
+var csrfProtect = csrf({ cookie: true })
+
+var parseForm = bodyParser.urlencoded({
+    extended: false
+})
 
 let locationRouters = express.Router();
 
 locationRouters.get('/all',
-    validateSchema(locationSchema['/api/master/location/all'].get.parameters),
+    csrfProtect,
     check_jwt,
     all)
 locationRouters.get('/byid/:_id',
-    validateSchema(locationSchema['/api/master/location/byid/{_id}'].get.parameters),
+    csrfProtect,
     check_jwt,
     byid)
 locationRouters.post('/add',
+    parseForm,
+    csrfProtect,
     check_jwt,
     add)
 locationRouters.put('/put/:_id',
-    validateSchema(locationSchema['/api/master/location/put/{_id}'].put.parameters),
+    parseForm,
+    csrfProtect,
     check_jwt,
     edit
 )
 locationRouters.delete('/delete/:_id',
-    validateSchema(locationSchema['/api/master/location/delete/{_id}'].delete.parameters),
+    csrfProtect,
     check_jwt,
     destroy
 )

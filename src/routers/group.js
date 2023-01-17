@@ -4,27 +4,39 @@ import { all, byid, add, edit, destroy } from '../handlers/group.js'
 import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import groupSchema from '../models/Group/schema.group.js'
+import csrf from 'csurf';
+import bodyParser from 'body-parser'
+
+var csrfProtect = csrf({ cookie: true })
+
+var parseForm = bodyParser.urlencoded({
+    extended: false
+})
+
 
 let groupRouters = express.Router();
 
 groupRouters.get('/all',
-    validateSchema(groupSchema['/api/admin/group/all'].get.parameters),
+    csrfProtect,
     check_jwt,
     all)
 groupRouters.get('/byid/:_id',
-    validateSchema(groupSchema['/api/admin/group/byid/{_id}'].get.parameters),
+    csrfProtect,
     check_jwt,
     byid)
 groupRouters.post('/add',
+    parseForm,
+    csrfProtect,
     check_jwt,
     add)
 groupRouters.put('/put/:_id',
-    validateSchema(groupSchema['/api/admin/group/put/{_id}'].put.parameters),
+    parseForm,
+    csrfProtect,
     check_jwt,
     edit
 )
 groupRouters.delete('/delete/:_id',
-    validateSchema(groupSchema['/api/admin/group/delete/{_id}'].delete.parameters),
+    csrfProtect,
     check_jwt,
     destroy
 )

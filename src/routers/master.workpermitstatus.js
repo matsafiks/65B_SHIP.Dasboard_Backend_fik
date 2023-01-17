@@ -4,28 +4,36 @@ import { all, byid, add, edit, destroy } from '../handlers/workpermitstatus.js'
 import { check_jwt } from '../preHandlers/jwt_auth.js'
 import validateSchema from '../preHandlers/schema_validate.js';
 import workpermitStatusSchema from '../models/Master/WorkpermitStatus/schema.workpermitStatus.js'
+import csrf from 'csurf';
+import bodyParser from 'body-parser'
+
+var csrfProtect = csrf({ cookie: true })
+
+var parseForm = bodyParser.urlencoded({
+    extended: false
+})
 
 let workpermitStatusRouters = express.Router();
 
 workpermitStatusRouters.get('/all',
-    validateSchema(workpermitStatusSchema['/api/master/workpermitstatus/all'].get.parameters),
+    csrfProtect,
     check_jwt,
     all)
 workpermitStatusRouters.get('/byid/:_id',
-    validateSchema(workpermitStatusSchema['/api/master/workpermitstatus/byid/{_id}'].get.parameters),
-    check_jwt,
+    csrfProtect, check_jwt,
     byid)
 workpermitStatusRouters.post('/add',
+    parseForm,
+    csrfProtect,
     check_jwt,
     add)
 workpermitStatusRouters.put('/put/:_id',
-    validateSchema(workpermitStatusSchema['/api/master/workpermitstatus/put/{_id}'].put.parameters),
-    check_jwt,
+    parseForm,
+    csrfProtect, check_jwt,
     edit
 )
 workpermitStatusRouters.delete('/delete/:_id',
-    validateSchema(workpermitStatusSchema['/api/master/workpermitstatus/delete/{_id}'].delete.parameters),
-    check_jwt,
+    csrfProtect, check_jwt,
     destroy
 )
 export { workpermitStatusRouters, workpermitStatusSchema }

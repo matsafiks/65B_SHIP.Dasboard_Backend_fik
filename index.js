@@ -1,6 +1,8 @@
 
 import express from 'express'
 import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'; // CSRF Cookie parsing
+import csrf from 'csurf';
 import { queryParser } from 'express-query-parser'
 import cors from 'cors'
 import { Server } from 'socket.io';
@@ -57,6 +59,7 @@ server.use(cors())
 server.use(bodyParser.urlencoded({
     extended: false
 }))
+server.use(cookieParser())
 server.use(bodyParser.json({ limit: '50mb' }))
 server.use(
     queryParser({
@@ -131,7 +134,14 @@ server.use('/api/master/scaffoldingtype', scaffoldingTypeRouters)
 server.use('/api/master/location', locationRouters)
 
 server.get('/', (req, res) => {
-    data = sanitizeHtml(JSON.stringify({ Status: "success", Message: "65B_SHIP.DASHBOARD_BACKEND" }))
+    let data = sanitizeHtml(JSON.stringify({ Status: "success", Message: "65B_SHIP.DASHBOARD_BACKEND" }))
+    data = JSON.parse(data)
+    res.status(200).send(data)
+})
+
+var csrfProtect = csrf({ cookie: true })
+server.get('/api/form', csrfProtect, function (req, res) {
+    let data = sanitizeHtml(JSON.stringify({ Status: "success", Message: { csrfToken: req.csrfToken() } }))
     data = JSON.parse(data)
     res.status(200).send(data)
 })
